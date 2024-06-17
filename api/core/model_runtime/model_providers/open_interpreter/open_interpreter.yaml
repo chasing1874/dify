@@ -1,0 +1,38 @@
+provider: open_interpreter
+label:
+  zh_Hans: Open Interpreter
+  en_US: Open Interpreter
+icon_small:
+  en_US: icon_s_en.svg
+icon_large:
+  en_US: icon_l_en.svg
+background: "#EFF1FE"
+help:
+  title:
+    en_US: LLM based on Open Interpreter
+    zh_Hans: 基于Open Interpreter 包装的LLM
+  url:
+    en_US: https://github.com/OpenInterpreter/open-interpreter
+supported_model_types:
+  - llm
+configurate_methods:
+  - predefined-model
+provider_credential_schema:
+  credential_form_schemas:
+    - variable: api_key
+      label:
+        en_US: API Key
+      type: secret-input
+      required: true
+      placeholder:
+        zh_Hans: 在此输入您的 API Key
+        en_US: Enter your API Key
+    - variable: server_url
+      label:
+        zh_Hans: Open Interpreter Server
+        en_US: Open Interpreter Server
+      type: text-input
+      required: false
+      placeholder:
+        zh_Hans: 在此输入您的 Open Interpreter 部署地址, 如：http://host.docker.internal:8000
+        en_US: Enter your Open Interpreter deploy url, e.g. http://host.docker.internal:8000

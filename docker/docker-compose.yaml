@@ -2,7 +2,7 @@ version: '3'
 services:
   # API service
   api:
-    image: langgenius/dify-api:0.6.11
+    image: ziyou/dify-api:0.1.0
     restart: always
     environment:
       # Startup mode, 'api' starts the API server.
@@ -12,7 +12,7 @@ services:
       # enable DEBUG mode to output more logs
       # DEBUG : true
       # A secret key that is used for securely signing the session cookie and encrypting sensitive information on the database. You can generate a strong key using `openssl rand -base64 42`.
-      SECRET_KEY: sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U
+      SECRET_KEY: BCkYEjH6WMBnQT5Dw5Jber8DRVBSjfLKaxf6PNmpoGhhkW7CMXrg5xTZ
       # The base URL of console application web frontend, refers to the Console base URL of WEB service if console domain is
       # different from api or web app domain.
       # example: http://cloud.dify.ai
@@ -209,7 +209,7 @@ services:
   # worker service
   # The Celery worker for processing the queue.
   worker:
-    image: langgenius/dify-api:0.6.11
+    image: ziyou/dify-api:0.1.0
     restart: always
     environment:
       CONSOLE_WEB_URL: ''
@@ -222,7 +222,7 @@ services:
       LOG_LEVEL: INFO
       # A secret key that is used for securely signing the session cookie and encrypting sensitive information on the database. You can generate a strong key using `openssl rand -base64 42`.
       # same as the API service
-      SECRET_KEY: sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U
+      SECRET_KEY: BCkYEjH6WMBnQT5Dw5Jber8DRVBSjfLKaxf6PNmpoGhhkW7CMXrg5xTZ
       # The configurations of postgres database connection.
       # It is consistent with the configuration in the 'db' service below.
       DB_USERNAME: postgres
@@ -518,6 +518,7 @@ services:
       - ./nginx/proxy.conf:/etc/nginx/proxy.conf
       - ./nginx/conf.d:/etc/nginx/conf.d
       #- ./nginx/ssl:/etc/ssl
+      - /mnt/data:/mnt/data
     depends_on:
       - api
       - web
