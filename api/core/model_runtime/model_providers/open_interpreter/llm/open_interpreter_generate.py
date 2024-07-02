@@ -23,7 +23,7 @@ class Message(BaseModel):
     type: Literal["message", "code", "image", "console", "file", "confirmation"]
     format: Optional[Literal["output", "path", "base64.png", "base64.jpeg", "python", "javascript", "shell", "html", "active_line", "execution"]] = None
     recipient: Optional[Literal["user", "assistant"]] = None
-    content: Optional[Union[str, Dict[str, Union[str, dict]]]] = None # 如果dict需要有特定的结构，可以定义一个更详细的类型
+    content: Optional[Union[str, int, Dict[str, Union[str, dict]]]] = None # 如果dict需要有特定的结构，可以定义一个更详细的类型
 
 class StreamingChunk(Message):
     start: Optional[bool] = None
