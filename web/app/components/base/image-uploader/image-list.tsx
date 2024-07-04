@@ -46,6 +46,14 @@ const ImageList: FC<ImageListProps> = ({
       onImageLinkLoadError(item._id)
   }
 
+  function getIcon(file: ImageFile) {
+    const suffix = file.file?.name?.split?.('.')?.pop?.()
+    if (suffix === 'xlsx')
+      return 'https://pic.imgdb.cn/item/66866f91d9c307b7e9a391d0.png'
+    else
+      return file.type === TransferMethod.remote_url ? file.url : file.base64Url
+  }
+
   return (
     <div className="flex flex-wrap">
       {list.map(item => (
@@ -101,16 +109,12 @@ const ImageList: FC<ImageListProps> = ({
             onLoad={() => handleImageLinkLoadSuccess(item)}
             onError={() => handleImageLinkLoadError(item)}
             src={
-              item.type === TransferMethod.remote_url
-                ? item.url
-                : item.base64Url
+              getIcon(item)
             }
             onClick={() =>
               item.progress === 100
               && setImagePreviewUrl(
-                (item.type === TransferMethod.remote_url
-                  ? item.url
-                  : item.base64Url) as string,
+                getIcon(item) as string,
               )
             }
           />

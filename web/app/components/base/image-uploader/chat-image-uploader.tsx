@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import cn from 'classnames'
 import Uploader from './uploader'
 import ImageLinkInput from './image-link-input'
-import { ImagePlus } from '@/app/components/base/icons/src/vender/line/images'
 import { TransferMethod } from '@/types/app'
 import {
   PortalToFollowElem,
@@ -13,6 +12,7 @@ import {
 } from '@/app/components/base/portal-to-follow-elem'
 import { Upload03 } from '@/app/components/base/icons/src/vender/line/general'
 import type { ImageFile, VisionSettings } from '@/types/app'
+import { FilePlus01 } from '../icons/src/vender/line/files'
 
 type UploadOnlyFromLocalProps = {
   onUpload: (imageFile: ImageFile) => void
@@ -33,7 +33,7 @@ const UploadOnlyFromLocal: FC<UploadOnlyFromLocalProps> = ({
             ${hovering && 'bg-gray-100'}
           `}
         >
-          <ImagePlus className="w-4 h-4 text-gray-500" />
+          <FilePlus01 className="w-4 h-4 text-gray-500" />
         </div>
       )}
     </Uploader>
@@ -84,7 +84,7 @@ const UploaderButton: FC<UploaderButtonProps> = ({
           disabled={disabled}
           className="relative flex items-center justify-center w-8 h-8 enabled:hover:bg-gray-100 rounded-lg disabled:cursor-not-allowed"
         >
-          <ImagePlus className="w-4 h-4 text-gray-500" />
+          <FilePlus01 className="w-4 h-4 text-gray-500" />
         </button>
       </PortalToFollowElemTrigger>
       <PortalToFollowElemContent className="z-50">

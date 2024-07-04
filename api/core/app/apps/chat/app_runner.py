@@ -208,8 +208,8 @@ class ChatAppRunner(AppRunner):
 
         db.session.close()
 
-        application_generate_entity.model_config.parameters['conversation_id'] = conversation.id
-        print("app_runner, application_generate_entity.model_config.parameters: ", application_generate_entity.model_config.parameters)
+        application_generate_entity.model_conf.parameters['conversation_id'] = conversation.id
+        print("app_runner, application_generate_entity.model_config.parameters: ", application_generate_entity.model_conf.parameters)
 
         invoke_result = model_instance.invoke_llm(
             prompt_messages=prompt_messages,

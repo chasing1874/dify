@@ -28,7 +28,14 @@ const Question: FC<QuestionProps> = ({
     message_files,
   } = item
 
-  const imgSrcs = message_files?.length ? message_files.map(item => item.url) : []
+  const imgSrcs = message_files?.length
+    ? message_files.map((item) => {
+      if (item.type === 'sheet')
+        return 'https://pic.imgdb.cn/item/66866f91d9c307b7e9a391d0.png'
+      else
+        return item.url
+    })
+    : []
   return (
     <div className='flex justify-end mb-2 last:mb-0 pl-10'>
       <div className='group relative mr-4'>

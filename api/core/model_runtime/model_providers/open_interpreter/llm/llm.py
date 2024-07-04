@@ -70,6 +70,7 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
                     'temperature': 0.8,
                     'top_p': 0.9,
                     'top_k': 15,
+                    'conversation_id': 'ping'
                 },
                 stream=False,
                 user='',
