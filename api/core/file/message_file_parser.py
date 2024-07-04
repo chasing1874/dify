@@ -93,6 +93,32 @@ class MessageFileParser:
                             raise ValueError('Invalid upload file')
 
                     new_files.append(file_obj)
+            if file_type == FileType.SHEET:
+                for file_obj in file_objs:
+
+                    # Validate file type
+                    if file_obj.type != FileType.SHEET:
+                        raise ValueError(f'Invalid file type: {file_obj.type}')
+
+                    elif file_obj.transfer_method == FileTransferMethod.LOCAL_FILE:
+                        # get upload file from upload_file_id
+                        upload_file = (db.session.query(UploadFile)
+                                       .filter(
+                            UploadFile.id == file_obj.related_id,
+                            UploadFile.tenant_id == self.tenant_id,
+                            UploadFile.created_by == user.id,
+                            UploadFile.created_by_role == ('account' if isinstance(user, Account) else 'end_user'),
+                            UploadFile.extension.in_(IMAGE_EXTENSIONS)
+                        ).first())
+
+                        file_obj.filename = upload_file.name
+                        file_obj.file_path = upload_file.key
+                        file_obj.extension = upload_file.extension
+
+                        # check upload file is belong to tenant and user
+                        if not upload_file:
+                            raise ValueError('Invalid upload file')
+                        new_files.append(file_obj)
 
         # return all file objs
         return new_files
@@ -122,7 +148,8 @@ class MessageFileParser:
         """
         type_file_objs: dict[FileType, list[FileVar]] = {
             # Currently only support image
-            FileType.IMAGE: []
+            FileType.IMAGE: [],
+            FileType.SHEET: []
         }
 
         if not files:

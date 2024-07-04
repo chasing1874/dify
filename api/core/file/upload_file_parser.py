@@ -10,8 +10,11 @@ from flask import current_app
 
 from extensions.ext_storage import storage
 
-IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg']
+IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'xlsx']
 IMAGE_EXTENSIONS.extend([ext.upper() for ext in IMAGE_EXTENSIONS])
+
+SHEET_EXTENSIONS = ['xlsx', 'xls', 'csv']
+SHEET_EXTENSIONS.extend([ext.upper() for ext in SHEET_EXTENSIONS])
 
 
 class UploadFileParser:
@@ -78,3 +81,22 @@ class UploadFileParser:
 
         current_time = int(time.time())
         return current_time - int(timestamp) <= current_app.config.get('FILES_ACCESS_TIMEOUT')
+    
+    @classmethod
+    def get_sheet_data(cls, upload_file, force_url: bool = False) -> Optional[str]:
+        if not upload_file:
+            return None
+
+        if upload_file.extension not in SHEET_EXTENSIONS:
+            return None
+
+        # get sheet file base64
+        try:
+            data = storage.load(upload_file.key)
+        except FileNotFoundError:
+            logging.error(f'File not found: {upload_file.key}')
+            return None
+
+        encoded_string = base64.b64encode(data).decode('utf-8')
+        return f'data:{upload_file.mime_type};base64,{encoded_string}'
+

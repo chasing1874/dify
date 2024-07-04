@@ -349,7 +349,9 @@ export enum TransferMethod {
   remote_url = 'remote_url',
 }
 
-export const ALLOW_FILE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'gif']
+export const ALLOW_FILE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'xlsx']
+
+export const ALLOW_ANALYSIS_FILE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'xlsx']
 
 export type VisionSettings = {
   enabled: boolean
@@ -360,6 +362,17 @@ export type VisionSettings = {
 }
 
 export type ImageFile = {
+  type: TransferMethod
+  _id: string
+  fileId: string
+  file?: File
+  progress: number
+  url: string
+  base64Url?: string
+  deleted?: boolean
+}
+
+export type UploadFile = {
   type: TransferMethod
   _id: string
   fileId: string

@@ -6,6 +6,7 @@ from core.model_runtime.entities.message_entities import (
     PromptMessage,
     PromptMessageContentType,
     PromptMessageRole,
+    SheetPromptMessageContent,
     TextPromptMessageContent,
 )
 from core.prompt.simple_prompt_transform import ModelMode
@@ -51,6 +52,16 @@ class PromptMessageUtil:
                         if content.type == PromptMessageContentType.TEXT:
                             content = cast(TextPromptMessageContent, content)
                             text += content.data
+                        elif content.type == PromptMessageContentType.SHEET:
+                            content = cast(SheetPromptMessageContent, content)
+                            files.append({
+                                "type": 'sheet',
+                                "data": content.data[:10] + '...[TRUNCATED]...' + content.data[-10:],
+                                "suffix": content.suffix.value,
+                                "sheet_name": content.sheet_name,
+                                "file_path": content.file_path,
+                                "tenant_id": content.tenant_id
+                            })
                         else:
                             content = cast(ImagePromptMessageContent, content)
                             files.append({
@@ -80,6 +91,16 @@ class PromptMessageUtil:
                     if content.type == PromptMessageContentType.TEXT:
                         content = cast(TextPromptMessageContent, content)
                         text += content.data
+                    elif content.type == PromptMessageContentType.SHEET:
+                            content = cast(SheetPromptMessageContent, content)
+                            files.append({
+                                "type": 'sheet',
+                                "data": content.data[:10] + '...[TRUNCATED]...' + content.data[-10:],
+                                "suffix": content.suffix.value,
+                                "sheet_name": content.sheet_name,
+                                "file_path": content.file_path,
+                                "tenant_id": content.tenant_id
+                            })
                     else:
                         content = cast(ImagePromptMessageContent, content)
                         files.append({

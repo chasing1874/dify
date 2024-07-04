@@ -6,13 +6,14 @@ from pydantic import BaseModel
 from core.app.app_config.entities import FileExtraConfig
 from core.file.tool_file_parser import ToolFileParser
 from core.file.upload_file_parser import UploadFileParser
-from core.model_runtime.entities.message_entities import ImagePromptMessageContent
+from core.model_runtime.entities.message_entities import ImagePromptMessageContent, PromptMessageContent, SheetPromptMessageContent
 from extensions.ext_database import db
 from models.model import UploadFile
 
 
 class FileType(enum.Enum):
     IMAGE = 'image'
+    SHEET = 'sheet'
 
     @staticmethod
     def value_of(value):
@@ -57,6 +58,7 @@ class FileVar(BaseModel):
     filename: Optional[str] = None
     extension: Optional[str] = None
     mime_type: Optional[str] = None
+    file_path: Optional[str] = None
 
     def to_dict(self) -> dict:
         return {
@@ -70,6 +72,7 @@ class FileVar(BaseModel):
             'filename': self.filename,
             'extension': self.extension,
             'mime_type': self.mime_type,
+            'file_path': self.file_path
         }
 
     def to_markdown(self) -> str:
@@ -103,7 +106,7 @@ class FileVar(BaseModel):
         return self._get_data(force_url=True)
 
     @property
-    def prompt_message_content(self) -> ImagePromptMessageContent:
+    def prompt_message_content(self) -> PromptMessageContent:
         if self.type == FileType.IMAGE:
             image_config = self.extra_config.image_config
 
@@ -111,6 +114,14 @@ class FileVar(BaseModel):
                 data=self.data,
                 detail=ImagePromptMessageContent.DETAIL.HIGH
                 if image_config.get("detail") == "high" else ImagePromptMessageContent.DETAIL.LOW
+            )
+        if self.type == FileType.SHEET:
+            return SheetPromptMessageContent(
+                data=self.data,
+                suffix=SheetPromptMessageContent.SUFFIX.XLSX,
+                sheet_name=self.filename,
+                file_path=self.file_path,
+                tenant_id=self.tenant_id
             )
 
     def _get_data(self, force_url: bool = False) -> Optional[str]:
@@ -132,5 +143,21 @@ class FileVar(BaseModel):
                 extension = self.extension
                 # add sign url
                 return ToolFileParser.get_tool_file_manager().sign_file(tool_file_id=self.related_id, extension=extension)
+        if self.type == FileType.SHEET:
+            if self.transfer_method == FileTransferMethod.REMOTE_URL:
+                return self.url
+            elif self.transfer_method == FileTransferMethod.LOCAL_FILE:
+                upload_file = (db.session.query(UploadFile)
+                               .filter(
+                    UploadFile.id == self.related_id,
+                    UploadFile.tenant_id == self.tenant_id
+                ).first())
+
+                print(upload_file)
+
+                return UploadFileParser.get_sheet_data(
+                    upload_file=upload_file,
+                    force_url=force_url
+                )
 
         return None

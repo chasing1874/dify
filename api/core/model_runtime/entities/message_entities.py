@@ -51,7 +51,7 @@ class PromptMessageContentType(Enum):
     """
     TEXT = 'text'
     IMAGE = 'image'
-
+    SHEET = 'sheet'
 
 class PromptMessageContent(BaseModel):
     """
@@ -79,6 +79,20 @@ class ImagePromptMessageContent(PromptMessageContent):
     type: PromptMessageContentType = PromptMessageContentType.IMAGE
     detail: DETAIL = DETAIL.LOW
 
+class SheetPromptMessageContent(PromptMessageContent):
+    """
+    Model class for sheet prompt message content.
+    """
+    class SUFFIX(Enum):
+        CSV = 'csv'
+        XLSX = 'xlsx'
+        XLS = 'xls'
+
+    type: PromptMessageContentType = PromptMessageContentType.SHEET
+    suffix: SUFFIX = SUFFIX.XLSX
+    sheet_name: str
+    file_path: str
+    tenant_id: str
 
 class PromptMessage(ABC, BaseModel):
     """

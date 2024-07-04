@@ -11,6 +11,7 @@ from typing import Union, Literal, Dict, Optional
 from requests import Response, post
 from requests.exceptions import ConnectionError, InvalidSchema, MissingSchema
 
+from core.model_runtime.entities.message_entities import PromptMessageContent, SheetPromptMessageContent, TextPromptMessageContent
 from core.model_runtime.model_providers.openllm.llm.openllm_generate_errors import (
     BadRequestError,
     InternalServerError,
@@ -34,11 +35,12 @@ class OpenInterpreterGenerateMessage:
     class Role(Enum):
         USER = 'user'
         ASSISTANT = 'assistant'
+        SYSTEM = 'system'
 
     role: str = Role.USER.value
     type: str = 'message'
     format: str
-    content: str
+    content: Optional[str | list[PromptMessageContent]] = None
     usage: dict[str, int] = None
     stop_reason: str = ''
 
@@ -57,7 +59,7 @@ class OpenInterpreterGenerateMessage:
                 'content': self.content,
             }
     
-    def __init__(self, content: str, role: str = 'user', type: str = 'message') -> None:
+    def __init__(self, content: str | list[PromptMessageContent], role: str = 'user', type: str = 'message') -> None:
         self.content = content
         self.role = role
         self.type = type
@@ -73,27 +75,24 @@ class OpenInterpreterGenerate:
         if not api_key or not server_url:
             raise InvalidAuthenticationError('api_key is required')
 
-        default_llm_config: dict[str, Any] = {
-            "model": "gpt-3.5-turbo",
-            "temperature": 0.7,
-            "context_window": 16000,
-            "max_tokens": 100,
-            "max_output": 1000
-        }
+        conversation_id = model_parameters.get('conversation_id', '')
+        if not conversation_id or conversation_id == '':
+            raise BadRequestError('conversation_id is required')
 
-        if model_name:
-            default_llm_config['model'] = model_name
-        if api_key:
-            default_llm_config['api_key'] = api_key
-
-        if 'temperature' in model_parameters and type(model_parameters['temperature']) == float:
-            default_llm_config['temperature'] = model_parameters['temperature']
-
-        prompt = '\n'.join([message.content for message in prompt_messages])
+        prompt = self._handle_prompt(prompt_messages)
         data = {
             'prompt': prompt,
-            'llm_config': default_llm_config,
+            'files': self._handle_files(prompt_messages),
+            'system_prompt': self._handle_system_prompt(prompt_messages),
+            'stop': stop,
+            'user': user,
+            'model_name': model_name,
+            'api_key': api_key,
+            'conversation_id': conversation_id,
+            'model_parameters': model_parameters,
         }
+
+        print('generate, data: ', data)
 
 
         method = "/stream_chat" if stream else "/chat"
@@ -125,6 +124,53 @@ class OpenInterpreterGenerate:
         if stream:
             return self._handle_chat_stream_generate_response(prompt_tokens, response)
         return self._handle_chat_generate_response(prompt_tokens, response)
+    
+    def _handle_files(self, prompt_messages: list[OpenInterpreterGenerateMessage]) -> list[dict]:
+        files = []
+        if len(prompt_messages) == 0:
+            return files
+        message = prompt_messages[-1]
+        content = message.content
+        if isinstance(content, list):
+            for item in content:
+                if isinstance(item, SheetPromptMessageContent):
+                    file = {
+                        'suffix': item.suffix.name,
+                        'sheet_name': item.sheet_name,
+                        'file_path': item.file_path,
+                        'tenant_id': item.tenant_id
+                    }
+                    files.append(file)
+        return files
+    
+    def _handle_prompt(self, prompt_messages: list[OpenInterpreterGenerateMessage]) -> str:
+        prompt = ''
+        if len(prompt_messages) == 0:
+            return prompt
+        message = prompt_messages[-1]
+        content = message.content
+        if isinstance(content, str):
+            prompt += content
+            prompt += '\n'
+        if isinstance(content, list):
+            for item in content:
+                if isinstance(item, TextPromptMessageContent):
+                    prompt += item.data
+                    prompt += '\n'
+        return prompt
+    
+    def _handle_system_prompt(self, prompt_messages: list[OpenInterpreterGenerateMessage]) -> str:
+        system_prompt = ''
+        if len(prompt_messages) == 0:
+            return system_prompt
+        message = prompt_messages[0]
+        if message.role == OpenInterpreterGenerateMessage.Role.SYSTEM.value:
+            content = message.content
+            if isinstance(content, str):
+                system_prompt += '\n'
+                system_prompt += content
+        return system_prompt
+
         
     def _handle_chat_generate_response(self, prompt_tokons: int, response: Response) -> OpenInterpreterGenerateMessage:
 

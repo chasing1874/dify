@@ -67,6 +67,17 @@ const ChatInput: FC<ChatInputProps> = ({
     setQuery(value)
   }
 
+    const SHEET_FILE_TYPES = ['xlsx']
+
+  const getFileType = (name: string | undefined) => {
+    if (!name)
+      return 'image'
+    const type = name.substring(name.lastIndexOf('.') + 1)
+    if (SHEET_FILE_TYPES.includes(type))
+      return 'sheet'
+    return 'image'
+  }
+
   const handleSend = () => {
     if (onSend) {
       if (files.find(item => item.type === TransferMethod.local_file && !item.fileId)) {
@@ -78,7 +89,7 @@ const ChatInput: FC<ChatInputProps> = ({
         return
       }
       onSend(query, files.filter(file => file.progress !== -1).map(fileItem => ({
-        type: 'image',
+        type: getFileType(fileItem.file?.name),
         transfer_method: fileItem.type,
         url: fileItem.url,
         upload_file_id: fileItem.fileId,

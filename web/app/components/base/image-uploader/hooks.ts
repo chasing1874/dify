@@ -128,8 +128,8 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
       return
     }
 
-    if (!ALLOW_FILE_EXTENSIONS.includes(file.type.split('/')[1]))
-      return
+    // if (!ALLOW_FILE_EXTENSIONS.includes(file.type.split('/')[1]))
+    //   return
 
     if (limit && file.size > limit * 1024 * 1024) {
       notify({ type: 'error', message: t('common.imageUploader.uploadFromComputerLimit', { size: limit }) })

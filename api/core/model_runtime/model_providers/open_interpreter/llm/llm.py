@@ -7,6 +7,8 @@ from core.model_runtime.entities.message_entities import (
     AssistantPromptMessage,
     PromptMessage,
     PromptMessageTool,
+    SystemPromptMessage,
+    TextPromptMessageContent,
     UserPromptMessage,
 )
 from core.model_runtime.entities.model_entities import (
@@ -85,8 +87,17 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
             Calculate num tokens for OpenLLM model
             it's a generate model, so we just join them by spe
         """
-        messages = ','.join([message.content for message in messages])
-        return self._get_num_tokens_by_gpt2(messages)
+        plain_text = ''
+        for message in messages:
+            content = message.content
+            if isinstance(content, TextPromptMessageContent):
+                plain_text += content.data
+                plain_text += ','
+            if isinstance(content, str):
+                plain_text += content
+                plain_text += ','
+
+        return self._get_num_tokens_by_gpt2(plain_text)
 
     def _generate(self, model: str, credentials: dict, prompt_messages: list[PromptMessage], 
                 model_parameters: dict, tools: list[PromptMessageTool] | None = None, 
@@ -116,6 +127,8 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
             return OpenInterpreterGenerateMessage(role=OpenInterpreterGenerateMessage.Role.USER.value, content=prompt_message.content)
         elif isinstance(prompt_message, AssistantPromptMessage):
             return OpenInterpreterGenerateMessage(role=OpenInterpreterGenerateMessage.Role.ASSISTANT.value, content=prompt_message.content)
+        elif isinstance(prompt_message, SystemPromptMessage):
+            return OpenInterpreterGenerateMessage(role=OpenInterpreterGenerateMessage.Role.SYSTEM.value, content=prompt_message.content)
         else:
             raise NotImplementedError(f'Prompt message type {type(prompt_message)} is not supported')
 
