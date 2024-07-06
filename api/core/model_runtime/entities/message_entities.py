@@ -90,9 +90,9 @@ class SheetPromptMessageContent(PromptMessageContent):
 
     type: PromptMessageContentType = PromptMessageContentType.SHEET
     suffix: SUFFIX = SUFFIX.XLSX
-    sheet_name: str
-    file_path: str
-    tenant_id: str
+    sheet_name: Optional[str] = None
+    file_path: Optional[str] = None
+    tenant_id: Optional[str] = None
 
 class PromptMessage(ABC, BaseModel):
     """

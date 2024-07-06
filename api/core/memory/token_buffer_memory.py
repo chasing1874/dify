@@ -48,9 +48,12 @@ class TokenBufferMemory:
             app_id=app_record.id
         )
 
+        print('token_buffer, messages: ', messages)
+
         prompt_messages = []
         for message in messages:
             files = message.message_files
+            print('token_buffer, files: ', files)
             if files:
                 if self.conversation.mode not in [AppMode.ADVANCED_CHAT.value, AppMode.WORKFLOW.value]:
                     file_extra_config = FileUploadConfigManager.convert(message.app_model_config.to_dict())
@@ -59,6 +62,8 @@ class TokenBufferMemory:
                         message.workflow_run.workflow.features_dict,
                         is_vision=False
                     )
+
+                print('token_buffer, file_config: ', file_extra_config)
 
                 if file_extra_config:
                     file_objs = message_file_parser.transform_message_files(

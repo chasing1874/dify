@@ -182,6 +182,7 @@ class SimplePromptTransform(PromptTransform):
         if prompt and query:
             prompt_messages.append(SystemPromptMessage(content=prompt))
 
+        print('memory: ', memory)
         if memory:
             prompt_messages = self._append_chat_histories(
                 memory=memory,

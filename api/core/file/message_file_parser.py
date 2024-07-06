@@ -165,6 +165,9 @@ class MessageFileParser:
             if file_obj.type not in type_file_objs:
                 continue
 
+            print('message_file_parser, file: ', file)
+            print('message_file_parser, file_obj: ', file_obj)
+
             type_file_objs[file_obj.type].append(file_obj)
 
         return type_file_objs
