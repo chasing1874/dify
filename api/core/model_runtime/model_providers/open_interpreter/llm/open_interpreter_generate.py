@@ -2,6 +2,7 @@ from collections.abc import Generator
 from enum import Enum
 from json import dumps, loads
 from typing import Any, Union
+import uuid
 from PIL import Image
 from io import BytesIO
 import base64
@@ -18,6 +19,8 @@ from core.model_runtime.model_providers.openllm.llm.openllm_generate_errors impo
     InvalidAPIKeyError,
     InvalidAuthenticationError,
 )
+
+from extensions.ext_storage import storage
 
 class Message(BaseModel):
     role: Literal["user", "assistant", "computer"]
@@ -237,6 +240,7 @@ class OpenInterpreterGenerate:
         if chunk.type == "code":
             format = chunk.format if chunk.format is not None else "text"
             if chunk.start:
+                full_response += "\n📌 ***Code***\n"
                 full_response = full_response + "```" + format + "\n"
             if chunk.content is not None:
                 full_response += chunk.content
@@ -262,17 +266,19 @@ class OpenInterpreterGenerate:
         # Console
         if chunk.type == "console":
             if chunk.start:
-                full_response += "\n运行结果: \n"
-                full_response += "```shell\n"
-            if chunk.format == "active_line":
-                if chunk.content is None and self.is_console_out == False:
-                    full_response += "No output available on console."
+                full_response += "\n✅ ***Result***\n"
+                full_response += "```\n"
+            # if chunk.format == "active_line":
+            #     if chunk.content is None and self.is_console_out == False:
+            #         full_response += "The code execution is complete!"
             if chunk.format == "output":
-                if chunk.content is not None:
+                if chunk.content is not None and chunk.content != "HTML being displayed on the user's machine...":
                     full_response += chunk.content
                     if len(full_response) > 0:
                         self.is_console_out = True
             if chunk.end:
+                if self.is_console_out == False:
+                    full_response += "The code execution is complete!"
                 full_response += "\n```\n"
                 self.is_console_out = False
 
@@ -287,9 +293,15 @@ class OpenInterpreterGenerate:
                             BytesIO(base64.b64decode(chunk.content)))
                         new_image = Image.new("RGB", image.size, "white")
                         new_image.paste(image, mask=image.split()[3])
-                        buffered = BytesIO()
-                        new_image.save(buffered, format="PNG")
-                        img_str = base64.b64encode(buffered.getvalue()).decode()
-                        full_response += f"![Image](data:image/png;base64,{img_str})\n"
+                        # buffered = BytesIO()
+                        # new_image.save(buffered, format="PNG")
+                        # img_str = base64.b64encode(buffered.getvalue()).decode()
+                        # full_response += f"![Image](data:image/png;base64,{img_str})\n"
+
+                        # 保存图片到指定目录
+                        save_path = '/mnt/data/' + str(uuid.uuid4()) + '.' + 'png'
+                        new_image.save(save_path, format="PNG")
+                        full_response += f"![Image]({save_path})"
 
         return full_response
+        
