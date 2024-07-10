@@ -301,7 +301,7 @@ class OpenInterpreterGenerate:
                         # 保存图片到指定目录
                         save_path = '/mnt/data/' + str(uuid.uuid4()) + '.' + 'png'
                         new_image.save(save_path, format="PNG")
-                        full_response += f"![Image]({save_path})"
+                        full_response += f'[![Image]({save_path} "Click to view")]({save_path})'
 
         return full_response
         
