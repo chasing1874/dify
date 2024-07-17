@@ -1,18 +1,20 @@
+import base64
+import uuid
 from collections.abc import Generator
 from enum import Enum
-from json import dumps, loads
-from typing import Any, Union
-import uuid
-from PIL import Image
 from io import BytesIO
-import base64
+from json import dumps
+from typing import Any, Literal, Optional, Union
+
+from PIL import Image
 from pydantic import BaseModel
-from typing import Union, Literal, Dict, Optional
-
 from requests import Response, post
-from requests.exceptions import ConnectionError, InvalidSchema, MissingSchema
 
-from core.model_runtime.entities.message_entities import PromptMessageContent, SheetPromptMessageContent, TextPromptMessageContent
+from core.model_runtime.entities.message_entities import (
+    PromptMessageContent,
+    SheetPromptMessageContent,
+    TextPromptMessageContent,
+)
 from core.model_runtime.model_providers.openllm.llm.openllm_generate_errors import (
     BadRequestError,
     InternalServerError,
@@ -20,14 +22,13 @@ from core.model_runtime.model_providers.openllm.llm.openllm_generate_errors impo
     InvalidAuthenticationError,
 )
 
-from extensions.ext_storage import storage
 
 class Message(BaseModel):
     role: Literal["user", "assistant", "computer"]
     type: Literal["message", "code", "image", "console", "file", "confirmation"]
     format: Optional[Literal["output", "path", "base64.png", "base64.jpeg", "python", "javascript", "shell", "html", "active_line", "execution"]] = None
     recipient: Optional[Literal["user", "assistant"]] = None
-    content: Optional[Union[str, int, Dict[str, Union[str, dict]]]] = None # 如果dict需要有特定的结构，可以定义一个更详细的类型
+    content: Optional[Union[str, int, dict[str, Union[str, dict]]]] = None # 如果dict需要有特定的结构，可以定义一个更详细的类型
 
 class StreamingChunk(Message):
     start: Optional[bool] = None

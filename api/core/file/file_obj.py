@@ -6,7 +6,11 @@ from pydantic import BaseModel
 from core.app.app_config.entities import FileExtraConfig
 from core.file.tool_file_parser import ToolFileParser
 from core.file.upload_file_parser import UploadFileParser
-from core.model_runtime.entities.message_entities import ImagePromptMessageContent, PromptMessageContent, SheetPromptMessageContent
+from core.model_runtime.entities.message_entities import (
+    ImagePromptMessageContent,
+    PromptMessageContent,
+    SheetPromptMessageContent,
+)
 from extensions.ext_database import db
 from models.model import UploadFile
 

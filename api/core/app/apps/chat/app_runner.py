@@ -206,9 +206,12 @@ class ChatAppRunner(AppRunner):
             model=application_generate_entity.model_conf.model
         )
 
-        db.session.close()
+        # 在连接关闭之前获取，避免延时加载机制影响
+        conversation_id = conversation.id
 
-        application_generate_entity.model_conf.parameters['conversation_id'] = conversation.id
+        db.session.close()
+        
+        application_generate_entity.model_conf.parameters['conversation_id'] = conversation_id
         print("app_runner, application_generate_entity.model_config.parameters: ", application_generate_entity.model_conf.parameters)
 
         invoke_result = model_instance.invoke_llm(

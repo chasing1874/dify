@@ -1,6 +1,5 @@
 from collections.abc import Generator
 
-from core.model_runtime.model_providers.open_interpreter.llm.open_interpreter_generate import OpenInterpreterGenerate, OpenInterpreterGenerateMessage
 from core.model_runtime.entities.common_entities import I18nObject
 from core.model_runtime.entities.llm_entities import LLMMode, LLMResult, LLMResultChunk, LLMResultChunkDelta
 from core.model_runtime.entities.message_entities import (
@@ -29,6 +28,10 @@ from core.model_runtime.errors.invoke import (
 )
 from core.model_runtime.errors.validate import CredentialsValidateFailedError
 from core.model_runtime.model_providers.__base.large_language_model import LargeLanguageModel
+from core.model_runtime.model_providers.open_interpreter.llm.open_interpreter_generate import (
+    OpenInterpreterGenerate,
+    OpenInterpreterGenerateMessage,
+)
 from core.model_runtime.model_providers.openllm.llm.openllm_generate_errors import (
     BadRequestError,
     InsufficientAccountBalanceError,
