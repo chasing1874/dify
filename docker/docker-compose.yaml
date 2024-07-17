@@ -177,7 +177,7 @@ x-shared-env: &shared-api-worker-env
 services:
   # API service
   api:
-    image: langgenius/dify-api:0.6.14
+    image: ziyou/dify-api:0.3.0
     restart: always
     environment:
       # Use the shared environment variables.
@@ -189,7 +189,7 @@ services:
       # enable DEBUG mode to output more logs
       # DEBUG : true
       # A secret key that is used for securely signing the session cookie and encrypting sensitive information on the database. You can generate a strong key using `openssl rand -base64 42`.
-      SECRET_KEY: ZHabJkHOUXXg69hLHu5XK/g+fG3+Yi3RwZwDfrts+bxe8wWE8ohuDVSP
+      SECRET_KEY: fLc320XU5nzgusdppcJzrTcF8BYXzMsmYyy9i6xcwJzJNpaopcE/P1V9
       # The base URL of console application web frontend, refers to the Console base URL of WEB service if console domain is
       # different from api or web app domain.
       # example: http://cloud.dify.ai
@@ -376,6 +376,7 @@ services:
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
+      - /mnt/data:/mnt/data
     networks:
       - ssrf_proxy_network
       - default
@@ -383,7 +384,7 @@ services:
   # worker service
   # The Celery worker for processing the queue.
   worker:
-    image: langgenius/dify-api:0.6.14
+    image: ziyou/dify-api:0.3.1
     restart: always
     environment:
       # Use the shared environment variables.
@@ -397,7 +398,7 @@ services:
       LOG_LEVEL: INFO
       # A secret key that is used for securely signing the session cookie and encrypting sensitive information on the database. You can generate a strong key using `openssl rand -base64 42`.
       # same as the API service
-      SECRET_KEY: ZHabJkHOUXXg69hLHu5XK/g+fG3+Yi3RwZwDfrts+bxe8wWE8ohuDVSP
+      SECRET_KEY: fLc320XU5nzgusdppcJzrTcF8BYXzMsmYyy9i6xcwJzJNpaopcE/P1V9
       # The configurations of postgres database connection.
       # It is consistent with the configuration in the 'db' service below.
       DB_USERNAME: postgres
@@ -531,7 +532,7 @@ services:
 
   # Frontend web application.
   web:
-    image: langgenius/dify-web:0.6.14
+    image: ziyou/dify-web:0.3.1
     restart: always
     environment:
       CONSOLE_API_URL: ${CONSOLE_API_URL:-}
