@@ -67,7 +67,7 @@ const ChatInput: FC<ChatInputProps> = ({
     setQuery(value)
   }
 
-    const SHEET_FILE_TYPES = ['xlsx']
+  const SHEET_FILE_TYPES = ['xlsx']
 
   const getFileType = (name: string | undefined) => {
     if (!name)
@@ -117,7 +117,7 @@ const ChatInput: FC<ChatInputProps> = ({
   }
 
   const logError = (message: string) => {
-    notify({ type: 'error', message, duration: 3000 })
+    notify({ type: 'error', message })
   }
   const handleVoiceInputShow = () => {
     (Recorder as any).getPermission().then(() => {

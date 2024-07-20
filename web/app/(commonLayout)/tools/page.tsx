@@ -12,15 +12,16 @@ const Layout: FC = () => {
   const { isCurrentWorkspaceDatasetOperator } = useAppContext()
 
   useEffect(() => {
-    document.title = `${t('tools.title')} - SLAI`
+    if (typeof window !== 'undefined')
+      document.title = `${t('tools.title')} - SLAI`
     if (isCurrentWorkspaceDatasetOperator)
       return router.replace('/datasets')
-  }, [])
+  }, [isCurrentWorkspaceDatasetOperator, router, t])
 
   useEffect(() => {
     if (isCurrentWorkspaceDatasetOperator)
       return router.replace('/datasets')
-  }, [isCurrentWorkspaceDatasetOperator])
+  }, [isCurrentWorkspaceDatasetOperator, router])
 
   return <ToolProviderList />
 }
