@@ -1,23 +1,9 @@
-import type {
-  FC,
-  ReactNode,
-} from 'react'
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import type { FC, ReactNode } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash-es'
 import { useShallow } from 'zustand/react/shallow'
-import type {
-  ChatConfig,
-  ChatItem,
-  Feedback,
-  OnSend,
-} from '../types'
+import type { ChatConfig, ChatItem, Feedback, OnSend } from '../types'
 import type { ThemeBuilder } from '../embedded-chatbot/theme/theme-context'
 import Question from './question'
 import Answer from './answer'
@@ -51,8 +37,18 @@ export type ChatProps = {
   questionIcon?: ReactNode
   answerIcon?: ReactNode
   allToolIcons?: Record<string, string | Emoji>
-  onAnnotationEdited?: (question: string, answer: string, index: number) => void
-  onAnnotationAdded?: (annotationId: string, authorName: string, question: string, answer: string, index: number) => void
+  onAnnotationEdited?: (
+    question: string,
+    answer: string,
+    index: number
+  ) => void
+  onAnnotationAdded?: (
+    annotationId: string,
+    authorName: string,
+    question: string,
+    answer: string,
+    index: number
+  ) => void
   onAnnotationRemoved?: (index: number) => void
   chatNode?: ReactNode
   onFeedback?: (messageId: string, feedback: Feedback) => void
@@ -91,14 +87,23 @@ const Chat: FC<ChatProps> = ({
   themeBuilder,
 }) => {
   const { t } = useTranslation()
-  const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
-    currentLogItem: state.currentLogItem,
-    setCurrentLogItem: state.setCurrentLogItem,
-    showPromptLogModal: state.showPromptLogModal,
-    setShowPromptLogModal: state.setShowPromptLogModal,
-    showAgentLogModal: state.showAgentLogModal,
-    setShowAgentLogModal: state.setShowAgentLogModal,
-  })))
+  const {
+    currentLogItem,
+    setCurrentLogItem,
+    showPromptLogModal,
+    setShowPromptLogModal,
+    showAgentLogModal,
+    setShowAgentLogModal,
+  } = useAppStore(
+    useShallow(state => ({
+      currentLogItem: state.currentLogItem,
+      setCurrentLogItem: state.setCurrentLogItem,
+      showPromptLogModal: state.showPromptLogModal,
+      setShowPromptLogModal: state.setShowPromptLogModal,
+      showAgentLogModal: state.showAgentLogModal,
+      setShowAgentLogModal: state.setShowAgentLogModal,
+    })),
+  )
   const [width, setWidth] = useState(0)
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const chatContainerInnerRef = useRef<HTMLDivElement>(null)
@@ -107,13 +112,20 @@ const Chat: FC<ChatProps> = ({
   const userScrolledRef = useRef(false)
 
   const handleScrolltoBottom = useCallback(() => {
-    if (chatContainerRef.current && !userScrolledRef.current)
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+    if (chatContainerRef.current && !userScrolledRef.current) {
+      chatContainerRef.current.scrollTop
+        = chatContainerRef.current.scrollHeight
+    }
   }, [])
 
   const handleWindowResize = useCallback(() => {
-    if (chatContainerRef.current)
-      setWidth(document.body.clientWidth - (chatContainerRef.current?.clientWidth + 16) - 8)
+    if (chatContainerRef.current) {
+      setWidth(
+        document.body.clientWidth
+          - (chatContainerRef.current?.clientWidth + 16)
+          - 8,
+      )
+    }
 
     if (chatContainerRef.current && chatFooterRef.current)
       chatFooterRef.current.style.width = `${chatContainerRef.current.clientWidth}px`
@@ -164,15 +176,21 @@ const Chat: FC<ChatProps> = ({
     const chatContainer = chatContainerRef.current
     if (chatContainer) {
       const setUserScrolled = () => {
-        if (chatContainer)
-          userScrolledRef.current = chatContainer.scrollHeight - chatContainer.scrollTop >= chatContainer.clientHeight + 300
+        if (chatContainer) {
+          userScrolledRef.current
+            = chatContainer.scrollHeight - chatContainer.scrollTop
+            >= chatContainer.clientHeight + 300
+        }
       }
       chatContainer.addEventListener('scroll', setUserScrolled)
       return () => chatContainer.removeEventListener('scroll', setUserScrolled)
     }
   }, [])
 
-  const hasTryToAsk = config?.suggested_questions_after_answer?.enabled && !!suggestedQuestions?.length && onSend
+  const hasTryToAsk
+    = config?.suggested_questions_after_answer?.enabled
+    && !!suggestedQuestions?.length
+    && onSend
 
   return (
     <ChatContextProvider
@@ -189,88 +207,90 @@ const Chat: FC<ChatProps> = ({
       onAnnotationRemoved={onAnnotationRemoved}
       onFeedback={onFeedback}
     >
-      <div className='relative h-full'>
+      <div className="relative h-full">
         <div
           ref={chatContainerRef}
-          className={classNames('relative h-full overflow-y-auto', chatContainerClassName)}
+          className={classNames(
+            'relative h-full overflow-y-auto',
+            chatContainerClassName,
+          )}
         >
           {chatNode}
           <div
             ref={chatContainerInnerRef}
             className={`${chatContainerInnerClassName}`}
           >
-            {
-              chatList.map((item, index) => {
-                if (item.isAnswer) {
-                  const isLast = item.id === chatList[chatList.length - 1]?.id
-                  return (
-                    <Answer
-                      appData={appData}
-                      key={item.id}
-                      item={item}
-                      question={chatList[index - 1]?.content}
-                      index={index}
-                      config={config}
-                      answerIcon={answerIcon}
-                      responding={isLast && isResponding}
-                      allToolIcons={allToolIcons}
-                      showPromptLog={showPromptLog}
-                      chatAnswerContainerInner={chatAnswerContainerInner}
-                      hideProcessDetail={hideProcessDetail}
-                    />
-                  )
-                }
+            {chatList.map((item, index) => {
+              if (item.isAnswer) {
+                const isLast = item.id === chatList[chatList.length - 1]?.id
                 return (
-                  <Question
+                  <Answer
+                    appData={appData}
                     key={item.id}
                     item={item}
-                    questionIcon={questionIcon}
-                    theme={themeBuilder?.theme}
+                    question={chatList[index - 1]?.content}
+                    index={index}
+                    config={config}
+                    answerIcon={answerIcon}
+                    responding={isLast && isResponding}
+                    allToolIcons={allToolIcons}
+                    showPromptLog={showPromptLog}
+                    chatAnswerContainerInner={chatAnswerContainerInner}
+                    hideProcessDetail={hideProcessDetail}
                   />
                 )
-              })
-            }
+              }
+              return (
+                <Question
+                  key={item.id}
+                  item={item}
+                  questionIcon={questionIcon}
+                  theme={themeBuilder?.theme}
+                />
+              )
+            })}
           </div>
         </div>
         <div
-          className={`absolute bottom-0 ${(hasTryToAsk || !noChatInput || !noStopResponding) && chatFooterClassName}`}
+          className={`absolute bottom-0 ${
+            (hasTryToAsk || !noChatInput || !noStopResponding)
+            && chatFooterClassName
+          }`}
           ref={chatFooterRef}
           style={{
-            background: 'linear-gradient(0deg, #F9FAFB 40%, rgba(255, 255, 255, 0.00) 100%)',
+            background:
+              'linear-gradient(0deg, #F9FAFB 40%, rgba(255, 255, 255, 0.00) 100%)',
           }}
         >
           <div
             ref={chatFooterInnerRef}
             className={`${chatFooterInnerClassName}`}
           >
-            {
-              !noStopResponding && isResponding && (
-                <div className='flex justify-center mb-2'>
-                  <Button onClick={onStopResponding}>
-                    <StopCircle className='mr-[5px] w-3.5 h-3.5 text-gray-500' />
-                    <span className='text-xs text-gray-500 font-normal'>{t('appDebug.operation.stopResponding')}</span>
-                  </Button>
-                </div>
-              )
-            }
-            {
-              hasTryToAsk && (
-                <TryToAsk
-                  suggestedQuestions={suggestedQuestions}
-                  onSend={onSend}
-                />
-              )
-            }
-            {
-              !noChatInput && (
-                <ChatInput
-                  visionConfig={config?.file_upload?.image}
-                  speechToTextConfig={config?.speech_to_text}
-                  onSend={onSend}
-                  theme={themeBuilder?.theme}
-                />
-              )
-            }
+            {!noStopResponding && isResponding && (
+              <div className="flex justify-center mb-2">
+                <Button onClick={onStopResponding}>
+                  <StopCircle className="mr-[5px] w-3.5 h-3.5 text-gray-500" />
+                  <span className="text-xs text-gray-500 font-normal">
+                    {t('appDebug.operation.stopResponding')}
+                  </span>
+                </Button>
+              </div>
+            )}
+            {hasTryToAsk && (
+              <TryToAsk
+                suggestedQuestions={suggestedQuestions}
+                onSend={onSend}
+              />
+            )}
+            {!noChatInput && (
+              <ChatInput
+                visionConfig={config?.file_upload?.image}
+                fileConfig={config?.file_upload?.file}
+                speechToTextConfig={config?.speech_to_text}
+                onSend={onSend}
+                theme={themeBuilder?.theme}
+              />
+            )}
           </div>
         </div>
         {showPromptLogModal && !hideLogModal && (

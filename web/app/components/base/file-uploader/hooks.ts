@@ -2,12 +2,12 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import type { ClipboardEvent } from 'react'
 import { useParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
-import { imageUpload } from './utils'
+import { fileUpload } from './utils'
 import { useToastContext } from '@/app/components/base/toast'
 import { TransferMethod } from '@/types/app'
-import type { ImageFile, VisionSettings } from '@/types/app'
+import type { FileSettings, ImageFile } from '@/types/app'
 
-export const useImageFiles = () => {
+export const useFiles = () => {
   const params = useParams()
   const { t } = useTranslation()
   const { notify } = useToastContext()
@@ -41,7 +41,7 @@ export const useImageFiles = () => {
       filesRef.current = newFiles
     }
   }
-  const handleImageLinkLoadError = (imageFileId: string) => {
+  const handleFileLinkLoadError = (imageFileId: string) => {
     const files = filesRef.current
     const index = files.findIndex(file => file._id === imageFileId)
 
@@ -52,7 +52,7 @@ export const useImageFiles = () => {
       setFiles(newFiles)
     }
   }
-  const handleImageLinkLoadSuccess = (imageFileId: string) => {
+  const handleFileLinkLoadSuccess = (imageFileId: string) => {
     const files = filesRef.current
     const index = files.findIndex(file => file._id === imageFileId)
 
@@ -69,7 +69,7 @@ export const useImageFiles = () => {
 
     if (index > -1) {
       const currentImageFile = files[index]
-      imageUpload({
+      fileUpload({
         file: currentImageFile.file!,
         onProgressCallback: (progress) => {
           const newFiles = [...files.slice(0, index), { ...currentImageFile, progress }, ...files.slice(index + 1)]
@@ -104,8 +104,8 @@ export const useImageFiles = () => {
     files: filteredFiles,
     onUpload: handleUpload,
     onRemove: handleRemove,
-    onImageLinkLoadError: handleImageLinkLoadError,
-    onImageLinkLoadSuccess: handleImageLinkLoadSuccess,
+    onFileLinkLoadError: handleFileLinkLoadError,
+    onFileLinkLoadSuccess: handleFileLinkLoadSuccess,
     onReUpload: handleReUpload,
     onClear: handleClear,
   }
@@ -132,7 +132,7 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
     //   return
 
     if (limit && file.size > limit * 1024 * 1024) {
-      notify({ type: 'error', message: t('common.imageUploader.uploadFromComputerLimit', { size: limit }) })
+      notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerLimit', { size: limit }) })
       return
     }
 
@@ -150,7 +150,7 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
           progress: 0,
         }
         onUpload(imageFile)
-        imageUpload({
+        fileUpload({
           file: imageFile.file,
           onProgressCallback: (progress) => {
             onUpload({ ...imageFile, progress })
@@ -159,7 +159,7 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
             onUpload({ ...imageFile, fileId: res.id, progress: 100 })
           },
           onErrorCallback: () => {
-            notify({ type: 'error', message: t('common.imageUploader.uploadFromComputerUploadError') })
+            notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerUploadError') })
             onUpload({ ...imageFile, progress: -1 })
           },
         }, !!params.token)
@@ -169,7 +169,7 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
     reader.addEventListener(
       'error',
       () => {
-        notify({ type: 'error', message: t('common.imageUploader.uploadFromComputerReadError') })
+        notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerReadError') })
       },
       false,
     )
@@ -181,7 +181,7 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
 
 type useClipboardUploaderProps = {
   files: ImageFile[]
-  visionConfig?: VisionSettings
+  visionConfig?: FileSettings
   onUpload: (imageFile: ImageFile) => void
 }
 
@@ -213,7 +213,7 @@ export const useClipboardUploader = ({ visionConfig, onUpload, files }: useClipb
 
 type useDraggableUploaderProps = {
   files: ImageFile[]
-  visionConfig?: VisionSettings
+  visionConfig?: FileSettings
   onUpload: (imageFile: ImageFile) => void
 }
 

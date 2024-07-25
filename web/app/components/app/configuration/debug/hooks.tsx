@@ -1,61 +1,57 @@
-import {
-  useCallback,
-  useRef,
-  useState,
-} from 'react'
+import { useCallback, useRef, useState } from 'react'
 import type {
   DebugWithSingleOrMultipleModelConfigs,
   ModelAndParameter,
 } from './types'
 import { ORCHESTRATE_CHANGED } from './types'
-import type {
-  ChatConfig,
-  ChatItem,
-} from '@/app/components/base/chat/types'
-import {
-  AgentStrategy,
-} from '@/types/app'
+import type { ChatConfig, ChatItem } from '@/app/components/base/chat/types'
+import { AgentStrategy } from '@/types/app'
 import { promptVariablesToUserInputsForm } from '@/utils/model-config'
 import { useDebugConfigurationContext } from '@/context/debug-configuration'
 import { useEventEmitterContextContext } from '@/context/event-emitter'
 
 export const useDebugWithSingleOrMultipleModel = (appId: string) => {
-  const localeDebugWithSingleOrMultipleModelConfigs = localStorage.getItem('app-debug-with-single-or-multiple-models')
+  const localeDebugWithSingleOrMultipleModelConfigs = localStorage.getItem(
+    'app-debug-with-single-or-multiple-models',
+  )
 
-  const debugWithSingleOrMultipleModelConfigs = useRef<DebugWithSingleOrMultipleModelConfigs>({})
+  const debugWithSingleOrMultipleModelConfigs
+    = useRef<DebugWithSingleOrMultipleModelConfigs>({})
 
   if (localeDebugWithSingleOrMultipleModelConfigs) {
     try {
-      debugWithSingleOrMultipleModelConfigs.current = JSON.parse(localeDebugWithSingleOrMultipleModelConfigs) || {}
+      debugWithSingleOrMultipleModelConfigs.current
+        = JSON.parse(localeDebugWithSingleOrMultipleModelConfigs) || {}
     }
     catch (e) {
       console.error(e)
     }
   }
 
-  const [
-    debugWithMultipleModel,
-    setDebugWithMultipleModel,
-  ] = useState(debugWithSingleOrMultipleModelConfigs.current[appId]?.multiple || false)
+  const [debugWithMultipleModel, setDebugWithMultipleModel] = useState(
+    debugWithSingleOrMultipleModelConfigs.current[appId]?.multiple || false,
+  )
 
-  const [
-    multipleModelConfigs,
-    setMultipleModelConfigs,
-  ] = useState(debugWithSingleOrMultipleModelConfigs.current[appId]?.configs || [])
+  const [multipleModelConfigs, setMultipleModelConfigs] = useState(
+    debugWithSingleOrMultipleModelConfigs.current[appId]?.configs || [],
+  )
 
-  const handleMultipleModelConfigsChange = useCallback((
-    multiple: boolean,
-    modelConfigs: ModelAndParameter[],
-  ) => {
-    const value = {
-      multiple,
-      configs: modelConfigs,
-    }
-    debugWithSingleOrMultipleModelConfigs.current[appId] = value
-    localStorage.setItem('app-debug-with-single-or-multiple-models', JSON.stringify(debugWithSingleOrMultipleModelConfigs.current))
-    setDebugWithMultipleModel(value.multiple)
-    setMultipleModelConfigs(value.configs)
-  }, [appId])
+  const handleMultipleModelConfigsChange = useCallback(
+    (multiple: boolean, modelConfigs: ModelAndParameter[]) => {
+      const value = {
+        multiple,
+        configs: modelConfigs,
+      }
+      debugWithSingleOrMultipleModelConfigs.current[appId] = value
+      localStorage.setItem(
+        'app-debug-with-single-or-multiple-models',
+        JSON.stringify(debugWithSingleOrMultipleModelConfigs.current),
+      )
+      setDebugWithMultipleModel(value.multiple)
+      setMultipleModelConfigs(value.configs)
+    },
+    [appId],
+  )
 
   return {
     debugWithMultipleModel,
@@ -81,6 +77,7 @@ export const useConfigFromDebugContext = () => {
     dataSets,
     datasetConfigs,
     visionConfig,
+    fileConfig,
     annotationConfig,
     textToSpeechConfig,
     isFunctionCall,
@@ -91,13 +88,17 @@ export const useConfigFromDebugContext = () => {
       id,
     },
   }))
-  const contextVar = modelConfig.configs.prompt_variables.find(item => item.is_context_var)?.key
+  const contextVar = modelConfig.configs.prompt_variables.find(
+    item => item.is_context_var,
+  )?.key
   const config: ChatConfig = {
     pre_prompt: !isAdvancedMode ? modelConfig.configs.prompt_template : '',
     prompt_type: promptMode,
     chat_prompt_config: isAdvancedMode ? chatPromptConfig : {},
     completion_prompt_config: isAdvancedMode ? completionPromptConfig : {},
-    user_input_form: promptVariablesToUserInputsForm(modelConfig.configs.prompt_variables),
+    user_input_form: promptVariablesToUserInputsForm(
+      modelConfig.configs.prompt_variables,
+    ),
     dataset_query_variable: contextVar || '',
     opening_statement: introduction,
     more_like_this: {
@@ -111,7 +112,9 @@ export const useConfigFromDebugContext = () => {
     sensitive_word_avoidance: moderationConfig,
     agent_mode: {
       ...modelConfig.agentConfig,
-      strategy: isFunctionCall ? AgentStrategy.functionCall : AgentStrategy.react,
+      strategy: isFunctionCall
+        ? AgentStrategy.functionCall
+        : AgentStrategy.react,
     },
     dataset_configs: {
       ...datasetConfigs,
@@ -121,6 +124,7 @@ export const useConfigFromDebugContext = () => {
     },
     file_upload: {
       image: visionConfig,
+      file: fileConfig,
     },
     annotation_reply: annotationConfig,
 
@@ -144,10 +148,8 @@ export const useFormattingChangedDispatcher = () => {
   return dispatcher
 }
 export const useFormattingChangedSubscription = (chatList: ChatItem[]) => {
-  const {
-    formattingChanged,
-    setFormattingChanged,
-  } = useDebugConfigurationContext()
+  const { formattingChanged, setFormattingChanged }
+    = useDebugConfigurationContext()
   const { eventEmitter } = useEventEmitterContextContext()
   eventEmitter?.useSubscription((v: any) => {
     if (v.type === ORCHESTRATE_CHANGED) {

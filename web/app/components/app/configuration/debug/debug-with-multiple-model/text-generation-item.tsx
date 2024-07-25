@@ -37,6 +37,7 @@ const TextGenerationItem: FC<TextGenerationItemProps> = ({
     dataSets,
     datasetConfigs,
     visionConfig,
+    fileConfig,
     moreLikeThisConfig,
   } = useDebugConfigurationContext()
   const { textGenerationModelList } = useProviderContext()
@@ -46,13 +47,17 @@ const TextGenerationItem: FC<TextGenerationItemProps> = ({
       id,
     },
   }))
-  const contextVar = modelConfig.configs.prompt_variables.find(item => item.is_context_var)?.key
+  const contextVar = modelConfig.configs.prompt_variables.find(
+    item => item.is_context_var,
+  )?.key
   const config: TextGenerationConfig = {
     pre_prompt: !isAdvancedMode ? modelConfig.configs.prompt_template : '',
     prompt_type: promptMode,
     chat_prompt_config: isAdvancedMode ? chatPromptConfig : {},
     completion_prompt_config: isAdvancedMode ? completionPromptConfig : {},
-    user_input_form: promptVariablesToUserInputsForm(modelConfig.configs.prompt_variables),
+    user_input_form: promptVariablesToUserInputsForm(
+      modelConfig.configs.prompt_variables,
+    ),
     dataset_query_variable: contextVar || '',
     opening_statement: introduction,
     suggested_questions_after_answer: suggestedQuestionsAfterAnswerConfig,
@@ -78,18 +83,19 @@ const TextGenerationItem: FC<TextGenerationItemProps> = ({
     },
     file_upload: {
       image: visionConfig,
+      file: fileConfig,
     },
   }
-  const {
-    completion,
-    handleSend,
-    isResponding,
-    messageId,
-  } = useTextGeneration()
+  const { completion, handleSend, isResponding, messageId }
+    = useTextGeneration()
 
   const doSend: OnSend = (message, files) => {
-    const currentProvider = textGenerationModelList.find(item => item.provider === modelAndParameter.provider)
-    const currentModel = currentProvider?.models.find(model => model.model === modelAndParameter.model)
+    const currentProvider = textGenerationModelList.find(
+      item => item.provider === modelAndParameter.provider,
+    )
+    const currentModel = currentProvider?.models.find(
+      model => model.model === modelAndParameter.model,
+    )
 
     const configData = {
       ...config,
@@ -118,10 +124,7 @@ const TextGenerationItem: FC<TextGenerationItemProps> = ({
       })
     }
 
-    handleSend(
-      `apps/${appId}/completion-messages`,
-      data,
-    )
+    handleSend(`apps/${appId}/completion-messages`, data)
   }
 
   const { eventEmitter } = useEventEmitterContextContext()
@@ -139,16 +142,16 @@ const TextGenerationItem: FC<TextGenerationItemProps> = ({
 
   return (
     <TextGeneration
-      className='flex flex-col h-full overflow-y-auto border-none'
-      innerClassName='grow flex flex-col'
-      contentClassName='grow'
+      className="flex flex-col h-full overflow-y-auto border-none"
+      innerClassName="grow flex flex-col"
+      contentClassName="grow"
       content={completion}
       isLoading={!completion && isResponding}
       isResponding={isResponding}
       isInstalledApp={false}
       messageId={messageId}
       isError={false}
-      onRetry={() => { }}
+      onRetry={() => {}}
       appId={appId}
       varList={varList}
     />

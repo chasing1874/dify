@@ -1,4 +1,5 @@
 import type {
+  FileSettings,
   ModelConfig,
   VisionFile,
   VisionSettings,
@@ -38,6 +39,8 @@ export type UserInputFormParagraph = {
 }
 
 export type VisionConfig = VisionSettings
+// add
+export type FileConfig = FileSettings
 
 export type EnableType = {
   enabled: boolean

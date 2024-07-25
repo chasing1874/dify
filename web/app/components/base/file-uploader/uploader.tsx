@@ -3,7 +3,10 @@ import { useState } from 'react'
 import { useLocalFileUploader } from './hooks'
 import type { ImageFile } from '@/types/app'
 // import { ALLOW_FILE_EXTENSIONS } from '@/types/app'
-import { IMAGE_ALLOW_FILE_EXTENSIONS } from '@/types/app'
+import {
+  All_ALLOW_FILE_EXTENSIONS,
+  File_ALLOW_FILE_EXTENSIONS,
+} from '@/types/app'
 
 type UploaderProps = {
   children: (hovering: boolean) => JSX.Element
@@ -11,6 +14,7 @@ type UploaderProps = {
   closePopover?: () => void
   limit?: number
   disabled?: boolean
+  isImageEnabled?: boolean
 }
 
 const Uploader: FC<UploaderProps> = ({
@@ -19,6 +23,7 @@ const Uploader: FC<UploaderProps> = ({
   closePopover,
   limit,
   disabled,
+  isImageEnabled,
 }) => {
   const [hovering, setHovering] = useState(false)
   const { handleLocalFileUpload } = useLocalFileUploader({
@@ -39,16 +44,20 @@ const Uploader: FC<UploaderProps> = ({
 
   return (
     <div
-      className='relative'
+      className="relative"
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
       {children(hovering)}
       <input
-        className='absolute block inset-0 opacity-0 text-[0] w-full disabled:cursor-not-allowed cursor-pointer'
+        className="absolute block inset-0 opacity-0 text-[0] w-full disabled:cursor-not-allowed cursor-pointer"
         onClick={e => ((e.target as HTMLInputElement).value = '')}
-        type='file'
-        accept={IMAGE_ALLOW_FILE_EXTENSIONS.map(ext => `.${ext}`).join(',')}
+        type="file"
+        accept={
+          isImageEnabled
+            ? All_ALLOW_FILE_EXTENSIONS.map(ext => `.${ext}`).join(',')
+            : File_ALLOW_FILE_EXTENSIONS.map(ext => `.${ext}`).join(',')
+        }
         onChange={handleChange}
         disabled={disabled}
       />

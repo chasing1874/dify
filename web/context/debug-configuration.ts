@@ -20,9 +20,21 @@ import type {
 } from '@/models/debug'
 import type { ExternalDataTool } from '@/models/common'
 import type { DataSet } from '@/models/datasets'
-import type { VisionSettings } from '@/types/app'
-import { ModelModeType, RETRIEVE_TYPE, Resolution, TransferMethod } from '@/types/app'
-import { ANNOTATION_DEFAULT, DEFAULT_AGENT_SETTING, DEFAULT_CHAT_PROMPT_CONFIG, DEFAULT_COMPLETION_PROMPT_CONFIG } from '@/config'
+// add
+import type { FileSettings, VisionSettings } from '@/types/app'
+import {
+  ModelModeType,
+  RETRIEVE_TYPE,
+  Resolution,
+  ResolutionFile,
+  TransferMethod,
+} from '@/types/app'
+import {
+  ANNOTATION_DEFAULT,
+  DEFAULT_AGENT_SETTING,
+  DEFAULT_CHAT_PROMPT_CONFIG,
+  DEFAULT_COMPLETION_PROMPT_CONFIG,
+} from '@/config'
 import type { FormValue } from '@/app/components/header/account-setting/model-provider-page/declarations'
 import type { Collection } from '@/app/components/tools/types'
 
@@ -44,10 +56,15 @@ type IDebugConfiguration = {
   chatPromptConfig: ChatPromptConfig
   completionPromptConfig: CompletionPromptConfig
   currentAdvancedPrompt: PromptItem | PromptItem[]
-  setCurrentAdvancedPrompt: (prompt: PromptItem | PromptItem[], isUserChanged?: boolean) => void
+  setCurrentAdvancedPrompt: (
+    prompt: PromptItem | PromptItem[],
+    isUserChanged?: boolean
+  ) => void
   showHistoryModal: () => void
   conversationHistoriesRole: ConversationHistoriesRole
-  setConversationHistoriesRole: (conversationHistoriesRole: ConversationHistoriesRole) => void
+  setConversationHistoriesRole: (
+    conversationHistoriesRole: ConversationHistoriesRole
+  ) => void
   hasSetBlockStatus: BlockStatus
   conversationId: string | null // after first chat send
   setConversationId: (conversationId: string | null) => void
@@ -62,7 +79,9 @@ type IDebugConfiguration = {
   moreLikeThisConfig: MoreLikeThisConfig
   setMoreLikeThisConfig: (moreLikeThisConfig: MoreLikeThisConfig) => void
   suggestedQuestionsAfterAnswerConfig: SuggestedQuestionsAfterAnswerConfig
-  setSuggestedQuestionsAfterAnswerConfig: (suggestedQuestionsAfterAnswerConfig: SuggestedQuestionsAfterAnswerConfig) => void
+  setSuggestedQuestionsAfterAnswerConfig: (
+    suggestedQuestionsAfterAnswerConfig: SuggestedQuestionsAfterAnswerConfig
+  ) => void
   speechToTextConfig: SpeechToTextConfig
   setSpeechToTextConfig: (speechToTextConfig: SpeechToTextConfig) => void
   textToSpeechConfig: TextToSpeechConfig
@@ -97,6 +116,9 @@ type IDebugConfiguration = {
   isShowVisionConfig: boolean
   visionConfig: VisionSettings
   setVisionConfig: (visionConfig: VisionSettings, noNotice?: boolean) => void
+  isShowFileConfig: boolean
+  fileConfig: FileSettings
+  setFileConfig: (fileConfig: FileSettings, noNotice?: boolean) => void
 }
 
 const DebugConfigurationContext = createContext<IDebugConfiguration>({
@@ -106,64 +128,64 @@ const DebugConfigurationContext = createContext<IDebugConfiguration>({
   mode: '',
   modelModeType: ModelModeType.chat,
   promptMode: PromptMode.simple,
-  setPromptMode: () => { },
+  setPromptMode: () => {},
   isAdvancedMode: false,
   isAgent: false,
   isFunctionCall: false,
   isOpenAI: false,
   collectionList: [],
   canReturnToSimpleMode: false,
-  setCanReturnToSimpleMode: () => { },
+  setCanReturnToSimpleMode: () => {},
   chatPromptConfig: DEFAULT_CHAT_PROMPT_CONFIG,
   completionPromptConfig: DEFAULT_COMPLETION_PROMPT_CONFIG,
   currentAdvancedPrompt: [],
-  showHistoryModal: () => { },
+  showHistoryModal: () => {},
   conversationHistoriesRole: {
     user_prefix: 'user',
     assistant_prefix: 'assistant',
   },
-  setConversationHistoriesRole: () => { },
-  setCurrentAdvancedPrompt: () => { },
+  setConversationHistoriesRole: () => {},
+  setCurrentAdvancedPrompt: () => {},
   hasSetBlockStatus: {
     context: false,
     history: false,
     query: false,
   },
   conversationId: '',
-  setConversationId: () => { },
+  setConversationId: () => {},
   introduction: '',
-  setIntroduction: () => { },
+  setIntroduction: () => {},
   suggestedQuestions: [],
-  setSuggestedQuestions: () => { },
+  setSuggestedQuestions: () => {},
   controlClearChatMessage: 0,
-  setControlClearChatMessage: () => { },
+  setControlClearChatMessage: () => {},
   prevPromptConfig: {
     prompt_template: '',
     prompt_variables: [],
   },
-  setPrevPromptConfig: () => { },
+  setPrevPromptConfig: () => {},
   moreLikeThisConfig: {
     enabled: false,
   },
-  setMoreLikeThisConfig: () => { },
+  setMoreLikeThisConfig: () => {},
   suggestedQuestionsAfterAnswerConfig: {
     enabled: false,
   },
-  setSuggestedQuestionsAfterAnswerConfig: () => { },
+  setSuggestedQuestionsAfterAnswerConfig: () => {},
   speechToTextConfig: {
     enabled: false,
   },
-  setSpeechToTextConfig: () => { },
+  setSpeechToTextConfig: () => {},
   textToSpeechConfig: {
     enabled: false,
     voice: '',
     language: '',
   },
-  setTextToSpeechConfig: () => { },
+  setTextToSpeechConfig: () => {},
   citationConfig: {
     enabled: false,
   },
-  setCitationConfig: () => { },
+  setCitationConfig: () => {},
   moderationConfig: {
     enabled: false,
   },
@@ -176,16 +198,16 @@ const DebugConfigurationContext = createContext<IDebugConfiguration>({
       embedding_provider_name: '',
     },
   },
-  setAnnotationConfig: () => { },
-  setModerationConfig: () => { },
+  setAnnotationConfig: () => {},
+  setModerationConfig: () => {},
   externalDataToolsConfig: [],
-  setExternalDataToolsConfig: () => { },
+  setExternalDataToolsConfig: () => {},
   formattingChanged: false,
-  setFormattingChanged: () => { },
+  setFormattingChanged: () => {},
   inputs: {},
-  setInputs: () => { },
+  setInputs: () => {},
   query: '',
-  setQuery: () => { },
+  setQuery: () => {},
   completionParams: {
     max_tokens: 16,
     temperature: 1, // 0-2
@@ -193,7 +215,7 @@ const DebugConfigurationContext = createContext<IDebugConfiguration>({
     presence_penalty: 1, // -2-2
     frequency_penalty: 1, // -2-2
   },
-  setCompletionParams: () => { },
+  setCompletionParams: () => {},
   modelConfig: {
     provider: 'OPENAI', // 'OPENAI'
     model_id: 'gpt-3.5-turbo', // 'gpt-3.5-turbo'
@@ -212,10 +234,10 @@ const DebugConfigurationContext = createContext<IDebugConfiguration>({
     dataSets: [],
     agentConfig: DEFAULT_AGENT_SETTING,
   },
-  setModelConfig: () => { },
+  setModelConfig: () => {},
   dataSets: [],
-  showSelectDataSet: () => { },
-  setDataSets: () => { },
+  showSelectDataSet: () => {},
+  setDataSets: () => {},
   datasetConfigs: {
     retrieval_model: RETRIEVE_TYPE.oneWay,
     reranking_model: {
@@ -229,7 +251,7 @@ const DebugConfigurationContext = createContext<IDebugConfiguration>({
       datasets: [],
     },
   },
-  setDatasetConfigs: () => { },
+  setDatasetConfigs: () => {},
   hasSetContextVar: false,
   isShowVisionConfig: false,
   visionConfig: {
@@ -238,9 +260,18 @@ const DebugConfigurationContext = createContext<IDebugConfiguration>({
     detail: Resolution.low,
     transfer_methods: [TransferMethod.remote_url],
   },
-  setVisionConfig: () => { },
+  setVisionConfig: () => {},
+  isShowFileConfig: false,
+  fileConfig: {
+    enabled: false,
+    number_limits: 2,
+    detail: ResolutionFile.M1,
+    transfer_methods: [TransferMethod.remote_url],
+  },
+  setFileConfig: () => {},
 })
 
-export const useDebugConfigurationContext = () => useContext(DebugConfigurationContext)
+export const useDebugConfigurationContext = () =>
+  useContext(DebugConfigurationContext)
 
 export default DebugConfigurationContext

@@ -1,9 +1,9 @@
 import type { FC } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ImagePlus } from '../icons/src/vender/line/images'
+import { FilePlus01 } from '../icons/src/vender/line/files'
 import Uploader from './uploader'
-import ImageLinkInput from './image-link-input'
+import FileLinkInput from './file-link-input'
 import cn from '@/utils/classnames'
 import { TransferMethod } from '@/types/app'
 import {
@@ -12,21 +12,22 @@ import {
   PortalToFollowElemTrigger,
 } from '@/app/components/base/portal-to-follow-elem'
 import { Upload03 } from '@/app/components/base/icons/src/vender/line/general'
-import type { ImageFile, VisionSettings } from '@/types/app'
-// import { FilePlus01 } from '../icons/src/vender/line/files'
+import type { FileSettings, ImageFile } from '@/types/app'
 
 type UploadOnlyFromLocalProps = {
   onUpload: (imageFile: ImageFile) => void
   disabled?: boolean
   limit?: number
+  isImageEnabled?: boolean
 }
 const UploadOnlyFromLocal: FC<UploadOnlyFromLocalProps> = ({
   onUpload,
   disabled,
   limit,
+  isImageEnabled,
 }) => {
   return (
-    <Uploader onUpload={onUpload} disabled={disabled} limit={limit}>
+    <Uploader onUpload={onUpload} disabled={disabled} limit={limit} isImageEnabled={isImageEnabled}>
       {hovering => (
         <div
           className={`
@@ -34,7 +35,7 @@ const UploadOnlyFromLocal: FC<UploadOnlyFromLocalProps> = ({
             ${hovering && 'bg-gray-100'}
           `}
         >
-          <ImagePlus className="w-4 h-4 text-gray-500" />
+          <FilePlus01 className="w-4 h-4 text-gray-500" />
         </div>
       )}
     </Uploader>
@@ -42,7 +43,7 @@ const UploadOnlyFromLocal: FC<UploadOnlyFromLocalProps> = ({
 }
 
 type UploaderButtonProps = {
-  methods: VisionSettings['transfer_methods']
+  methods: FileSettings['transfer_methods']
   onUpload: (imageFile: ImageFile) => void
   disabled?: boolean
   limit?: number
@@ -86,12 +87,12 @@ const UploaderButton: FC<UploaderButtonProps> = ({
           className="relative flex items-center justify-center w-8 h-8 enabled:hover:bg-gray-100 rounded-lg disabled:cursor-not-allowed"
         >
           {/* <FilePlus01 className="w-4 h-4 text-gray-500" /> */}
-          <ImagePlus className="w-4 h-4 text-gray-500" />
+          <FilePlus01 className="w-4 h-4 text-gray-500" />
         </button>
       </PortalToFollowElemTrigger>
       <PortalToFollowElemContent className="z-50">
         <div className="p-2 w-[260px] bg-white rounded-lg border-[0.5px] border-gray-200 shadow-lg">
-          <ImageLinkInput onUpload={handleUpload} disabled={disabled} />
+          <FileLinkInput onUpload={handleUpload} disabled={disabled} />
           {hasUploadFromLocal && (
             <>
               <div className="flex items-center mt-2 px-2 text-xs font-medium text-gray-400">
@@ -112,7 +113,7 @@ const UploaderButton: FC<UploaderButtonProps> = ({
                     )}
                   >
                     <Upload03 className="mr-1 w-4 h-4" />
-                    {t('common.imageUploader.uploadFromComputer')}
+                    {t('common.fileUploader.uploadFromComputer')}
                   </div>
                 )}
               </Uploader>
@@ -124,15 +125,17 @@ const UploaderButton: FC<UploaderButtonProps> = ({
   )
 }
 
-type ChatImageUploaderProps = {
-  settings: VisionSettings
+type ChatFileUploaderProps = {
+  settings: FileSettings
   onUpload: (imageFile: ImageFile) => void
   disabled?: boolean
+  isImageEnabled?: boolean
 }
-const ChatImageUploader: FC<ChatImageUploaderProps> = ({
+const ChatFileUploader: FC<ChatFileUploaderProps> = ({
   settings,
   onUpload,
   disabled,
+  isImageEnabled,
 }) => {
   const onlyUploadLocal
     = settings.transfer_methods.length === 1
@@ -144,6 +147,7 @@ const ChatImageUploader: FC<ChatImageUploaderProps> = ({
         onUpload={onUpload}
         disabled={disabled}
         limit={+settings.image_file_size_limit!}
+        isImageEnabled={isImageEnabled}
       />
     )
   }
@@ -158,4 +162,4 @@ const ChatImageUploader: FC<ChatImageUploaderProps> = ({
   )
 }
 
-export default ChatImageUploader
+export default ChatFileUploader

@@ -11,6 +11,8 @@ import ExperienceEnchanceGroup from '../features/experience-enchance-group'
 import Toolbox from '../toolbox'
 import HistoryPanel from '../config-prompt/conversation-histroy/history-panel'
 import ConfigVision from '../config-vision'
+import ConfigFile from '../config-file'
+
 import useAnnotationConfig from '../toolbox/annotation/use-annotation-config'
 import AddFeatureBtn from './feature/add-feature-btn'
 import ChooseFeature from './feature/choose-feature'
@@ -245,6 +247,7 @@ const Config: FC = () => {
         )}
 
         <ConfigVision />
+        <ConfigFile />
 
         {/* Chat History */}
         {isAdvancedMode && isChatApp && modelModeType === ModelModeType.completion && (

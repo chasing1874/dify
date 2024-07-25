@@ -1,4 +1,10 @@
-import type { AnnotationReplyConfig, ChatPromptConfig, CompletionPromptConfig, DatasetConfigs, PromptMode } from '@/models/debug'
+import type {
+  AnnotationReplyConfig,
+  ChatPromptConfig,
+  CompletionPromptConfig,
+  DatasetConfigs,
+  PromptMode,
+} from '@/models/debug'
 import type { CollectionType } from '@/app/components/tools/types'
 import type { LanguagesSupported } from '@/i18n/language'
 import type { Tag } from '@/app/components/base/tag-management/constant'
@@ -47,14 +53,20 @@ export type VariableInput = {
 /**
  * App modes
  */
-export const AppModes = ['advanced-chat', 'agent-chat', 'chat', 'completion', 'workflow'] as const
-export type AppMode = typeof AppModes[number]
+export const AppModes = [
+  'advanced-chat',
+  'agent-chat',
+  'chat',
+  'completion',
+  'workflow',
+] as const
+export type AppMode = (typeof AppModes)[number]
 
 /**
  * Variable type
  */
 export const VariableTypes = ['string', 'number', 'select'] as const
-export type VariableType = typeof VariableTypes[number]
+export type VariableType = (typeof VariableTypes)[number]
 
 /**
  * Prompt variable parameter
@@ -97,13 +109,16 @@ export type ParagraphTypeFormItem = {
 /**
  * User Input Form Item
  */
-export type UserInputFormItem = {
-  'text-input': TextTypeFormItem
-} | {
-  'select': SelectTypeFormItem
-} | {
-  'paragraph': TextTypeFormItem
-}
+export type UserInputFormItem =
+  | {
+    'text-input': TextTypeFormItem
+  }
+  | {
+    select: SelectTypeFormItem
+  }
+  | {
+    paragraph: TextTypeFormItem
+  }
 
 export type AgentTool = {
   provider_id: string
@@ -117,18 +132,21 @@ export type AgentTool = {
   notAuthor?: boolean
 }
 
-export type ToolItem = {
-  dataset: {
-    enabled: boolean
-    id: string
+export type ToolItem =
+  | {
+    dataset: {
+      enabled: boolean
+      id: string
+    }
   }
-} | {
-  'sensitive-word-avoidance': {
-    enabled: boolean
-    words: string[]
-    canned_response: string
+  | {
+    'sensitive-word-avoidance': {
+      enabled: boolean
+      words: string[]
+      canned_response: string
+    }
   }
-} | AgentTool
+  | AgentTool
 
 export enum AgentStrategy {
   functionCall = 'function_call',
@@ -230,12 +248,14 @@ export type ModelConfig = {
   dataset_configs: DatasetConfigs
   file_upload?: {
     image: VisionSettings
+    file: FileSettings
   }
+
   files?: VisionFile[]
   created_at?: number
 }
 
-export type Language = typeof LanguagesSupported[number]
+export type Language = (typeof LanguagesSupported)[number]
 
 /**
  * Web Application Configuration
@@ -249,7 +269,7 @@ export type SiteConfig = {
   description: string
   /** Define the color in hex for different elements of the chatbot, such as:
    * The header, the button , etc.
-    */
+   */
   chat_color_theme: string
   /** Invert the color of the theme set in chat_color_theme */
   chat_color_theme_inverted: boolean
@@ -343,6 +363,11 @@ export enum Resolution {
   low = 'low',
   high = 'high',
 }
+export enum ResolutionFile {
+  M1 = '10M',
+  M2 = '30M',
+  M3 = '50M',
+}
 
 export enum TransferMethod {
   all = 'all',
@@ -355,14 +380,60 @@ export enum TtsAutoPlay {
   disabled = 'disabled',
 }
 
-export const ALLOW_FILE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'xlsx']
+// export const ALLOW_FILE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'xlsx']
 
-export const ALLOW_ANALYSIS_FILE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'xlsx']
+export const IMAGE_ALLOW_FILE_EXTENSIONS = [
+  'png',
+  'jpg',
+  'jpeg',
+  'webp',
+  'gif',
+]
+// add
+export const File_ALLOW_FILE_EXTENSIONS = [
+  'xlsx',
+  'xls',
+  'docx',
+  'doc',
+  'csv',
+  'txt',
+]
+// add
+export const All_ALLOW_FILE_EXTENSIONS = [
+  'png',
+  'jpg',
+  'jpeg',
+  'webp',
+  'gif',
+  'xlsx',
+  'xls',
+  'docx',
+  'doc',
+  'csv',
+  'txt',
+]
+
+// export const ALLOW_ANALYSIS_FILE_EXTENSIONS = [
+//   "png",
+//   "jpg",
+//   "jpeg",
+//   "webp",
+//   "gif",
+//   "xlsx",
+// ];
 
 export type VisionSettings = {
   enabled: boolean
   number_limits: number
   detail: Resolution
+  transfer_methods: TransferMethod[]
+  image_file_size_limit?: number | string
+}
+// add
+export type FileSettings = {
+  enabled: boolean
+  number_limits: number
+  detail: ResolutionFile
   transfer_methods: TransferMethod[]
   image_file_size_limit?: number | string
 }

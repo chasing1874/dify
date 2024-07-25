@@ -52,7 +52,8 @@ const translation = {
     },
     conversationOpener: {
       title: '对话开场白',
-      description: '在对话型应用中，让 AI 主动说第一段话可以拉近与用户间的距离。',
+      description:
+        '在对话型应用中，让 AI 主动说第一段话可以拉近与用户间的距离。',
     },
     suggestedQuestionsAfterAnswer: {
       title: '下一步问题建议',
@@ -119,11 +120,13 @@ const translation = {
         noVar: '没有变量',
         noVarTip: '请创建变量',
         unableToQueryDataSet: '无法查询知识库',
-        unableToQueryDataSetTip: '无法成功查询知识库，请在上下文部分选择一个上下文查询变量。',
+        unableToQueryDataSetTip:
+          '无法成功查询知识库，请在上下文部分选择一个上下文查询变量。',
         ok: '好的',
         contextVarNotEmpty: '上下文查询变量不能为空',
         deleteContextVarTitle: '删除变量“{{varName}}”？',
-        deleteContextVarTip: '该变量已被设置为上下文查询变量，删除该变量将影响知识库的正常使用。 如果您仍需要删除它，请在上下文部分中重新选择它。',
+        deleteContextVarTip:
+          '该变量已被设置为上下文查询变量，删除该变量将影响知识库的正常使用。 如果您仍需要删除它，请在上下文部分中重新选择它。',
       },
     },
     tools: {
@@ -236,7 +239,8 @@ const translation = {
   formattingChangedTitle: '编排已改变',
   formattingChangedText: '修改编排将重置调试区域，确定吗？',
   variableTitle: '变量',
-  notSetVar: '变量能使用户输入表单引入提示词或开场白，你可以试试在提示词中输入 {{input}}',
+  notSetVar:
+    '变量能使用户输入表单引入提示词或开场白，你可以试试在提示词中输入 {{input}}',
   variableTip:
     '变量将以表单形式让用户在对话前填写，用户填写的表单内容将自动替换提示词中的变量。',
   autoAddVar: '提示词中引用了未定义的变量，是否自动添加到用户输入表单中？',
@@ -292,7 +296,8 @@ const translation = {
   },
   vision: {
     name: '视觉',
-    description: '开启视觉功能将允许模型输入图片，并根据图像内容的理解回答用户问题',
+    description:
+      '开启视觉功能将允许模型输入图片，并根据图像内容的理解回答用户问题',
     settings: '设置',
     visionSettings: {
       title: '视觉设置',
@@ -302,6 +307,25 @@ const translation = {
       高分辨率模式将首先允许模型查看低分辨率图像，然后根据输入图像的大小创建512像素的详细裁剪图像。每个详细裁剪图像使用两倍的预算总共为129 Tokens。`,
       high: '高',
       low: '低',
+      uploadMethod: '上传方式',
+      both: '两者',
+      localUpload: '本地上传',
+      url: 'URL',
+      uploadLimit: '上传数量限制',
+    },
+  },
+  file: {
+    name: '文件',
+    description:
+      '开启文件功能将允许模型输入文件，并根据文件内容的理解回答用户问题',
+    settings: '设置',
+    fileSettings: {
+      title: '文件设置',
+      resolution: '文件大小',
+      resolutionTooltip: '文件大小设置选项允许你选择模型处理的最大文件大小',
+      M1: '10M以内',
+      M2: '30M以内',
+      M3: '50M以内',
       uploadMethod: '上传方式',
       both: '两者',
       localUpload: '本地上传',
@@ -328,7 +352,8 @@ const translation = {
     title: '对话开场白',
     add: '添加开场白',
     writeOpener: '编写开场白',
-    placeholder: '在这里写下你的开场白，你可以使用变量，尝试输入 {{variable}}。',
+    placeholder:
+      '在这里写下你的开场白，你可以使用变量，尝试输入 {{variable}}。',
     openingQuestion: '开场问题',
     noDataPlaceHolder:
       '在对话型应用中，让 AI 主动说第一段话可以拉近与用户间的距离。',
@@ -363,19 +388,23 @@ const translation = {
     knowledgeTip: '点击 “+” 按钮添加知识库',
     retrieveOneWay: {
       title: 'N选1召回',
-      description: '根据用户意图和知识库描述，由 Agent 自主判断选择最匹配的单个知识库来查询相关文本，适合知识库区分度大且知识库数量偏少的应用。',
+      description:
+        '根据用户意图和知识库描述，由 Agent 自主判断选择最匹配的单个知识库来查询相关文本，适合知识库区分度大且知识库数量偏少的应用。',
     },
     retrieveMultiWay: {
       title: '多路召回',
-      description: '根据用户意图同时匹配所有知识库，从多路知识库查询相关文本片段，经过重排序步骤，从多路查询结果中选择匹配用户问题的最佳结果，需配置 Rerank 模型 API。',
+      description:
+        '根据用户意图同时匹配所有知识库，从多路知识库查询相关文本片段，经过重排序步骤，从多路查询结果中选择匹配用户问题的最佳结果，需配置 Rerank 模型 API。',
     },
     rerankModelRequired: '请选择 Rerank 模型',
     params: '参数设置',
     top_k: 'Top K',
-    top_kTip: '用于筛选与用户问题相似度最高的文本片段。系统同时会根据选用模型上下文窗口大小动态调整分段数量。',
+    top_kTip:
+      '用于筛选与用户问题相似度最高的文本片段。系统同时会根据选用模型上下文窗口大小动态调整分段数量。',
     score_threshold: 'Score 阈值',
     score_thresholdTip: '用于设置文本片段筛选的相似度阈值。',
-    retrieveChangeTip: '修改索引模式和检索模式可能会影响与该知识库关联的应用程序。',
+    retrieveChangeTip:
+      '修改索引模式和检索模式可能会影响与该知识库关联的应用程序。',
   },
   debugAsSingleModel: '单一模型进行调试',
   debugAsMultipleModel: '多个模型进行调试',
@@ -401,7 +430,8 @@ const translation = {
     },
     setting: {
       name: 'Agent 设置',
-      description: '智能助手设置允许设置代理模式和内置提示等高级功能，仅在代理类型中可用。',
+      description:
+        '智能助手设置允许设置代理模式和内置提示等高级功能，仅在代理类型中可用。',
       maximumIterations: {
         name: '最大迭代次数',
         description: '限制代理型助手执行迭代的次数',

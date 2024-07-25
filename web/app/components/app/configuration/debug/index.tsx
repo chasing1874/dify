@@ -5,9 +5,7 @@ import { useTranslation } from 'react-i18next'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { setAutoFreeze } from 'immer'
 import { useBoolean } from 'ahooks'
-import {
-  RiAddLine,
-} from '@remixicon/react'
+import { RiAddLine } from '@remixicon/react'
 import { useContext } from 'use-context-selector'
 import { useShallow } from 'zustand/react/shallow'
 import HasNotSetAPIKEY from '../base/warning-mask/has-not-set-api'
@@ -28,14 +26,20 @@ import ConfigContext from '@/context/debug-configuration'
 import { ToastContext } from '@/app/components/base/toast'
 import { sendCompletionMessage } from '@/service/debug'
 import Button from '@/app/components/base/button'
-import type { ModelConfig as BackendModelConfig, VisionFile } from '@/types/app'
+import type {
+  ModelConfig as BackendModelConfig,
+  VisionFile,
+} from '@/types/app'
 import { promptVariablesToUserInputsForm } from '@/utils/model-config'
 import TextGeneration from '@/app/components/app/text-generate/item'
 import { IS_CE_EDITION } from '@/config'
 import type { Inputs } from '@/models/debug'
 import { fetchFileUploadConfig } from '@/service/common'
 import { useDefaultModel } from '@/app/components/header/account-setting/model-provider-page/hooks'
-import { ModelFeatureEnum, ModelTypeEnum } from '@/app/components/header/account-setting/model-provider-page/declarations'
+import {
+  ModelFeatureEnum,
+  ModelTypeEnum,
+} from '@/app/components/header/account-setting/model-provider-page/declarations'
 import type { ModelParameterModalProps } from '@/app/components/header/account-setting/model-provider-page/model-parameter-modal'
 import { useEventEmitterContextContext } from '@/context/event-emitter'
 import { useProviderContext } from '@/context/provider-context'
@@ -47,10 +51,16 @@ type IDebug = {
   isAPIKeySet: boolean
   onSetting: () => void
   inputs: Inputs
-  modelParameterParams: Pick<ModelParameterModalProps, 'setModel' | 'onCompletionParamsChange'>
+  modelParameterParams: Pick<
+  ModelParameterModalProps,
+    'setModel' | 'onCompletionParamsChange'
+  >
   debugWithMultipleModel: boolean
   multipleModelConfigs: ModelAndParameter[]
-  onMultipleModelConfigsChange: (multiple: boolean, modelConfigs: ModelAndParameter[]) => void
+  onMultipleModelConfigsChange: (
+    multiple: boolean,
+    modelConfigs: ModelAndParameter[]
+  ) => void
 }
 
 const Debug: FC<IDebug> = ({
@@ -87,11 +97,17 @@ const Debug: FC<IDebug> = ({
     hasSetContextVar,
     datasetConfigs,
     visionConfig,
+    fileConfig,
     setVisionConfig,
   } = useContext(ConfigContext)
   const { eventEmitter } = useEventEmitterContextContext()
-  const { data: text2speechDefaultModel } = useDefaultModel(ModelTypeEnum.textEmbedding)
-  const { data: fileUploadConfigResponse } = useSWR({ url: '/files/upload' }, fetchFileUploadConfig)
+  const { data: text2speechDefaultModel } = useDefaultModel(
+    ModelTypeEnum.textEmbedding,
+  )
+  const { data: fileUploadConfigResponse } = useSWR(
+    { url: '/files/upload' },
+    fetchFileUploadConfig,
+  )
   useEffect(() => {
     setAutoFreeze(false)
     return () => {
@@ -99,8 +115,12 @@ const Debug: FC<IDebug> = ({
     }
   }, [])
 
-  const [isResponding, { setTrue: setRespondingTrue, setFalse: setRespondingFalse }] = useBoolean(false)
-  const [isShowFormattingChangeConfirm, setIsShowFormattingChangeConfirm] = useState(false)
+  const [
+    isResponding,
+    { setTrue: setRespondingTrue, setFalse: setRespondingFalse },
+  ] = useBoolean(false)
+  const [isShowFormattingChangeConfirm, setIsShowFormattingChangeConfirm]
+    = useState(false)
   const [isShowCannotQueryDataset, setShowCannotQueryDataset] = useState(false)
 
   useEffect(() => {
@@ -108,7 +128,8 @@ const Debug: FC<IDebug> = ({
       setIsShowFormattingChangeConfirm(true)
   }, [formattingChanged])
 
-  const debugWithSingleModelRef = React.useRef<DebugWithSingleModelRefType | null>(null)
+  const debugWithSingleModelRef
+    = React.useRef<DebugWithSingleModelRefType | null>(null)
   const handleClearConversation = () => {
     debugWithSingleModelRef.current?.handleRestart()
   }
@@ -135,31 +156,49 @@ const Debug: FC<IDebug> = ({
   }
 
   const { notify } = useContext(ToastContext)
-  const logError = useCallback((message: string) => {
-    notify({ type: 'error', message })
-  }, [notify])
+  const logError = useCallback(
+    (message: string) => {
+      notify({ type: 'error', message })
+    },
+    [notify],
+  )
   const [completionFiles, setCompletionFiles] = useState<VisionFile[]>([])
 
   const checkCanSend = useCallback(() => {
     if (isAdvancedMode && mode !== AppType.completion) {
       if (modelModeType === ModelModeType.completion) {
         if (!hasSetBlockStatus.history) {
-          notify({ type: 'error', message: t('appDebug.otherError.historyNoBeEmpty') })
+          notify({
+            type: 'error',
+            message: t('appDebug.otherError.historyNoBeEmpty'),
+          })
           return false
         }
         if (!hasSetBlockStatus.query) {
-          notify({ type: 'error', message: t('appDebug.otherError.queryNoBeEmpty') })
+          notify({
+            type: 'error',
+            message: t('appDebug.otherError.queryNoBeEmpty'),
+          })
           return false
         }
       }
     }
     let hasEmptyInput = ''
-    const requiredVars = modelConfig.configs.prompt_variables.filter(({ key, name, required, type }) => {
-      if (type !== 'string' && type !== 'paragraph' && type !== 'select')
-        return false
-      const res = (!key || !key.trim()) || (!name || !name.trim()) || (required || required === undefined || required === null)
-      return res
-    }) // compatible with old version
+    const requiredVars = modelConfig.configs.prompt_variables.filter(
+      ({ key, name, required, type }) => {
+        if (type !== 'string' && type !== 'paragraph' && type !== 'select')
+          return false
+        const res
+          = !key
+          || !key.trim()
+          || !name
+          || !name.trim()
+          || required
+          || required === undefined
+          || required === null
+        return res
+      },
+    ) // compatible with old version
     // debugger
     requiredVars.forEach(({ key, name }) => {
       if (hasEmptyInput)
@@ -170,12 +209,23 @@ const Debug: FC<IDebug> = ({
     })
 
     if (hasEmptyInput) {
-      logError(t('appDebug.errorMessage.valueOfVarRequired', { key: hasEmptyInput }))
+      logError(
+        t('appDebug.errorMessage.valueOfVarRequired', { key: hasEmptyInput }),
+      )
       return false
     }
 
-    if (completionFiles.find(item => item.transfer_method === TransferMethod.local_file && !item.upload_file_id)) {
-      notify({ type: 'info', message: t('appDebug.errorMessage.waitForImgUpload') })
+    if (
+      completionFiles.find(
+        item =>
+          item.transfer_method === TransferMethod.local_file
+          && !item.upload_file_id,
+      )
+    ) {
+      notify({
+        type: 'info',
+        message: t('appDebug.errorMessage.waitForImgUpload'),
+      })
       return false
     }
     return !hasEmptyInput
@@ -198,7 +248,10 @@ const Debug: FC<IDebug> = ({
 
   const sendTextCompletion = async () => {
     if (isResponding) {
-      notify({ type: 'info', message: t('appDebug.errorMessage.waitForResponse') })
+      notify({
+        type: 'info',
+        message: t('appDebug.errorMessage.waitForResponse'),
+      })
       return false
     }
 
@@ -216,14 +269,18 @@ const Debug: FC<IDebug> = ({
         id,
       },
     }))
-    const contextVar = modelConfig.configs.prompt_variables.find(item => item.is_context_var)?.key
+    const contextVar = modelConfig.configs.prompt_variables.find(
+      item => item.is_context_var,
+    )?.key
 
     const postModelConfig: BackendModelConfig = {
       pre_prompt: !isAdvancedMode ? modelConfig.configs.prompt_template : '',
       prompt_type: promptMode,
       chat_prompt_config: {},
       completion_prompt_config: {},
-      user_input_form: promptVariablesToUserInputsForm(modelConfig.configs.prompt_variables),
+      user_input_form: promptVariablesToUserInputsForm(
+        modelConfig.configs.prompt_variables,
+      ),
       dataset_query_variable: contextVar || '',
       opening_statement: introduction,
       suggested_questions_after_answer: suggestedQuestionsAfterAnswerConfig,
@@ -254,6 +311,7 @@ const Debug: FC<IDebug> = ({
       },
       file_upload: {
         image: visionConfig,
+        file: fileConfig,
       },
     }
 
@@ -267,7 +325,11 @@ const Debug: FC<IDebug> = ({
       model_config: postModelConfig,
     }
 
-    if (visionConfig.enabled && completionFiles && completionFiles?.length > 0) {
+    if (
+      visionConfig.enabled
+      && completionFiles
+      && completionFiles?.length > 0
+    ) {
       data.files = completionFiles.map((item) => {
         if (item.transfer_method === TransferMethod.local_file) {
           return {
@@ -327,8 +389,12 @@ const Debug: FC<IDebug> = ({
 
   const { textGenerationModelList } = useProviderContext()
   const handleChangeToSingleModel = (item: ModelAndParameter) => {
-    const currentProvider = textGenerationModelList.find(modelItem => modelItem.provider === item.provider)
-    const currentModel = currentProvider?.models.find(model => model.model === item.model)
+    const currentProvider = textGenerationModelList.find(
+      modelItem => modelItem.provider === item.provider,
+    )
+    const currentModel = currentProvider?.models.find(
+      model => model.model === item.model,
+    )
 
     modelParameterParams.setModel({
       modelId: item.model,
@@ -337,48 +403,65 @@ const Debug: FC<IDebug> = ({
       features: currentModel?.features,
     })
     modelParameterParams.onCompletionParamsChange(item.parameters)
-    onMultipleModelConfigsChange(
-      false,
-      [],
-    )
+    onMultipleModelConfigsChange(false, [])
   }
 
   const handleVisionConfigInMultipleModel = () => {
     if (debugWithMultipleModel && mode) {
       const supportedVision = multipleModelConfigs.some((modelConfig) => {
-        const currentProvider = textGenerationModelList.find(modelItem => modelItem.provider === modelConfig.provider)
-        const currentModel = currentProvider?.models.find(model => model.model === modelConfig.model)
+        const currentProvider = textGenerationModelList.find(
+          modelItem => modelItem.provider === modelConfig.provider,
+        )
+        const currentModel = currentProvider?.models.find(
+          model => model.model === modelConfig.model,
+        )
 
         return currentModel?.features?.includes(ModelFeatureEnum.vision)
       })
 
       if (supportedVision) {
-        setVisionConfig({
-          ...visionConfig,
-          enabled: true,
-        }, true)
+        setVisionConfig(
+          {
+            ...visionConfig,
+            enabled: true,
+          },
+          true,
+        )
       }
       else {
-        setVisionConfig({
-          ...visionConfig,
-          enabled: false,
-        }, true)
+        setVisionConfig(
+          {
+            ...visionConfig,
+            enabled: false,
+          },
+          true,
+        )
       }
     }
   }
+  // add 处理是否支持文件，后端需提供类似于.vision
 
   useEffect(() => {
     handleVisionConfigInMultipleModel()
   }, [multipleModelConfigs, mode])
 
-  const { currentLogItem, setCurrentLogItem, showPromptLogModal, setShowPromptLogModal, showAgentLogModal, setShowAgentLogModal } = useAppStore(useShallow(state => ({
-    currentLogItem: state.currentLogItem,
-    setCurrentLogItem: state.setCurrentLogItem,
-    showPromptLogModal: state.showPromptLogModal,
-    setShowPromptLogModal: state.setShowPromptLogModal,
-    showAgentLogModal: state.showAgentLogModal,
-    setShowAgentLogModal: state.setShowAgentLogModal,
-  })))
+  const {
+    currentLogItem,
+    setCurrentLogItem,
+    showPromptLogModal,
+    setShowPromptLogModal,
+    showAgentLogModal,
+    setShowAgentLogModal,
+  } = useAppStore(
+    useShallow(state => ({
+      currentLogItem: state.currentLogItem,
+      setCurrentLogItem: state.setCurrentLogItem,
+      showPromptLogModal: state.showPromptLogModal,
+      setShowPromptLogModal: state.setShowPromptLogModal,
+      showAgentLogModal: state.showAgentLogModal,
+      setShowAgentLogModal: state.setShowAgentLogModal,
+    })),
+  )
   const [width, setWidth] = useState(0)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -394,32 +477,59 @@ const Debug: FC<IDebug> = ({
   return (
     <>
       <div className="shrink-0 pt-4 px-6">
-        <div className='flex items-center justify-between mb-2'>
-          <div className='h2 '>{t('appDebug.inputs.title')}</div>
-          <div className='flex items-center'>
-            {
-              debugWithMultipleModel
-                ? (
-                  <>
-                    <Button
-                      variant='secondary-accent'
-                      onClick={() => onMultipleModelConfigsChange(true, [...multipleModelConfigs, { id: `${Date.now()}`, model: '', provider: '', parameters: {} }])}
-                      disabled={multipleModelConfigs.length >= 4}
-                    >
-                      <RiAddLine className='mr-1 w-3.5 h-3.5' />
-                      {t('common.modelProvider.addModel')}({multipleModelConfigs.length}/4)
-                    </Button>
-                    <div className='mx-2 w-[1px] h-[14px] bg-gray-200' />
-                  </>
-                )
-                : null
-            }
+        <div className="flex items-center justify-between mb-2">
+          <div className="h2 ">{t('appDebug.inputs.title')}</div>
+          <div className="flex items-center">
+            {debugWithMultipleModel
+              ? (
+                <>
+                  <Button
+                    variant="secondary-accent"
+                    onClick={() =>
+                      onMultipleModelConfigsChange(true, [
+                        ...multipleModelConfigs,
+                        {
+                          id: `${Date.now()}`,
+                          model: '',
+                          provider: '',
+                          parameters: {},
+                        },
+                      ])
+                    }
+                    disabled={multipleModelConfigs.length >= 4}
+                  >
+                    <RiAddLine className="mr-1 w-3.5 h-3.5" />
+                    {t('common.modelProvider.addModel')}(
+                    {multipleModelConfigs.length}/4)
+                  </Button>
+                  <div className="mx-2 w-[1px] h-[14px] bg-gray-200" />
+                </>
+              )
+              : null}
             {mode !== AppType.completion && (
-              <Button variant='secondary-accent' className='gap-1' onClick={clearConversation}>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2.66663 2.66629V5.99963H3.05463M3.05463 5.99963C3.49719 4.90505 4.29041 3.98823 5.30998 3.39287C6.32954 2.7975 7.51783 2.55724 8.68861 2.70972C9.85938 2.8622 10.9465 3.39882 11.7795 4.23548C12.6126 5.07213 13.1445 6.16154 13.292 7.33296M3.05463 5.99963H5.99996M13.3333 13.333V9.99963H12.946M12.946 9.99963C12.5028 11.0936 11.7093 12.0097 10.6898 12.6045C9.67038 13.1993 8.48245 13.4393 7.31203 13.2869C6.1416 13.1344 5.05476 12.5982 4.22165 11.7621C3.38854 10.926 2.8562 9.83726 2.70796 8.66629M12.946 9.99963H9.99996" stroke="#1C64F2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <Button
+                variant="secondary-accent"
+                className="gap-1"
+                onClick={clearConversation}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2.66663 2.66629V5.99963H3.05463M3.05463 5.99963C3.49719 4.90505 4.29041 3.98823 5.30998 3.39287C6.32954 2.7975 7.51783 2.55724 8.68861 2.70972C9.85938 2.8622 10.9465 3.39882 11.7795 4.23548C12.6126 5.07213 13.1445 6.16154 13.292 7.33296M3.05463 5.99963H5.99996M13.3333 13.333V9.99963H12.946M12.946 9.99963C12.5028 11.0936 11.7093 12.0097 10.6898 12.6045C9.67038 13.1993 8.48245 13.4393 7.31203 13.2869C6.1416 13.1344 5.05476 12.5982 4.22165 11.7621C3.38854 10.926 2.8562 9.83726 2.70796 8.66629M12.946 9.99963H9.99996"
+                    stroke="#1C64F2"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
-                <span className='text-primary-600 text-[13px] font-semibold'>{t('common.operation.refresh')}</span>
+                <span className="text-primary-600 text-[13px] font-semibold">
+                  {t('common.operation.refresh')}
+                </span>
               </Button>
             )}
           </div>
@@ -430,103 +540,104 @@ const Debug: FC<IDebug> = ({
           inputs={inputs}
           visionConfig={{
             ...visionConfig,
-            image_file_size_limit: fileUploadConfigResponse?.image_file_size_limit,
+            image_file_size_limit:
+              fileUploadConfigResponse?.image_file_size_limit,
           }}
           onVisionFilesChange={setCompletionFiles}
         />
       </div>
-      {
-        debugWithMultipleModel && (
-          <div className='grow mt-3 overflow-hidden' ref={ref}>
-            <DebugWithMultipleModel
-              multipleModelConfigs={multipleModelConfigs}
-              onMultipleModelConfigsChange={onMultipleModelConfigsChange}
-              onDebugWithMultipleModelChange={handleChangeToSingleModel}
-              checkCanSend={checkCanSend}
+      {debugWithMultipleModel && (
+        <div className="grow mt-3 overflow-hidden" ref={ref}>
+          <DebugWithMultipleModel
+            multipleModelConfigs={multipleModelConfigs}
+            onMultipleModelConfigsChange={onMultipleModelConfigsChange}
+            onDebugWithMultipleModelChange={handleChangeToSingleModel}
+            checkCanSend={checkCanSend}
+          />
+          {showPromptLogModal && (
+            <PromptLogModal
+              width={width}
+              currentLogItem={currentLogItem}
+              onCancel={() => {
+                setCurrentLogItem()
+                setShowPromptLogModal(false)
+              }}
             />
-            {showPromptLogModal && (
-              <PromptLogModal
-                width={width}
-                currentLogItem={currentLogItem}
-                onCancel={() => {
-                  setCurrentLogItem()
-                  setShowPromptLogModal(false)
-                }}
+          )}
+          {showAgentLogModal && (
+            <AgentLogModal
+              width={width}
+              currentLogItem={currentLogItem}
+              onCancel={() => {
+                setCurrentLogItem()
+                setShowAgentLogModal(false)
+              }}
+            />
+          )}
+        </div>
+      )}
+      {!debugWithMultipleModel && (
+        <div className="flex flex-col grow" ref={ref}>
+          {/* Chat */}
+          {mode !== AppType.completion && (
+            <div className="grow h-0 overflow-hidden">
+              <DebugWithSingleModel
+                ref={debugWithSingleModelRef}
+                checkCanSend={checkCanSend}
               />
-            )}
-            {showAgentLogModal && (
-              <AgentLogModal
-                width={width}
-                currentLogItem={currentLogItem}
-                onCancel={() => {
-                  setCurrentLogItem()
-                  setShowAgentLogModal(false)
-                }}
-              />
-            )}
-          </div>
-        )
-      }
-      {
-        !debugWithMultipleModel && (
-          <div className="flex flex-col grow" ref={ref}>
-            {/* Chat */}
-            {mode !== AppType.completion && (
-              <div className='grow h-0 overflow-hidden'>
-                <DebugWithSingleModel
-                  ref={debugWithSingleModelRef}
-                  checkCanSend={checkCanSend}
+            </div>
+          )}
+          {/* Text  Generation */}
+          {mode === AppType.completion && (
+            <div className="mt-6 px-6 pb-4">
+              <GroupName name={t('appDebug.result')} />
+              {(completionRes || isResponding) && (
+                <TextGeneration
+                  className="mt-2"
+                  content={completionRes}
+                  isLoading={!completionRes && isResponding}
+                  isShowTextToSpeech={
+                    textToSpeechConfig.enabled && !!text2speechDefaultModel
+                  }
+                  isResponding={isResponding}
+                  isInstalledApp={false}
+                  messageId={messageId}
+                  isError={false}
+                  onRetry={() => {}}
+                  supportAnnotation
+                  appId={appId}
+                  varList={varList}
+                  siteInfo={null}
                 />
-              </div>
-            )}
-            {/* Text  Generation */}
-            {mode === AppType.completion && (
-              <div className="mt-6 px-6 pb-4">
-                <GroupName name={t('appDebug.result')} />
-                {(completionRes || isResponding) && (
-                  <TextGeneration
-                    className="mt-2"
-                    content={completionRes}
-                    isLoading={!completionRes && isResponding}
-                    isShowTextToSpeech={textToSpeechConfig.enabled && !!text2speechDefaultModel}
-                    isResponding={isResponding}
-                    isInstalledApp={false}
-                    messageId={messageId}
-                    isError={false}
-                    onRetry={() => { }}
-                    supportAnnotation
-                    appId={appId}
-                    varList={varList}
-                    siteInfo={null}
-                  />
-                )}
-              </div>
-            )}
-            {mode === AppType.completion && showPromptLogModal && (
-              <PromptLogModal
-                width={width}
-                currentLogItem={currentLogItem}
-                onCancel={() => {
-                  setCurrentLogItem()
-                  setShowPromptLogModal(false)
-                }}
-              />
-            )}
-            {isShowCannotQueryDataset && (
-              <CannotQueryDataset
-                onConfirm={() => setShowCannotQueryDataset(false)}
-              />
-            )}
-          </div>
-        )
-      }
+              )}
+            </div>
+          )}
+          {mode === AppType.completion && showPromptLogModal && (
+            <PromptLogModal
+              width={width}
+              currentLogItem={currentLogItem}
+              onCancel={() => {
+                setCurrentLogItem()
+                setShowPromptLogModal(false)
+              }}
+            />
+          )}
+          {isShowCannotQueryDataset && (
+            <CannotQueryDataset
+              onConfirm={() => setShowCannotQueryDataset(false)}
+            />
+          )}
+        </div>
+      )}
       {isShowFormattingChangeConfirm && (
-        <FormattingChanged
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
+        <FormattingChanged onConfirm={handleConfirm} onCancel={handleCancel} />
+      )}
+      {!isAPIKeySet && (
+        <HasNotSetAPIKEY
+          isTrailFinished={!IS_CE_EDITION}
+          onSetting={onSetting}
         />
       )}
-      {!isAPIKeySet && (<HasNotSetAPIKEY isTrailFinished={!IS_CE_EDITION} onSetting={onSetting} />)}
     </>
   )
 }

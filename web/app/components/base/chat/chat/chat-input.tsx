@@ -1,18 +1,10 @@
 import type { FC } from 'react'
-import {
-  memo,
-  useRef,
-  useState,
-} from 'react'
+import { memo, useRef, useState } from 'react'
 import { useContext } from 'use-context-selector'
 import Recorder from 'js-audio-recorder'
 import { useTranslation } from 'react-i18next'
 import Textarea from 'rc-textarea'
-import type {
-  EnableType,
-  OnSend,
-  VisionConfig,
-} from '../types'
+import type { EnableType, FileConfig, OnSend, VisionConfig } from '../types'
 import { TransferMethod } from '../types'
 import { useChatWithHistoryContext } from '../chat-with-history/context'
 import type { Theme } from '../embedded-chatbot/theme/theme-context'
@@ -26,6 +18,8 @@ import { Microphone01 as Microphone01Solid } from '@/app/components/base/icons/s
 import { XCircle } from '@/app/components/base/icons/src/vender/solid/general'
 import { Send03 } from '@/app/components/base/icons/src/vender/solid/communication'
 import ChatImageUploader from '@/app/components/base/image-uploader/chat-image-uploader'
+import ChatFileUploader from '@/app/components/base/file-uploader/chat-file-uploader'
+
 import ImageList from '@/app/components/base/image-uploader/image-list'
 import {
   useClipboardUploader,
@@ -35,12 +29,14 @@ import {
 
 type ChatInputProps = {
   visionConfig?: VisionConfig
+  fileConfig?: FileConfig
   speechToTextConfig?: EnableType
   onSend?: OnSend
   theme?: Theme | null
 }
 const ChatInput: FC<ChatInputProps> = ({
   visionConfig,
+  fileConfig,
   speechToTextConfig,
   onSend,
   theme,
@@ -59,7 +55,12 @@ const ChatInput: FC<ChatInputProps> = ({
     onClear,
   } = useImageFiles()
   const { onPaste } = useClipboardUploader({ onUpload, visionConfig, files })
-  const { onDragEnter, onDragLeave, onDragOver, onDrop, isDragActive } = useDraggableUploader<HTMLTextAreaElement>({ onUpload, files, visionConfig })
+  const { onDragEnter, onDragLeave, onDragOver, onDrop, isDragActive }
+    = useDraggableUploader<HTMLTextAreaElement>({
+      onUpload,
+      files,
+      visionConfig,
+    })
   const isUseInputMethod = useRef(false)
   const [query, setQuery] = useState('')
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -80,20 +81,35 @@ const ChatInput: FC<ChatInputProps> = ({
 
   const handleSend = () => {
     if (onSend) {
-      if (files.find(item => item.type === TransferMethod.local_file && !item.fileId)) {
-        notify({ type: 'info', message: t('appDebug.errorMessage.waitForImgUpload') })
+      if (
+        files.find(
+          item => item.type === TransferMethod.local_file && !item.fileId,
+        )
+      ) {
+        notify({
+          type: 'info',
+          message: t('appDebug.errorMessage.waitForImgUpload'),
+        })
         return
       }
       if (!query || !query.trim()) {
-        notify({ type: 'info', message: t('appAnnotation.errorMessage.queryRequired') })
+        notify({
+          type: 'info',
+          message: t('appAnnotation.errorMessage.queryRequired'),
+        })
         return
       }
-      onSend(query, files.filter(file => file.progress !== -1).map(fileItem => ({
-        type: getFileType(fileItem.file?.name),
-        transfer_method: fileItem.type,
-        url: fileItem.url,
-        upload_file_id: fileItem.fileId,
-      })))
+      onSend(
+        query,
+        files
+          .filter(file => file.progress !== -1)
+          .map(fileItem => ({
+            type: getFileType(fileItem.file?.name),
+            transfer_method: fileItem.type,
+            url: fileItem.url,
+            upload_file_id: fileItem.fileId,
+          })),
+      )
       setQuery('')
       onClear()
     }
@@ -120,11 +136,14 @@ const ChatInput: FC<ChatInputProps> = ({
     notify({ type: 'error', message })
   }
   const handleVoiceInputShow = () => {
-    (Recorder as any).getPermission().then(() => {
-      setVoiceInputShow(true)
-    }, () => {
-      logError(t('common.voiceInput.notAllow'))
-    })
+    (Recorder as any).getPermission().then(
+      () => {
+        setVoiceInputShow(true)
+      },
+      () => {
+        logError(t('common.voiceInput.notAllow'))
+      },
+    )
   }
 
   const [isActiveIconFocused, setActiveIconFocused] = useState(false)
@@ -133,16 +152,25 @@ const ChatInput: FC<ChatInputProps> = ({
   const isMobile = media === MediaType.mobile
   const sendIconThemeStyle = theme
     ? {
-      color: (isActiveIconFocused || query || (query.trim() !== '')) ? theme.primaryColor : '#d1d5db',
+      color:
+          // eslint-disable-next-line no-mixed-operators
+          isActiveIconFocused || query || query.trim() !== ''
+            // eslint-disable-next-line no-mixed-operators
+            ? theme.primaryColor
+            : '#d1d5db',
     }
     : {}
   const sendBtn = (
     <div
-      className='group flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#EBF5FF] cursor-pointer'
+      className="group flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#EBF5FF] cursor-pointer"
       onMouseEnter={() => setActiveIconFocused(true)}
       onMouseLeave={() => setActiveIconFocused(false)}
       onClick={handleSend}
-      style={isActiveIconFocused ? CssTransform(theme?.chatBubbleColorStyle ?? '') : {}}
+      style={
+        isActiveIconFocused
+          ? CssTransform(theme?.chatBubbleColorStyle ?? '')
+          : {}
+      }
     >
       <Send03
         style={sendIconThemeStyle}
@@ -156,36 +184,58 @@ const ChatInput: FC<ChatInputProps> = ({
 
   return (
     <>
-      <div className='relative'>
+      <div className="relative">
         <div
           className={`
             p-[5.5px] max-h-[150px] bg-white border-[1.5px] border-gray-200 rounded-xl overflow-y-auto
             ${isDragActive && 'border-primary-600'} mb-2
           `}
         >
-          {
-            visionConfig?.enabled && (
-              <>
-                <div className='absolute bottom-2 left-2 flex items-center'>
-                  <ChatImageUploader
-                    settings={visionConfig}
-                    onUpload={onUpload}
-                    disabled={files.length >= visionConfig.number_limits}
-                  />
-                  <div className='mx-1 w-[1px] h-4 bg-black/5' />
-                </div>
-                <div className='pl-[52px]'>
-                  <ImageList
-                    list={files}
-                    onRemove={onRemove}
-                    onReUpload={onReUpload}
-                    onImageLinkLoadSuccess={onImageLinkLoadSuccess}
-                    onImageLinkLoadError={onImageLinkLoadError}
-                  />
-                </div>
-              </>
-            )
-          }
+          {visionConfig?.enabled && !fileConfig?.enabled && (
+            <>
+              <div className="absolute bottom-2 left-2 flex items-center">
+                <ChatImageUploader
+                  settings={visionConfig}
+                  onUpload={onUpload}
+                  disabled={files.length >= visionConfig.number_limits}
+                />
+                <div className="mx-1 w-[1px] h-4 bg-black/5" />
+              </div>
+              <div className="pl-[52px]">
+                <ImageList
+                  list={files}
+                  onRemove={onRemove}
+                  onReUpload={onReUpload}
+                  onImageLinkLoadSuccess={onImageLinkLoadSuccess}
+                  onImageLinkLoadError={onImageLinkLoadError}
+                />
+              </div>
+            </>
+          )}
+
+          {fileConfig?.enabled && (
+            <>
+              <div className="absolute bottom-2 left-2 flex items-center">
+                <ChatFileUploader
+                  settings={fileConfig}
+                  onUpload={onUpload}
+                  disabled={files.length >= fileConfig.number_limits}
+                  isImageEnabled={visionConfig?.enabled}
+                />
+                <div className="mx-1 w-[1px] h-4 bg-black/5" />
+              </div>
+              <div className="pl-[52px]">
+                <ImageList
+                  list={files}
+                  onRemove={onRemove}
+                  onReUpload={onReUpload}
+                  onImageLinkLoadSuccess={onImageLinkLoadSuccess}
+                  onImageLinkLoadError={onImageLinkLoadError}
+                />
+              </div>
+            </>
+          )}
+
           <Textarea
             className={`
               block w-full px-2 pr-[118px] py-[7px] leading-5 max-h-none text-sm text-gray-700 outline-none appearance-none resize-none
@@ -202,32 +252,35 @@ const ChatInput: FC<ChatInputProps> = ({
             onDrop={onDrop}
             autoSize
           />
-          <div className='absolute bottom-[7px] right-2 flex items-center h-8'>
-            <div className='flex items-center px-1 h-5 rounded-md bg-gray-100 text-xs font-medium text-gray-500'>
+          <div className="absolute bottom-[7px] right-2 flex items-center h-8">
+            <div className="flex items-center px-1 h-5 rounded-md bg-gray-100 text-xs font-medium text-gray-500">
               {query.trim().length}
             </div>
-            {
-              query
+            {query
+              ? (
+                <div
+                  className="flex justify-center items-center ml-2 w-8 h-8 cursor-pointer hover:bg-gray-100 rounded-lg"
+                  onClick={() => setQuery('')}
+                >
+                  <XCircle className="w-4 h-4 text-[#98A2B3]" />
+                </div>
+              )
+              : speechToTextConfig?.enabled
                 ? (
-                  <div className='flex justify-center items-center ml-2 w-8 h-8 cursor-pointer hover:bg-gray-100 rounded-lg' onClick={() => setQuery('')}>
-                    <XCircle className='w-4 h-4 text-[#98A2B3]' />
+                  <div
+                    className="group flex justify-center items-center ml-2 w-8 h-8 hover:bg-primary-50 rounded-lg cursor-pointer"
+                    onClick={handleVoiceInputShow}
+                  >
+                    <Microphone01 className="block w-4 h-4 text-gray-500 group-hover:hidden" />
+                    <Microphone01Solid className="hidden w-4 h-4 text-primary-600 group-hover:block" />
                   </div>
                 )
-                : speechToTextConfig?.enabled
-                  ? (
-                    <div
-                      className='group flex justify-center items-center ml-2 w-8 h-8 hover:bg-primary-50 rounded-lg cursor-pointer'
-                      onClick={handleVoiceInputShow}
-                    >
-                      <Microphone01 className='block w-4 h-4 text-gray-500 group-hover:hidden' />
-                      <Microphone01Solid className='hidden w-4 h-4 text-primary-600 group-hover:block' />
-                    </div>
-                  )
-                  : null
-            }
-            <div className='mx-2 w-[1px] h-4 bg-black opacity-5' />
+                : null}
+            <div className="mx-2 w-[1px] h-4 bg-black opacity-5" />
             {isMobile
-              ? sendBtn
+              ? (
+                sendBtn
+              )
               : (
                 <TooltipPlus
                   popupContent={
@@ -241,19 +294,19 @@ const ChatInput: FC<ChatInputProps> = ({
                 </TooltipPlus>
               )}
           </div>
-          {
-            voiceInputShow && (
-              <VoiceInput
-                onCancel={() => setVoiceInputShow(false)}
-                onConverted={text => setQuery(text)}
-              />
-            )
-          }
+          {voiceInputShow && (
+            <VoiceInput
+              onCancel={() => setVoiceInputShow(false)}
+              onConverted={text => setQuery(text)}
+            />
+          )}
         </div>
       </div>
-      {appData?.site?.custom_disclaimer && <div className='text-xs text-gray-500 mt-1 text-center'>
-        {appData.site.custom_disclaimer}
-      </div>}
+      {appData?.site?.custom_disclaimer && (
+        <div className="text-xs text-gray-500 mt-1 text-center">
+          {appData.site.custom_disclaimer}
+        </div>
+      )}
     </>
   )
 }
