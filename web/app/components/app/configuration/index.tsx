@@ -61,12 +61,7 @@ import {
   TransferMethod,
 } from '@/types/app'
 import { PromptMode } from '@/models/debug'
-import {
-  ANNOTATION_DEFAULT,
-  DEFAULT_AGENT_SETTING,
-  DEFAULT_CHAT_PROMPT_CONFIG,
-  DEFAULT_COMPLETION_PROMPT_CONFIG,
-} from '@/config'
+import { ANNOTATION_DEFAULT, DATASET_DEFAULT, DEFAULT_AGENT_SETTING, DEFAULT_CHAT_PROMPT_CONFIG, DEFAULT_COMPLETION_PROMPT_CONFIG } from '@/config'
 import SelectDataSet from '@/app/components/app/configuration/dataset-config/select-dataset'
 import { useModalContext } from '@/context/modal-context'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
@@ -77,6 +72,10 @@ import { useTextGenerationCurrentProviderAndModelAndModelList } from '@/app/comp
 import { fetchCollectionList } from '@/service/tools'
 import { type Collection } from '@/app/components/tools/types'
 import { useStore as useAppStore } from '@/app/components/app/store'
+import {
+  getMultipleRetrievalConfig,
+  getSelectedDatasetsMode,
+} from '@/app/components/workflow/nodes/knowledge-retrieval/utils'
 
 type PublishConfig = {
   modelConfig: ModelConfig
@@ -217,14 +216,14 @@ const Configuration: FC = () => {
   const [collectionList, setCollectionList] = useState<Collection[]>([])
   useEffect(() => {}, [])
   const [datasetConfigs, setDatasetConfigs] = useState<DatasetConfigs>({
-    retrieval_model: RETRIEVE_TYPE.oneWay,
+    retrieval_model: RETRIEVE_TYPE.multiWay,
     reranking_model: {
       reranking_provider_name: '',
       reranking_model_name: '',
     },
-    top_k: 2,
+    top_k: DATASET_DEFAULT.top_k,
     score_threshold_enabled: false,
-    score_threshold: 0.7,
+    score_threshold: DATASET_DEFAULT.score_threshold,
     datasets: {
       datasets: [],
     },
@@ -250,6 +249,7 @@ const Configuration: FC = () => {
     { setTrue: showSelectDataSet, setFalse: hideSelectDataSet },
   ] = useBoolean(false)
   const selectedIds = dataSets.map(item => item.id)
+  const [rerankSettingModalOpen, setRerankSettingModalOpen] = useState(false)
   const handleSelect = (data: DataSet[]) => {
     if (
       isEqual(
@@ -262,8 +262,8 @@ const Configuration: FC = () => {
     }
 
     formattingChangedDispatcher()
-    if (data.find(item => !item.name)) {
-      // has not loaded selected dataset
+    let newDatasets = data
+    if (data.find(item => !item.name)) { // has not loaded selected dataset
       const newSelected = produce(data, (draft: any) => {
         data.forEach((item, index) => {
           if (!item.name) {
@@ -275,11 +275,45 @@ const Configuration: FC = () => {
         })
       })
       setDataSets(newSelected)
+      newDatasets = newSelected
     }
     else {
       setDataSets(data)
     }
     hideSelectDataSet()
+    const {
+      allEconomic,
+      mixtureHighQualityAndEconomic,
+      inconsistentEmbeddingModel,
+    } = getSelectedDatasetsMode(newDatasets)
+
+    if (allEconomic || mixtureHighQualityAndEconomic || inconsistentEmbeddingModel)
+      setRerankSettingModalOpen(true)
+
+    const { datasets, retrieval_model, score_threshold_enabled, ...restConfigs } = datasetConfigs
+
+    const retrievalConfig = getMultipleRetrievalConfig({
+      top_k: restConfigs.top_k,
+      score_threshold: restConfigs.score_threshold,
+      reranking_model: restConfigs.reranking_model && {
+        provider: restConfigs.reranking_model.reranking_provider_name,
+        model: restConfigs.reranking_model.reranking_model_name,
+      },
+      reranking_mode: restConfigs.reranking_mode,
+      weights: restConfigs.weights,
+      reranking_enable: restConfigs.reranking_enable,
+    }, newDatasets)
+
+    setDatasetConfigs({
+      ...retrievalConfig,
+      reranking_model: restConfigs.reranking_model && {
+        reranking_provider_name: restConfigs.reranking_model.reranking_provider_name,
+        reranking_model_name: restConfigs.reranking_model.reranking_model_name,
+      },
+      retrieval_model,
+      score_threshold_enabled,
+      datasets,
+    })
   }
 
   const [
@@ -663,7 +697,7 @@ const Configuration: FC = () => {
         syncToPublishedConfig(config)
         setPublishedConfig(config)
         setDatasetConfigs({
-          retrieval_model: RETRIEVE_TYPE.oneWay,
+          retrieval_model: RETRIEVE_TYPE.multiWay,
           ...modelConfig.dataset_configs,
         })
         setHasFetchedDetail(true)
@@ -861,80 +895,80 @@ const Configuration: FC = () => {
   }
 
   return (
-    <ConfigContext.Provider
-      value={{
-        appId,
-        isAPIKeySet,
-        isTrailFinished: false,
-        mode,
-        modelModeType,
-        promptMode,
-        isAdvancedMode,
-        isAgent,
-        isOpenAI,
-        isFunctionCall,
-        collectionList,
-        setPromptMode,
-        canReturnToSimpleMode,
-        setCanReturnToSimpleMode,
-        chatPromptConfig,
-        completionPromptConfig,
-        currentAdvancedPrompt,
-        setCurrentAdvancedPrompt,
-        conversationHistoriesRole:
-          completionPromptConfig.conversation_histories_role,
-        showHistoryModal,
-        setConversationHistoriesRole,
-        hasSetBlockStatus,
-        conversationId,
-        introduction,
-        setIntroduction,
-        suggestedQuestions,
-        setSuggestedQuestions,
-        setConversationId,
-        controlClearChatMessage,
-        setControlClearChatMessage,
-        prevPromptConfig,
-        setPrevPromptConfig,
-        moreLikeThisConfig,
-        setMoreLikeThisConfig,
-        suggestedQuestionsAfterAnswerConfig,
-        setSuggestedQuestionsAfterAnswerConfig,
-        speechToTextConfig,
-        setSpeechToTextConfig,
-        textToSpeechConfig,
-        setTextToSpeechConfig,
-        citationConfig,
-        setCitationConfig,
-        annotationConfig,
-        setAnnotationConfig,
-        moderationConfig,
-        setModerationConfig,
-        externalDataToolsConfig,
-        setExternalDataToolsConfig,
-        formattingChanged,
-        setFormattingChanged,
-        inputs,
-        setInputs,
-        query,
-        setQuery,
-        completionParams,
-        setCompletionParams,
-        modelConfig,
-        setModelConfig,
-        showSelectDataSet,
-        dataSets,
-        setDataSets,
-        datasetConfigs,
-        setDatasetConfigs,
-        hasSetContextVar,
-        isShowVisionConfig,
-        visionConfig,
-        setVisionConfig: handleSetVisionConfig,
-        isShowFileConfig,
-        fileConfig,
-        setFileConfig: handleSetFileConfig,
-      }}
+    <ConfigContext.Provider value={{
+      appId,
+      isAPIKeySet,
+      isTrailFinished: false,
+      mode,
+      modelModeType,
+      promptMode,
+      isAdvancedMode,
+      isAgent,
+      isOpenAI,
+      isFunctionCall,
+      collectionList,
+      setPromptMode,
+      canReturnToSimpleMode,
+      setCanReturnToSimpleMode,
+      chatPromptConfig,
+      completionPromptConfig,
+      currentAdvancedPrompt,
+      setCurrentAdvancedPrompt,
+      conversationHistoriesRole: completionPromptConfig.conversation_histories_role,
+      showHistoryModal,
+      setConversationHistoriesRole,
+      hasSetBlockStatus,
+      conversationId,
+      introduction,
+      setIntroduction,
+      suggestedQuestions,
+      setSuggestedQuestions,
+      setConversationId,
+      controlClearChatMessage,
+      setControlClearChatMessage,
+      prevPromptConfig,
+      setPrevPromptConfig,
+      moreLikeThisConfig,
+      setMoreLikeThisConfig,
+      suggestedQuestionsAfterAnswerConfig,
+      setSuggestedQuestionsAfterAnswerConfig,
+      speechToTextConfig,
+      setSpeechToTextConfig,
+      textToSpeechConfig,
+      setTextToSpeechConfig,
+      citationConfig,
+      setCitationConfig,
+      annotationConfig,
+      setAnnotationConfig,
+      moderationConfig,
+      setModerationConfig,
+      externalDataToolsConfig,
+      setExternalDataToolsConfig,
+      formattingChanged,
+      setFormattingChanged,
+      inputs,
+      setInputs,
+      query,
+      setQuery,
+      completionParams,
+      setCompletionParams,
+      modelConfig,
+      setModelConfig,
+      showSelectDataSet,
+      dataSets,
+      setDataSets,
+      datasetConfigs,
+      setDatasetConfigs,
+      hasSetContextVar,
+      isShowVisionConfig,
+      visionConfig,
+      setVisionConfig: handleSetVisionConfig,
+      rerankSettingModalOpen,
+      setRerankSettingModalOpen,
+      isShowFileConfig,
+      fileConfig,
+      setFileConfig: handleSetFileConfig,
+    }}
     >
       <>
         <div className="flex flex-col h-full">
