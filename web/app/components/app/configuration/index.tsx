@@ -497,6 +497,10 @@ const Configuration: FC = () => {
   const isShowVisionConfig = !!currModel?.features?.includes(
     ModelFeatureEnum.vision,
   )
+
+  const isShowFileConfig = !!currModel?.features?.includes(
+    ModelFeatureEnum.file,
+  )
   // 定义初始化状态
 
   useEffect(() => {
@@ -927,6 +931,7 @@ const Configuration: FC = () => {
         isShowVisionConfig,
         visionConfig,
         setVisionConfig: handleSetVisionConfig,
+        isShowFileConfig,
         fileConfig,
         setFileConfig: handleSetFileConfig,
       }}
