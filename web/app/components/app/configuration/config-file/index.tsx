@@ -13,10 +13,10 @@ import ConfigContext from '@/context/debug-configuration'
 
 const ConfigFile: FC = () => {
   const { t } = useTranslation()
-  const { fileConfig, setFileConfig } = useContext(ConfigContext)
+  const { isShowFileConfig, fileConfig, setFileConfig } = useContext(ConfigContext)
 
-  // if (!isShowFileConfig)
-  //   return null
+  if (!isShowFileConfig)
+    return null
 
   return (
     <>

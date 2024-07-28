@@ -83,6 +83,7 @@ class ModelFeature(Enum):
     AGENT_THOUGHT = "agent-thought"
     VISION = "vision"
     STREAM_TOOL_CALL = "stream-tool-call"
+    FILE = "file"
 
 
 class DefaultParameterName(Enum):

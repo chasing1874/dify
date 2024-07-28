@@ -18,6 +18,15 @@ from models.model import UploadFile
 class FileType(enum.Enum):
     IMAGE = 'image'
     SHEET = 'sheet'
+    DOCUMENT = 'document',
+    AUDIO = 'audio',
+    VIDEO = 'video',
+    CODE = 'code',
+    ARCHIVE = 'archive',
+    EXECUTABLE = 'executable',
+    WEB_PAGE = 'web_page',
+    DATABASE = 'database',
+    OTHER = 'other'
 
     @staticmethod
     def value_of(value):

@@ -691,8 +691,11 @@ const Configuration: FC = () => {
           completionParams: model.completion_params,
         }
 
-        if (modelConfig.file_upload)
+        if (modelConfig.file_upload.image)
           handleSetVisionConfig(modelConfig.file_upload.image, true)
+
+        if (modelConfig.file_upload.file)
+          handleSetFileConfig(modelConfig.file_upload.file, true)
 
         syncToPublishedConfig(config)
         setPublishedConfig(config)
