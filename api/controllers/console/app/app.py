@@ -149,12 +149,7 @@ class AppApi(Resource):
         """Get app detail"""
         app_service = AppService()
 
-        print(f'app model mode: {app_model.mode}')
-
         app_model = app_service.get_app(app_model)
-
-        print(f'app model: {app_model.app_model_config.file_upload}')
-
 
         return app_model
 

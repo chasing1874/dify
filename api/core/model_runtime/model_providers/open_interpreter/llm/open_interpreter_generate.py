@@ -1,4 +1,5 @@
 import base64
+import logging
 import uuid
 from collections.abc import Generator
 from enum import Enum
@@ -22,6 +23,7 @@ from core.model_runtime.model_providers.openllm.llm.openllm_generate_errors impo
     InvalidAuthenticationError,
 )
 
+logger = logging.getLogger(__name__)
 
 class Message(BaseModel):
     role: Literal["user", "assistant", "computer"]
@@ -81,9 +83,10 @@ class OpenInterpreterGenerate:
 
         conversation_id = model_parameters.get('conversation_id', '')
         if not conversation_id or conversation_id == '':
-            raise BadRequestError('conversation_id is required')
-
-        prompt = self._handle_prompt(prompt_messages)
+            logger.warning('[OI] conversation_id is empty, carry whole context conversation')
+            prompt = self._handle_prompt_with_context(prompt_messages)
+        else:
+            prompt = self._handle_prompt(prompt_messages)
         data = {
             'prompt': prompt,
             'files': self._handle_files(prompt_messages),
@@ -95,9 +98,6 @@ class OpenInterpreterGenerate:
             'conversation_id': conversation_id,
             'model_parameters': model_parameters,
         }
-
-        print('generate, data: ', data)
-
 
         method = "/stream_chat" if stream else "/chat"
         try:
@@ -124,7 +124,8 @@ class OpenInterpreterGenerate:
                 raise InvalidAPIKeyError(msg)
             else:
                 raise InternalServerError(f"Unknown error: {err} with message: {msg}")
-        prompt_tokens = len(prompt.split())
+        # todo: token计算    
+        prompt_tokens = 0
         if stream:
             return self._handle_chat_stream_generate_response(prompt_tokens, response)
         return self._handle_chat_generate_response(prompt_tokens, response)
@@ -162,6 +163,31 @@ class OpenInterpreterGenerate:
                     prompt += item.data
                     prompt += '\n'
         return prompt
+    
+    def _handle_prompt_with_context(self, prompt_messages: list[OpenInterpreterGenerateMessage]) -> list[dict]:
+        list_prompt = []
+        if len(prompt_messages) == 0:
+            return []
+        for message in prompt_messages:
+            content = message.content
+            if isinstance(content, str):
+                prompt_dict = {
+                    "role": message.role,
+                    "type": message.type,
+                    "content": content
+                }
+                list_prompt.append(prompt_dict)
+            if isinstance(content, list):
+                for item in content:
+                    if isinstance(item, TextPromptMessageContent):
+                        prompt_dict = {
+                            "role": message.role,
+                            "type": message.type,
+                            "content": item.data
+                        }
+                        list_prompt.append(prompt_dict)
+                    # 暂不处理图片、文件
+        return list_prompt
     
     def _handle_system_prompt(self, prompt_messages: list[OpenInterpreterGenerateMessage]) -> str:
         system_prompt = ''
