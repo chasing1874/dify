@@ -5,6 +5,7 @@ label:
 model_type: llm
 features:
   - agent-thought
+  - vision
   - file
 model_properties:
   mode: chat
