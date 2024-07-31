@@ -160,7 +160,8 @@ const Result: FC<IResultProps> = ({
       inputs,
     }
     // || fileConfig.enabled
-    if ((visionConfig.enabled) && completionFiles && completionFiles?.length > 0) {
+    // (visionConfig.enabled) &&
+    if (completionFiles && completionFiles?.length > 0) {
       data.files = completionFiles.map((item) => {
         if (item.transfer_method === TransferMethod.local_file) {
           return {

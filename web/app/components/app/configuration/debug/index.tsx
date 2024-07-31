@@ -98,6 +98,7 @@ const Debug: FC<IDebug> = ({
     datasetConfigs,
     visionConfig,
     fileConfig,
+    setFileConfig,
     setVisionConfig,
   } = useContext(ConfigContext)
   const { eventEmitter } = useEventEmitterContextContext()
@@ -326,7 +327,7 @@ const Debug: FC<IDebug> = ({
     }
 
     if (
-      visionConfig.enabled
+      (visionConfig.enabled || fileConfig.enabled)
       && completionFiles
       && completionFiles?.length > 0
     ) {
@@ -439,7 +440,39 @@ const Debug: FC<IDebug> = ({
       }
     }
   }
-  // add 处理是否支持文件，后端需提供类似于.vision
+  const handleFileConfigInMultipleModel = () => {
+    if (debugWithMultipleModel && mode) {
+      const supportedFile = multipleModelConfigs.some((modelConfig) => {
+        const currentProvider = textGenerationModelList.find(
+          modelItem => modelItem.provider === modelConfig.provider,
+        )
+        const currentModel = currentProvider?.models.find(
+          model => model.model === modelConfig.model,
+        )
+
+        return currentModel?.features?.includes(ModelFeatureEnum.file)
+      })
+
+      if (supportedFile) {
+        setFileConfig(
+          {
+            ...fileConfig,
+            enabled: true,
+          },
+          true,
+        )
+      }
+      else {
+        setFileConfig(
+          {
+            ...fileConfig,
+            enabled: false,
+          },
+          true,
+        )
+      }
+    }
+  }
 
   useEffect(() => {
     handleVisionConfigInMultipleModel()
