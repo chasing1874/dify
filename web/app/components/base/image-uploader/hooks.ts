@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { imageUpload } from './utils'
 import { useToastContext } from '@/app/components/base/toast'
-import { TransferMethod } from '@/types/app'
+import { IMAGE_ALLOW_FILE_EXTENSIONS, TransferMethod } from '@/types/app'
 import type { ImageFile, VisionSettings } from '@/types/app'
 
 export const useImageFiles = () => {
@@ -128,8 +128,10 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
       return
     }
 
-    // if (!ALLOW_FILE_EXTENSIONS.includes(file.type.split('/')[1]))
-    //   return
+    if (!IMAGE_ALLOW_FILE_EXTENSIONS.includes(file.name.split('.')[1])) {
+      notify({ type: 'error', message: t('common.imageUploader.uploadFromComputerTypeLimit', { type: IMAGE_ALLOW_FILE_EXTENSIONS }) })
+      return
+    }
 
     if (limit && file.size > limit * 1024 * 1024) {
       notify({ type: 'error', message: t('common.imageUploader.uploadFromComputerLimit', { size: limit }) })

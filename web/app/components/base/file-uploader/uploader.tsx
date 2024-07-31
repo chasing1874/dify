@@ -1,7 +1,7 @@
 import type { ChangeEvent, FC } from 'react'
 import { useState } from 'react'
 import { useLocalFileUploader } from './hooks'
-import type { ImageFile } from '@/types/app'
+import type { ImageFile, VisionSettings } from '@/types/app'
 // import { ALLOW_FILE_EXTENSIONS } from '@/types/app'
 import {
   All_ALLOW_FILE_EXTENSIONS,
@@ -15,6 +15,7 @@ type UploaderProps = {
   limit?: number
   disabled?: boolean
   isImageEnabled?: boolean
+  visionConfig?: VisionSettings
 }
 
 const Uploader: FC<UploaderProps> = ({
@@ -24,12 +25,14 @@ const Uploader: FC<UploaderProps> = ({
   limit,
   disabled,
   isImageEnabled,
+  visionConfig,
 }) => {
   const [hovering, setHovering] = useState(false)
   const { handleLocalFileUpload } = useLocalFileUploader({
     limit,
     onFileUpload,
     disabled,
+    visionConfig,
   })
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

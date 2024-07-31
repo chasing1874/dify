@@ -81,13 +81,14 @@ const ChatInput: FC<ChatInputProps> = ({
     onFileClear,
   } = useFiles()
 
-  const { onFilePaste } = useFileClipboardUploader({ onFileUpload, fileConfig, fileFiles })
+  const { onFilePaste } = useFileClipboardUploader({ onFileUpload, fileConfig, fileFiles, visionConfig })
 
   const { onFileDragEnter, onFileDragLeave, onFileDragOver, onFileDrop, isFileDragActive }
   = useFileDraggableUploader<HTMLTextAreaElement>({
     onFileUpload,
     fileFiles,
     fileConfig,
+    visionConfig,
   })
 
   const isUseInputMethod = useRef(false)
@@ -255,6 +256,7 @@ const ChatInput: FC<ChatInputProps> = ({
                   onFileUpload={onFileUpload}
                   disabled={fileFiles.length >= fileConfig.number_limits}
                   isImageEnabled={visionConfig?.enabled}
+                  visionConfig={visionConfig}
                 />
                 <div className="mx-1 w-[1px] h-4 bg-black/5" />
               </div>

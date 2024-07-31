@@ -4,8 +4,8 @@ import { useParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { fileUpload } from './utils'
 import { useToastContext } from '@/app/components/base/toast'
-import { TransferMethod } from '@/types/app'
-import type { FileSettings, ImageFile } from '@/types/app'
+import type { FileSettings, ImageFile, VisionSettings } from '@/types/app'
+import { All_ALLOW_FILE_EXTENSIONS, File_ALLOW_FILE_EXTENSIONS, TransferMethod } from '@/types/app'
 
 export const useFiles = () => {
   const params = useParams()
@@ -115,9 +115,10 @@ type useLocalUploaderProps = {
   disabled?: boolean
   limit?: number
   onFileUpload: (imageFile: ImageFile) => void
+  visionConfig?: VisionSettings
 }
 
-export const useLocalFileUploader = ({ limit, disabled = false, onFileUpload }: useLocalUploaderProps) => {
+export const useLocalFileUploader = ({ limit, disabled = false, onFileUpload, visionConfig }: useLocalUploaderProps) => {
   const { notify } = useToastContext()
   const params = useParams()
   const { t } = useTranslation()
@@ -127,9 +128,16 @@ export const useLocalFileUploader = ({ limit, disabled = false, onFileUpload }: 
       // TODO: leave some warnings?
       return
     }
-
-    // if (!ALLOW_FILE_EXTENSIONS.includes(file.type.split('/')[1]))
-    //   return
+    if (visionConfig?.enabled) {
+      if (!All_ALLOW_FILE_EXTENSIONS.includes(file.name.split('.')[1])) {
+        notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerTypeLimit', { type: All_ALLOW_FILE_EXTENSIONS }) })
+        return
+      }
+    }
+    if (!File_ALLOW_FILE_EXTENSIONS.includes(file.name.split('.')[1])) {
+      notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerTypeLimit', { type: File_ALLOW_FILE_EXTENSIONS }) })
+      return
+    }
 
     if (limit && file.size > limit * 1024 * 1024) {
       notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerLimit', { size: limit }) })
@@ -183,9 +191,10 @@ type useClipboardUploaderProps = {
   fileFiles: ImageFile[]
   fileConfig?: FileSettings
   onFileUpload: (imageFile: ImageFile) => void
+  visionConfig?: VisionSettings
 }
 
-export const useFileClipboardUploader = ({ fileConfig, onFileUpload, fileFiles }: useClipboardUploaderProps) => {
+export const useFileClipboardUploader = ({ fileConfig, onFileUpload, fileFiles, visionConfig }: useClipboardUploaderProps) => {
   const allowLocalUpload = fileConfig?.transfer_methods?.includes(TransferMethod.local_file)
   const disabled = useMemo(() =>
     !fileConfig
@@ -194,7 +203,7 @@ export const useFileClipboardUploader = ({ fileConfig, onFileUpload, fileFiles }
     || fileFiles.length >= fileConfig.number_limits!,
   [allowLocalUpload, fileFiles.length, fileConfig])
   const limit = useMemo(() => fileConfig ? +fileConfig.image_file_size_limit! : 0, [fileConfig])
-  const { handleLocalFileUpload } = useLocalFileUploader({ limit, onFileUpload, disabled })
+  const { handleLocalFileUpload } = useLocalFileUploader({ limit, onFileUpload, disabled, visionConfig })
 
   const handleClipboardPaste = useCallback((e: ClipboardEvent<HTMLTextAreaElement>) => {
     // reserve native text copy behavior
@@ -215,9 +224,10 @@ type useDraggableUploaderProps = {
   fileFiles: ImageFile[]
   fileConfig?: FileSettings
   onFileUpload: (imageFile: ImageFile) => void
+  visionConfig?: VisionSettings
 }
 
-export const useFileDraggableUploader = <T extends HTMLElement>({ fileFiles, fileConfig, onFileUpload }: useDraggableUploaderProps) => {
+export const useFileDraggableUploader = <T extends HTMLElement>({ fileFiles, fileConfig, onFileUpload, visionConfig }: useDraggableUploaderProps) => {
   const allowLocalUpload = fileConfig?.transfer_methods?.includes(TransferMethod.local_file)
   const disabled = useMemo(() =>
     !fileConfig
@@ -226,7 +236,7 @@ export const useFileDraggableUploader = <T extends HTMLElement>({ fileFiles, fil
     || fileFiles.length >= fileConfig.number_limits!,
   [allowLocalUpload, fileFiles.length, fileConfig])
   const limit = useMemo(() => fileConfig ? +fileConfig.image_file_size_limit! : 0, [fileConfig])
-  const { handleLocalFileUpload } = useLocalFileUploader({ disabled, onFileUpload, limit })
+  const { handleLocalFileUpload } = useLocalFileUploader({ disabled, onFileUpload, limit, visionConfig })
   const [isDragActive, setIsDragActive] = useState(false)
 
   const handleDragEnter = useCallback((e: React.DragEvent<T>) => {

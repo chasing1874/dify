@@ -405,10 +405,11 @@ export const IMAGE_ALLOW_FILE_EXTENSIONS = [
 export const File_ALLOW_FILE_EXTENSIONS = [
   'xlsx',
   'xls',
-  'docx',
-  'doc',
+  'xlsm',
+  'xlt',
+  'xltx',
   'csv',
-  'txt',
+  'tsv',
 ]
 // add
 export const All_ALLOW_FILE_EXTENSIONS = [
@@ -419,10 +420,11 @@ export const All_ALLOW_FILE_EXTENSIONS = [
   'gif',
   'xlsx',
   'xls',
-  'docx',
-  'doc',
+  'xlsm',
+  'xlt',
+  'xltx',
   'csv',
-  'txt',
+  'tsv',
 ]
 
 // export const ALLOW_ANALYSIS_FILE_EXTENSIONS = [

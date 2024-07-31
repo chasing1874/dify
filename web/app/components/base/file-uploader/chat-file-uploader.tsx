@@ -12,22 +12,24 @@ import {
   PortalToFollowElemTrigger,
 } from '@/app/components/base/portal-to-follow-elem'
 import { Upload03 } from '@/app/components/base/icons/src/vender/line/general'
-import type { FileSettings, ImageFile } from '@/types/app'
+import type { FileSettings, ImageFile, VisionSettings } from '@/types/app'
 
 type UploadOnlyFromLocalProps = {
   onFileUpload: (imageFile: ImageFile) => void
   disabled?: boolean
   limit?: number
   isImageEnabled?: boolean
+  visionConfig?: VisionSettings
 }
 const UploadOnlyFromLocal: FC<UploadOnlyFromLocalProps> = ({
   onFileUpload,
   disabled,
   limit,
   isImageEnabled,
+  visionConfig,
 }) => {
   return (
-    <Uploader onFileUpload={onFileUpload} disabled={disabled} limit={limit} isImageEnabled={isImageEnabled}>
+    <Uploader onFileUpload={onFileUpload} disabled={disabled} limit={limit} isImageEnabled={isImageEnabled} visionConfig={visionConfig}>
       {hovering => (
         <div
           className={`
@@ -47,12 +49,14 @@ type UploaderButtonProps = {
   onFileUpload: (imageFile: ImageFile) => void
   disabled?: boolean
   limit?: number
+  visionConfig?: VisionSettings
 }
 const UploaderButton: FC<UploaderButtonProps> = ({
   methods,
   onFileUpload,
   disabled,
   limit,
+  visionConfig,
 }) => {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
@@ -104,6 +108,7 @@ const UploaderButton: FC<UploaderButtonProps> = ({
                 onFileUpload={handleUpload}
                 limit={limit}
                 closePopover={closePopover}
+                visionConfig={visionConfig}
               >
                 {hovering => (
                   <div
@@ -130,12 +135,14 @@ type ChatFileUploaderProps = {
   onFileUpload: (imageFile: ImageFile) => void
   disabled?: boolean
   isImageEnabled?: boolean
+  visionConfig?: VisionSettings
 }
 const ChatFileUploader: FC<ChatFileUploaderProps> = ({
   settings,
   onFileUpload,
   disabled,
   isImageEnabled,
+  visionConfig,
 }) => {
   const onlyUploadLocal
     = settings.transfer_methods.length === 1
@@ -148,6 +155,7 @@ const ChatFileUploader: FC<ChatFileUploaderProps> = ({
         disabled={disabled}
         limit={+settings.image_file_size_limit!}
         isImageEnabled={isImageEnabled}
+        visionConfig={visionConfig}
       />
     )
   }
@@ -158,6 +166,7 @@ const ChatFileUploader: FC<ChatFileUploaderProps> = ({
       onFileUpload={onFileUpload}
       disabled={disabled}
       limit={+settings.image_file_size_limit!}
+      visionConfig={visionConfig}
     />
   )
 }
