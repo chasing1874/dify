@@ -10,7 +10,7 @@ import {
 
 type UploaderProps = {
   children: (hovering: boolean) => JSX.Element
-  onUpload: (imageFile: ImageFile) => void
+  onFileUpload: (imageFile: ImageFile) => void
   closePopover?: () => void
   limit?: number
   disabled?: boolean
@@ -19,7 +19,7 @@ type UploaderProps = {
 
 const Uploader: FC<UploaderProps> = ({
   children,
-  onUpload,
+  onFileUpload,
   closePopover,
   limit,
   disabled,
@@ -28,7 +28,7 @@ const Uploader: FC<UploaderProps> = ({
   const [hovering, setHovering] = useState(false)
   const { handleLocalFileUpload } = useLocalFileUploader({
     limit,
-    onUpload,
+    onFileUpload,
     disabled,
   })
 

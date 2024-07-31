@@ -38,6 +38,7 @@ const DebugWithSingleModel = forwardRef<DebugWithSingleModelRefType, DebugWithSi
     appId,
     inputs,
     visionConfig,
+    fileConfig,
     collectionList,
     completionParams,
   } = useDebugConfigurationContext()
@@ -70,7 +71,7 @@ const DebugWithSingleModel = forwardRef<DebugWithSingleModelRefType, DebugWithSi
     const currentProvider = textGenerationModelList.find(item => item.provider === modelConfig.provider)
     const currentModel = currentProvider?.models.find(model => model.model === modelConfig.model_id)
     const supportVision = currentModel?.features?.includes(ModelFeatureEnum.vision)
-
+    const supportFile = currentModel?.features?.includes(ModelFeatureEnum.file)
     const configData = {
       ...config,
       model: {
@@ -86,8 +87,7 @@ const DebugWithSingleModel = forwardRef<DebugWithSingleModelRefType, DebugWithSi
       inputs,
       model_config: configData,
     }
-
-    if (visionConfig.enabled && files?.length && supportVision)
+    if ((visionConfig.enabled || fileConfig.enabled) && files?.length && (supportVision || supportFile))
       data.files = files
 
     handleSend(

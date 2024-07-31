@@ -11,7 +11,7 @@ import { AlertTriangle } from '@/app/components/base/icons/src/vender/solid/aler
 import TooltipPlus from '@/app/components/base/tooltip-plus'
 import type { ImageFile } from '@/types/app'
 import { TransferMethod } from '@/types/app'
-import FilePreview from '@/app/components/base/image-uploader/image-preview'
+import FilePreview from '@/app/components/base/file-uploader/file-preview'
 
 type FileListProps = {
   list: ImageFile[]

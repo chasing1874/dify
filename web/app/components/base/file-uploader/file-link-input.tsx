@@ -6,12 +6,12 @@ import type { ImageFile } from '@/types/app'
 import { TransferMethod } from '@/types/app'
 
 type FileLinkInputProps = {
-  onUpload: (imageFile: ImageFile) => void
+  onFileUpload: (imageFile: ImageFile) => void
   disabled?: boolean
 }
 const regex = /^(https?|ftp):\/\//
 const FileLinkInput: FC<FileLinkInputProps> = ({
-  onUpload,
+  onFileUpload,
   disabled,
 }) => {
   const { t } = useTranslation()
@@ -29,7 +29,7 @@ const FileLinkInput: FC<FileLinkInputProps> = ({
       url: fileLink,
     }
 
-    onUpload(imageFile)
+    onFileUpload(imageFile)
   }
 
   return (

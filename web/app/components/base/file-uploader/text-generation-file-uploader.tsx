@@ -20,11 +20,11 @@ import type { FileSettings, ImageFile } from '@/types/app'
 import { TransferMethod } from '@/types/app'
 
 type PasteFileLinkButtonProps = {
-  onUpload: (imageFile: ImageFile) => void
+  onFileUpload: (imageFile: ImageFile) => void
   disabled?: boolean
 }
 const PasteFileLinkButton: FC<PasteFileLinkButtonProps> = ({
-  onUpload,
+  onFileUpload,
   disabled,
 }) => {
   const { t } = useTranslation()
@@ -32,7 +32,7 @@ const PasteFileLinkButton: FC<PasteFileLinkButtonProps> = ({
 
   const handleUpload = (imageFile: ImageFile) => {
     setOpen(false)
-    onUpload(imageFile)
+    onFileUpload(imageFile)
   }
 
   const handleToggle = () => {
@@ -59,7 +59,7 @@ const PasteFileLinkButton: FC<PasteFileLinkButtonProps> = ({
       </PortalToFollowElemTrigger>
       <PortalToFollowElemContent className='z-10'>
         <div className='p-2 w-[320px] bg-white border-[0.5px] border-gray-200 rounded-lg shadow-lg'>
-          <FileLinkInput onUpload={handleUpload} />
+          <FileLinkInput onFileUpload={handleUpload} />
         </div>
       </PortalToFollowElemContent>
     </PortalToFollowElem>
@@ -77,22 +77,22 @@ const TextGenerationImageUploader: FC<TextGenerationImageUploaderProps> = ({
   const { t } = useTranslation()
 
   const {
-    files,
-    onUpload,
-    onRemove,
+    fileFiles,
+    onFileUpload,
+    onFileRemove,
     onFileLinkLoadError,
     onFileLinkLoadSuccess,
-    onReUpload,
+    onFileReUpload,
   } = useFiles()
 
   useEffect(() => {
-    onFilesChange(files)
-  }, [files])
+    onFilesChange(fileFiles)
+  }, [fileFiles])
 
   const localUpload = (
     <Uploader
-      onUpload={onUpload}
-      disabled={files.length >= settings.number_limits}
+      onFileUpload={onFileUpload}
+      disabled={fileFiles.length >= settings.number_limits}
       limit={+settings.image_file_size_limit!}
     >
       {
@@ -112,8 +112,8 @@ const TextGenerationImageUploader: FC<TextGenerationImageUploaderProps> = ({
 
   const urlUpload = (
     <PasteFileLinkButton
-      onUpload={onUpload}
-      disabled={files.length >= settings.number_limits}
+      onFileUpload={onFileUpload}
+      disabled={fileFiles.length >= settings.number_limits}
     />
   )
 
@@ -121,9 +121,9 @@ const TextGenerationImageUploader: FC<TextGenerationImageUploaderProps> = ({
     <div>
       <div className='mb-1'>
         <FileList
-          list={files}
-          onRemove={onRemove}
-          onReUpload={onReUpload}
+          list={fileFiles}
+          onRemove={onFileRemove}
+          onReUpload={onFileReUpload}
           onFileLinkLoadError={onFileLinkLoadError}
           onFileLinkLoadSuccess={onFileLinkLoadSuccess}
         />

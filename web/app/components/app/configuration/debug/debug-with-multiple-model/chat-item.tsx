@@ -40,6 +40,7 @@ const ChatItem: FC<ChatItemProps> = ({
     appId,
     inputs,
     visionConfig,
+    fileConfig,
     collectionList,
   } = useDebugConfigurationContext()
   const { textGenerationModelList } = useProviderContext()
@@ -65,6 +66,7 @@ const ChatItem: FC<ChatItemProps> = ({
     const currentProvider = textGenerationModelList.find(item => item.provider === modelAndParameter.provider)
     const currentModel = currentProvider?.models.find(model => model.model === modelAndParameter.model)
     const supportVision = currentModel?.features?.includes(ModelFeatureEnum.vision)
+    const supportFile = currentModel?.features?.includes(ModelFeatureEnum.file)
 
     const configData = {
       ...config,
@@ -82,7 +84,7 @@ const ChatItem: FC<ChatItemProps> = ({
       model_config: configData,
     }
 
-    if (visionConfig.enabled && files?.length && supportVision)
+    if ((visionConfig.enabled || fileConfig.enabled) && files?.length && (supportVision || supportFile))
       data.files = files
 
     handleSend(
@@ -93,7 +95,7 @@ const ChatItem: FC<ChatItemProps> = ({
         onGetSuggestedQuestions: (responseItemId, getAbortController) => fetchSuggestedQuestions(appId, responseItemId, getAbortController),
       },
     )
-  }, [appId, config, handleSend, inputs, modelAndParameter, textGenerationModelList, visionConfig.enabled])
+  }, [appId, config, handleSend, inputs, modelAndParameter, textGenerationModelList, visionConfig.enabled, fileConfig.enabled])
 
   const { eventEmitter } = useEventEmitterContextContext()
   eventEmitter?.useSubscription((v: any) => {
