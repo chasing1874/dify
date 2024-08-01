@@ -1,3 +1,4 @@
+'use client'
 import type { FC } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -5,6 +6,7 @@ import {
   RiCloseLine,
   RiLoader2Line,
 } from '@remixicon/react'
+import s from './index.module.css'
 import cn from '@/utils/classnames'
 import { RefreshCcw01 } from '@/app/components/base/icons/src/vender/line/arrows'
 import { AlertTriangle } from '@/app/components/base/icons/src/vender/solid/alertsAndFeedback'
@@ -45,6 +47,23 @@ const FileList: FC<FileListProps> = ({
     if (item.type === TransferMethod.remote_url && onFileLinkLoadError)
       onFileLinkLoadError(item._id)
   }
+  // utils
+  const getFileType = (currentFile: File) => {
+    if (!currentFile)
+      return ''
+
+    const arr = currentFile.name.split('.')
+    return arr[arr.length - 1]
+  }
+
+  const getFileSize = (size: number) => {
+    if (size / 1024 < 10)
+      return `${(size / 1024).toFixed(2)}KB`
+
+    return `${(size / 1024 / 1024).toFixed(2)}MB`
+  }
+
+  // 保持一致
 
   function getIcon(file: ImageFile) {
     const suffix = file.file?.name?.split?.('.')?.pop?.()
@@ -103,7 +122,7 @@ const FileList: FC<FileListProps> = ({
               )}
             </div>
           )}
-          <img
+          {/* <img
             className="w-16 h-16 rounded-lg object-cover cursor-pointer border-[0.5px] border-black/5"
             alt={item.file?.name}
             onLoad={() => handleFileLinkLoadSuccess(item)}
@@ -117,7 +136,14 @@ const FileList: FC<FileListProps> = ({
                 getIcon(item) as string,
               )
             }
-          />
+          /> */}
+
+          <div className={s.fileInfo}>
+            <div className={cn(s.fileIcon, s[getFileType(item.file)])} />
+            <div className={s.filename}>{item.file?.name}</div>
+            <div className={s.size}>{getFileSize(item.file.size)}</div>
+          </div>
+
           {!readonly && (
             <button
               type="button"
