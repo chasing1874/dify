@@ -12,7 +12,7 @@ import { RefreshCcw01 } from '@/app/components/base/icons/src/vender/line/arrows
 import { AlertTriangle } from '@/app/components/base/icons/src/vender/solid/alertsAndFeedback'
 import TooltipPlus from '@/app/components/base/tooltip-plus'
 import type { ImageFile } from '@/types/app'
-import { TransferMethod } from '@/types/app'
+import { IMAGE_ALLOW_FILE_EXTENSIONS, TransferMethod } from '@/types/app'
 import FilePreview from '@/app/components/base/file-uploader/file-preview'
 
 type FileListProps = {
@@ -53,13 +53,23 @@ const FileList: FC<FileListProps> = ({
       return ''
 
     const arr = currentFile.name.split('.')
+    console.log(arr[arr.length - 1], '文件类型')
     return arr[arr.length - 1]
   }
+  const isImageType = (currentFile: File) => {
+    if (!currentFile)
+      return ''
+    const arr = currentFile.name.split('.')
+
+    return IMAGE_ALLOW_FILE_EXTENSIONS.includes(arr[arr.length - 1])
+  }
+
   const getFileName = (currentFile: File, maxLength: number) => {
     const name = currentFile.name
-    if (name.length <= maxLength)
-      return name
-    return `${name.slice(0, maxLength)}...`
+    const basename = name.substring(0, name.lastIndexOf('.'))
+    if (basename.length <= maxLength)
+      return basename
+    return `${basename.slice(0, maxLength)}...`
   }
   const getFileSize = (size: number) => {
     if (size / 1024 < 1024)
@@ -70,11 +80,7 @@ const FileList: FC<FileListProps> = ({
 
   // 保持一致
   function getIcon(file: ImageFile) {
-    const suffix = file.file?.name?.split?.('.')?.pop?.()
-    if (suffix === 'xlsx')
-      return 'https://pic.imgdb.cn/item/66866f91d9c307b7e9a391d0.png'
-    else
-      return file.type === TransferMethod.remote_url ? file.url : file.base64Url
+    return file.type === TransferMethod.remote_url ? file.url : file.base64Url
   }
 
   return (
@@ -83,6 +89,7 @@ const FileList: FC<FileListProps> = ({
         <div
           key={item._id}
           className="[width:calc(33.33333%-5.33333px)] group relative mr-1 border-[0.5px] border-black/5 rounded-lg"
+          style={{ backgroundColor: '#f5f5f5', borderRadius: '4px' }}
         >
           {item.type === TransferMethod.local_file && item.progress !== 100 && (
             <>
@@ -127,21 +134,42 @@ const FileList: FC<FileListProps> = ({
             </div>
           )}
           <div
-            className={`${s.fileInfo}  h-[52px] p-[10px] rounded-lg  cursor-pointer border-[0.5px] border-black/5 bg-[var(--floating_stroke_grey_1,#f5f5f5)`}
+            className={`${s.fileInfo} h-[40px] p-[6px] rounded-lg  cursor-pointer border-[0.5px] border-black/5 bg-[var(--floating_stroke_grey_1,#f5f5f5)`}
             onLoad={() => handleFileLinkLoadSuccess(item)}
             onError={() => handleFileLinkLoadError(item)}
-            onClick={() =>
-              item.progress === 100
-            && setFilePreviewUrl(
-              getIcon(item) as string,
-            )
-            }>
-            <div className={cn(s.fileIcon, s[getFileType(item.file)])} />
+          >
 
+            {/* 对图片的单独处理 */}
+            {/* isImageType 返回true,直接将图片放到这里，如果为false 使用下面的fileIcon */}
+            {isImageType(item.file)
+              ? (
+                <img
+                  className={s.fileImage}
+                  alt={item.file?.name}
+                  onLoad={() => handleFileLinkLoadSuccess(item)}
+                  onError={() => handleFileLinkLoadError(item)}
+                  src={
+                    getIcon(item)
+                  }
+                  onClick={() =>
+                    item.progress === 100
+                  && setFilePreviewUrl(
+                    getIcon(item) as string,
+                  )
+                  }
+                />
+              )
+              : (
+                <div className={cn(s.fileIcon, s[getFileType(item.file)])} />
+              )}
+
+            {/* <div className={cn(s.fileIcon, s[getFileType(item.file)])} /> */}
             <div className='flex flex-col'>
-              {/*  className={s.filename}  className={s.size} */}
               <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5' >{getFileName(item.file, 15)}</div>
-              <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5'>{getFileSize(item.file.size)}</div>
+              <div className='flex center'>
+                <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{getFileType(item.file).toUpperCase()}</div>
+                <div className={cn(s.size, 'w-auto text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{getFileSize(item.file.size)}</div>
+              </div>
             </div>
           </div>
 

@@ -28,6 +28,7 @@ export const imageUpload: ImageUpload = ({
     onprogress: onProgress,
   }, isPublic, url)
     .then((res: { id: string }) => {
+      console.log(res, 'res.......')
       onSuccessCallback(res)
     })
     .catch(() => {

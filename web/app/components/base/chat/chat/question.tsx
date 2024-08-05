@@ -27,7 +27,6 @@ const Question: FC<QuestionProps> = ({
     content,
     message_files,
   } = item
-  console.log(content, message_files, '_______________')
 
   const imgSrcs = message_files?.length
     ? message_files.map((item) => {

@@ -427,15 +427,6 @@ export const All_ALLOW_FILE_EXTENSIONS = [
   'tsv',
 ]
 
-// export const ALLOW_ANALYSIS_FILE_EXTENSIONS = [
-//   "png",
-//   "jpg",
-//   "jpeg",
-//   "webp",
-//   "gif",
-//   "xlsx",
-// ];
-
 export type VisionSettings = {
   enabled: boolean
   number_limits: number
@@ -443,7 +434,6 @@ export type VisionSettings = {
   transfer_methods: TransferMethod[]
   image_file_size_limit?: number | string
 }
-// add
 export type FileSettings = {
   enabled: boolean
   number_limits: number
