@@ -55,16 +55,20 @@ const FileList: FC<FileListProps> = ({
     const arr = currentFile.name.split('.')
     return arr[arr.length - 1]
   }
-
+  const getFileName = (currentFile: File, maxLength: number) => {
+    const name = currentFile.name
+    if (name.length <= maxLength)
+      return name
+    return `${name.slice(0, maxLength)}...`
+  }
   const getFileSize = (size: number) => {
-    if (size / 1024 < 10)
+    if (size / 1024 < 1024)
       return `${(size / 1024).toFixed(2)}KB`
 
     return `${(size / 1024 / 1024).toFixed(2)}MB`
   }
 
   // 保持一致
-
   function getIcon(file: ImageFile) {
     const suffix = file.file?.name?.split?.('.')?.pop?.()
     if (suffix === 'xlsx')
@@ -74,11 +78,11 @@ const FileList: FC<FileListProps> = ({
   }
 
   return (
-    <div className="flex flex-wrap">
+    <div className="flex w-full flex-wrap">
       {list.map(item => (
         <div
           key={item._id}
-          className="group relative mr-1 border-[0.5px] border-black/5 rounded-lg"
+          className="[width:calc(33.33333%-5.33333px)] group relative mr-1 border-[0.5px] border-black/5 rounded-lg"
         >
           {item.type === TransferMethod.local_file && item.progress !== 100 && (
             <>
@@ -122,26 +126,23 @@ const FileList: FC<FileListProps> = ({
               )}
             </div>
           )}
-          {/* <img
-            className="w-16 h-16 rounded-lg object-cover cursor-pointer border-[0.5px] border-black/5"
-            alt={item.file?.name}
+          <div
+            className={`${s.fileInfo}  h-[52px] p-[10px] rounded-lg  cursor-pointer border-[0.5px] border-black/5 bg-[var(--floating_stroke_grey_1,#f5f5f5)`}
             onLoad={() => handleFileLinkLoadSuccess(item)}
             onError={() => handleFileLinkLoadError(item)}
-            src={
-              getIcon(item)
-            }
             onClick={() =>
               item.progress === 100
-              && setFilePreviewUrl(
-                getIcon(item) as string,
-              )
-            }
-          /> */}
-
-          <div className={s.fileInfo}>
+            && setFilePreviewUrl(
+              getIcon(item) as string,
+            )
+            }>
             <div className={cn(s.fileIcon, s[getFileType(item.file)])} />
-            <div className={s.filename}>{item.file?.name}</div>
-            <div className={s.size}>{getFileSize(item.file.size)}</div>
+
+            <div className='flex flex-col'>
+              {/*  className={s.filename}  className={s.size} */}
+              <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5' >{getFileName(item.file, 15)}</div>
+              <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5'>{getFileSize(item.file.size)}</div>
+            </div>
           </div>
 
           {!readonly && (

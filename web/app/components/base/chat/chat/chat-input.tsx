@@ -111,7 +111,6 @@ const ChatInput: FC<ChatInputProps> = ({
 
   const handleSend = () => {
     const files = imageFiles.concat(fileFiles)
-    // console.log(files, '------------------------')
     if (onSend) {
       if (
         files.find(

@@ -134,10 +134,14 @@ export const useLocalFileUploader = ({ limit, disabled = false, onFileUpload, vi
         return
       }
     }
-    if (!File_ALLOW_FILE_EXTENSIONS.includes(file.name.split('.')[1])) {
+    else {
       notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerTypeLimit', { type: File_ALLOW_FILE_EXTENSIONS }) })
       return
     }
+    // if (!File_ALLOW_FILE_EXTENSIONS.includes(file.name.split('.')[1])) {
+    //   notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerTypeLimit', { type: File_ALLOW_FILE_EXTENSIONS }) })
+    //   return
+    // }
 
     if (limit && file.size > limit * 1024 * 1024) {
       notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerLimit', { size: limit }) })

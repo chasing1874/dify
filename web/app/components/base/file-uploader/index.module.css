@@ -105,23 +105,19 @@
 .fileIcon {
   @apply shrink-0 w-6 h-6 mr-2 bg-center bg-no-repeat;
   background-image: url(../assets/unknow.svg);
-  background-size: 24px;
+  background-size: 30px;
 }
 
+.fileIcon.tsv
 .fileIcon.csv {
   background-image: url(../assets/csv.svg);
 }
 
-/* .fileIcon.doc {
-  background-image: url(../assets/doc.svg);
-}
-
-.fileIcon.docx {
-  background-image: url(../assets/docx.svg);
-} */
-
 .fileIcon.xlsx,
-.fileIcon.xls {
+.fileIcon.xlsm,
+.fileIcon.xlst,
+.fileIcon.xlt,
+.fileIcon.xltx {
   background-image: url(../assets/xlsx.svg);
 }
 
@@ -145,6 +141,14 @@
 
 /* .fileIcon.json {
   background-image: url(../assets/json.svg);
+} */
+
+/* .fileIcon.doc {
+  background-image: url(../assets/doc.svg);
+}
+
+.fileIcon.docx {
+  background-image: url(../assets/docx.svg);
 } */
 
 .fileInfo {
