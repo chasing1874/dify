@@ -12,22 +12,24 @@ import {
   PortalToFollowElemTrigger,
 } from '@/app/components/base/portal-to-follow-elem'
 import { Upload03 } from '@/app/components/base/icons/src/vender/line/general'
-import type { FileSettings, ImageFile } from '@/types/app'
+import type { FileSettings, ImageFile, VisionSettings } from '@/types/app'
 
 type UploadOnlyFromLocalProps = {
-  onUpload: (imageFile: ImageFile) => void
+  onFileUpload: (imageFile: ImageFile) => void
   disabled?: boolean
   limit?: number
   isImageEnabled?: boolean
+  visionConfig?: VisionSettings
 }
 const UploadOnlyFromLocal: FC<UploadOnlyFromLocalProps> = ({
-  onUpload,
+  onFileUpload,
   disabled,
   limit,
   isImageEnabled,
+  visionConfig,
 }) => {
   return (
-    <Uploader onUpload={onUpload} disabled={disabled} limit={limit} isImageEnabled={isImageEnabled}>
+    <Uploader onFileUpload={onFileUpload} disabled={disabled} limit={limit} isImageEnabled={isImageEnabled} visionConfig={visionConfig}>
       {hovering => (
         <div
           className={`
@@ -44,15 +46,17 @@ const UploadOnlyFromLocal: FC<UploadOnlyFromLocalProps> = ({
 
 type UploaderButtonProps = {
   methods: FileSettings['transfer_methods']
-  onUpload: (imageFile: ImageFile) => void
+  onFileUpload: (imageFile: ImageFile) => void
   disabled?: boolean
   limit?: number
+  visionConfig?: VisionSettings
 }
 const UploaderButton: FC<UploaderButtonProps> = ({
   methods,
-  onUpload,
+  onFileUpload,
   disabled,
   limit,
+  visionConfig,
 }) => {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
@@ -62,7 +66,7 @@ const UploaderButton: FC<UploaderButtonProps> = ({
   )
 
   const handleUpload = (imageFile: ImageFile) => {
-    onUpload(imageFile)
+    onFileUpload(imageFile)
   }
 
   const closePopover = () => setOpen(false)
@@ -92,7 +96,7 @@ const UploaderButton: FC<UploaderButtonProps> = ({
       </PortalToFollowElemTrigger>
       <PortalToFollowElemContent className="z-50">
         <div className="p-2 w-[260px] bg-white rounded-lg border-[0.5px] border-gray-200 shadow-lg">
-          <FileLinkInput onUpload={handleUpload} disabled={disabled} />
+          <FileLinkInput onFileUpload={handleUpload} disabled={disabled} />
           {hasUploadFromLocal && (
             <>
               <div className="flex items-center mt-2 px-2 text-xs font-medium text-gray-400">
@@ -101,9 +105,10 @@ const UploaderButton: FC<UploaderButtonProps> = ({
                 <div className="ml-3 w-[93px] h-[1px] bg-gradient-to-r from-[#F3F4F6]" />
               </div>
               <Uploader
-                onUpload={handleUpload}
+                onFileUpload={handleUpload}
                 limit={limit}
                 closePopover={closePopover}
+                visionConfig={visionConfig}
               >
                 {hovering => (
                   <div
@@ -127,15 +132,17 @@ const UploaderButton: FC<UploaderButtonProps> = ({
 
 type ChatFileUploaderProps = {
   settings: FileSettings
-  onUpload: (imageFile: ImageFile) => void
+  onFileUpload: (imageFile: ImageFile) => void
   disabled?: boolean
   isImageEnabled?: boolean
+  visionConfig?: VisionSettings
 }
 const ChatFileUploader: FC<ChatFileUploaderProps> = ({
   settings,
-  onUpload,
+  onFileUpload,
   disabled,
   isImageEnabled,
+  visionConfig,
 }) => {
   const onlyUploadLocal
     = settings.transfer_methods.length === 1
@@ -144,10 +151,11 @@ const ChatFileUploader: FC<ChatFileUploaderProps> = ({
   if (onlyUploadLocal) {
     return (
       <UploadOnlyFromLocal
-        onUpload={onUpload}
+        onFileUpload={onFileUpload}
         disabled={disabled}
         limit={+settings.image_file_size_limit!}
         isImageEnabled={isImageEnabled}
+        visionConfig={visionConfig}
       />
     )
   }
@@ -155,9 +163,10 @@ const ChatFileUploader: FC<ChatFileUploaderProps> = ({
   return (
     <UploaderButton
       methods={settings.transfer_methods}
-      onUpload={onUpload}
+      onFileUpload={onFileUpload}
       disabled={disabled}
       limit={+settings.image_file_size_limit!}
+      visionConfig={visionConfig}
     />
   )
 }

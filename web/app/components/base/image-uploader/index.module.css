@@ -1,0 +1,27 @@
+
+.imageIcon {
+  @apply shrink-0 w-8 h-8 mr-2 bg-center bg-no-repeat;
+  border-radius: 4px;
+}
+.imageInfo {
+  @apply grow flex items-center;
+  z-index: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.imageName {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  color: #1D2939;
+}
+
+.size,
+.type {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  color: #667085;
+}

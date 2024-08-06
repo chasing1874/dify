@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { imageUpload } from './utils'
 import { useToastContext } from '@/app/components/base/toast'
-import { TransferMethod } from '@/types/app'
+import { IMAGE_ALLOW_FILE_EXTENSIONS, TransferMethod } from '@/types/app'
 import type { ImageFile, VisionSettings } from '@/types/app'
 
 export const useImageFiles = () => {
@@ -101,7 +101,7 @@ export const useImageFiles = () => {
   }, [files])
 
   return {
-    files: filteredFiles,
+    imageFiles: filteredFiles,
     onUpload: handleUpload,
     onRemove: handleRemove,
     onImageLinkLoadError: handleImageLinkLoadError,
@@ -128,8 +128,10 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
       return
     }
 
-    // if (!ALLOW_FILE_EXTENSIONS.includes(file.type.split('/')[1]))
-    //   return
+    if (!IMAGE_ALLOW_FILE_EXTENSIONS.includes(file.name.split('.')[1])) {
+      notify({ type: 'error', message: t('common.imageUploader.uploadFromComputerTypeLimit', { type: IMAGE_ALLOW_FILE_EXTENSIONS }) })
+      return
+    }
 
     if (limit && file.size > limit * 1024 * 1024) {
       notify({ type: 'error', message: t('common.imageUploader.uploadFromComputerLimit', { size: limit }) })
@@ -180,19 +182,19 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
 }
 
 type useClipboardUploaderProps = {
-  files: ImageFile[]
+  imageFiles: ImageFile[]
   visionConfig?: VisionSettings
   onUpload: (imageFile: ImageFile) => void
 }
 
-export const useClipboardUploader = ({ visionConfig, onUpload, files }: useClipboardUploaderProps) => {
+export const useClipboardUploader = ({ visionConfig, onUpload, imageFiles }: useClipboardUploaderProps) => {
   const allowLocalUpload = visionConfig?.transfer_methods?.includes(TransferMethod.local_file)
   const disabled = useMemo(() =>
     !visionConfig
     || !visionConfig?.enabled
     || !allowLocalUpload
-    || files.length >= visionConfig.number_limits!,
-  [allowLocalUpload, files.length, visionConfig])
+    || imageFiles.length >= visionConfig.number_limits!,
+  [allowLocalUpload, imageFiles.length, visionConfig])
   const limit = useMemo(() => visionConfig ? +visionConfig.image_file_size_limit! : 0, [visionConfig])
   const { handleLocalFileUpload } = useLocalFileUploader({ limit, onUpload, disabled })
 
@@ -212,19 +214,19 @@ export const useClipboardUploader = ({ visionConfig, onUpload, files }: useClipb
 }
 
 type useDraggableUploaderProps = {
-  files: ImageFile[]
+  imageFiles: ImageFile[]
   visionConfig?: VisionSettings
   onUpload: (imageFile: ImageFile) => void
 }
 
-export const useDraggableUploader = <T extends HTMLElement>({ visionConfig, onUpload, files }: useDraggableUploaderProps) => {
+export const useDraggableUploader = <T extends HTMLElement>({ visionConfig, onUpload, imageFiles }: useDraggableUploaderProps) => {
   const allowLocalUpload = visionConfig?.transfer_methods?.includes(TransferMethod.local_file)
   const disabled = useMemo(() =>
     !visionConfig
     || !visionConfig?.enabled
     || !allowLocalUpload
-    || files.length >= visionConfig.number_limits!,
-  [allowLocalUpload, files.length, visionConfig])
+    || imageFiles.length >= visionConfig.number_limits!,
+  [allowLocalUpload, imageFiles.length, visionConfig])
   const limit = useMemo(() => visionConfig ? +visionConfig.image_file_size_limit! : 0, [visionConfig])
   const { handleLocalFileUpload } = useLocalFileUploader({ disabled, onUpload, limit })
   const [isDragActive, setIsDragActive] = useState(false)

@@ -112,7 +112,7 @@ const TextGenerationItem: FC<TextGenerationItemProps> = ({
       model_config: configData,
     }
 
-    if (visionConfig.enabled && files && files?.length > 0) {
+    if ((visionConfig.enabled || fileConfig.enabled) && files && files?.length > 0) {
       data.files = files.map((item) => {
         if (item.transfer_method === TransferMethod.local_file) {
           return {

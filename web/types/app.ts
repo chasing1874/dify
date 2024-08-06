@@ -405,10 +405,11 @@ export const IMAGE_ALLOW_FILE_EXTENSIONS = [
 export const File_ALLOW_FILE_EXTENSIONS = [
   'xlsx',
   'xls',
-  'docx',
-  'doc',
+  'xlsm',
+  'xlt',
+  'xltx',
   'csv',
-  'txt',
+  'tsv',
 ]
 // add
 export const All_ALLOW_FILE_EXTENSIONS = [
@@ -419,20 +420,12 @@ export const All_ALLOW_FILE_EXTENSIONS = [
   'gif',
   'xlsx',
   'xls',
-  'docx',
-  'doc',
+  'xlsm',
+  'xlt',
+  'xltx',
   'csv',
-  'txt',
+  'tsv',
 ]
-
-// export const ALLOW_ANALYSIS_FILE_EXTENSIONS = [
-//   "png",
-//   "jpg",
-//   "jpeg",
-//   "webp",
-//   "gif",
-//   "xlsx",
-// ];
 
 export type VisionSettings = {
   enabled: boolean
@@ -441,7 +434,6 @@ export type VisionSettings = {
   transfer_methods: TransferMethod[]
   image_file_size_limit?: number | string
 }
-// add
 export type FileSettings = {
   enabled: boolean
   number_limits: number

@@ -4,8 +4,8 @@ import { useParams } from 'next/navigation'
 import { useTranslation } from 'react-i18next'
 import { fileUpload } from './utils'
 import { useToastContext } from '@/app/components/base/toast'
-import { TransferMethod } from '@/types/app'
-import type { FileSettings, ImageFile } from '@/types/app'
+import type { FileSettings, ImageFile, VisionSettings } from '@/types/app'
+import { All_ALLOW_FILE_EXTENSIONS, File_ALLOW_FILE_EXTENSIONS, TransferMethod } from '@/types/app'
 
 export const useFiles = () => {
   const params = useParams()
@@ -82,7 +82,7 @@ export const useFiles = () => {
           setFiles(newFiles)
         },
         onErrorCallback: () => {
-          notify({ type: 'error', message: t('common.imageUploader.uploadFromComputerUploadError') })
+          notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerUploadError') })
           const newFiles = [...files.slice(0, index), { ...currentImageFile, progress: -1 }, ...files.slice(index + 1)]
           filesRef.current = newFiles
           setFiles(newFiles)
@@ -101,23 +101,24 @@ export const useFiles = () => {
   }, [files])
 
   return {
-    files: filteredFiles,
-    onUpload: handleUpload,
-    onRemove: handleRemove,
+    fileFiles: filteredFiles,
+    onFileUpload: handleUpload,
+    onFileRemove: handleRemove,
     onFileLinkLoadError: handleFileLinkLoadError,
     onFileLinkLoadSuccess: handleFileLinkLoadSuccess,
-    onReUpload: handleReUpload,
-    onClear: handleClear,
+    onFileReUpload: handleReUpload,
+    onFileClear: handleClear,
   }
 }
 
 type useLocalUploaderProps = {
   disabled?: boolean
   limit?: number
-  onUpload: (imageFile: ImageFile) => void
+  onFileUpload: (imageFile: ImageFile) => void
+  visionConfig?: VisionSettings
 }
 
-export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useLocalUploaderProps) => {
+export const useLocalFileUploader = ({ limit, disabled = false, onFileUpload, visionConfig }: useLocalUploaderProps) => {
   const { notify } = useToastContext()
   const params = useParams()
   const { t } = useTranslation()
@@ -127,9 +128,18 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
       // TODO: leave some warnings?
       return
     }
-
-    // if (!ALLOW_FILE_EXTENSIONS.includes(file.type.split('/')[1]))
-    //   return
+    if (visionConfig?.enabled) {
+      if (!All_ALLOW_FILE_EXTENSIONS.includes(file.name.split('.')[1])) {
+        notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerTypeLimit', { type: All_ALLOW_FILE_EXTENSIONS }) })
+        return
+      }
+    }
+    else {
+      if (!File_ALLOW_FILE_EXTENSIONS.includes(file.name.split('.')[1])) {
+        notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerTypeLimit', { type: File_ALLOW_FILE_EXTENSIONS }) })
+        return
+      }
+    }
 
     if (limit && file.size > limit * 1024 * 1024) {
       notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerLimit', { size: limit }) })
@@ -149,18 +159,18 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
           base64Url: reader.result as string,
           progress: 0,
         }
-        onUpload(imageFile)
+        onFileUpload(imageFile)
         fileUpload({
           file: imageFile.file,
           onProgressCallback: (progress) => {
-            onUpload({ ...imageFile, progress })
+            onFileUpload({ ...imageFile, progress })
           },
           onSuccessCallback: (res) => {
-            onUpload({ ...imageFile, fileId: res.id, progress: 100 })
+            onFileUpload({ ...imageFile, fileId: res.id, progress: 100 })
           },
           onErrorCallback: () => {
             notify({ type: 'error', message: t('common.fileUploader.uploadFromComputerUploadError') })
-            onUpload({ ...imageFile, progress: -1 })
+            onFileUpload({ ...imageFile, progress: -1 })
           },
         }, !!params.token)
       },
@@ -174,27 +184,28 @@ export const useLocalFileUploader = ({ limit, disabled = false, onUpload }: useL
       false,
     )
     reader.readAsDataURL(file)
-  }, [disabled, limit, notify, t, onUpload, params.token])
+  }, [disabled, limit, notify, t, onFileUpload, params.token])
 
   return { disabled, handleLocalFileUpload }
 }
 
 type useClipboardUploaderProps = {
-  files: ImageFile[]
-  visionConfig?: FileSettings
-  onUpload: (imageFile: ImageFile) => void
+  fileFiles: ImageFile[]
+  fileConfig?: FileSettings
+  onFileUpload: (imageFile: ImageFile) => void
+  visionConfig?: VisionSettings
 }
 
-export const useClipboardUploader = ({ visionConfig, onUpload, files }: useClipboardUploaderProps) => {
-  const allowLocalUpload = visionConfig?.transfer_methods?.includes(TransferMethod.local_file)
+export const useFileClipboardUploader = ({ fileConfig, onFileUpload, fileFiles, visionConfig }: useClipboardUploaderProps) => {
+  const allowLocalUpload = fileConfig?.transfer_methods?.includes(TransferMethod.local_file)
   const disabled = useMemo(() =>
-    !visionConfig
-    || !visionConfig?.enabled
+    !fileConfig
+    || !fileConfig?.enabled
     || !allowLocalUpload
-    || files.length >= visionConfig.number_limits!,
-  [allowLocalUpload, files.length, visionConfig])
-  const limit = useMemo(() => visionConfig ? +visionConfig.image_file_size_limit! : 0, [visionConfig])
-  const { handleLocalFileUpload } = useLocalFileUploader({ limit, onUpload, disabled })
+    || fileFiles.length >= fileConfig.number_limits!,
+  [allowLocalUpload, fileFiles.length, fileConfig])
+  const limit = useMemo(() => fileConfig ? +fileConfig.image_file_size_limit! : 0, [fileConfig])
+  const { handleLocalFileUpload } = useLocalFileUploader({ limit, onFileUpload, disabled, visionConfig })
 
   const handleClipboardPaste = useCallback((e: ClipboardEvent<HTMLTextAreaElement>) => {
     // reserve native text copy behavior
@@ -207,26 +218,27 @@ export const useClipboardUploader = ({ visionConfig, onUpload, files }: useClipb
   }, [handleLocalFileUpload])
 
   return {
-    onPaste: handleClipboardPaste,
+    onFilePaste: handleClipboardPaste,
   }
 }
 
 type useDraggableUploaderProps = {
-  files: ImageFile[]
-  visionConfig?: FileSettings
-  onUpload: (imageFile: ImageFile) => void
+  fileFiles: ImageFile[]
+  fileConfig?: FileSettings
+  onFileUpload: (imageFile: ImageFile) => void
+  visionConfig?: VisionSettings
 }
 
-export const useDraggableUploader = <T extends HTMLElement>({ visionConfig, onUpload, files }: useDraggableUploaderProps) => {
-  const allowLocalUpload = visionConfig?.transfer_methods?.includes(TransferMethod.local_file)
+export const useFileDraggableUploader = <T extends HTMLElement>({ fileFiles, fileConfig, onFileUpload, visionConfig }: useDraggableUploaderProps) => {
+  const allowLocalUpload = fileConfig?.transfer_methods?.includes(TransferMethod.local_file)
   const disabled = useMemo(() =>
-    !visionConfig
-    || !visionConfig?.enabled
+    !fileConfig
+    || !fileConfig?.enabled
     || !allowLocalUpload
-    || files.length >= visionConfig.number_limits!,
-  [allowLocalUpload, files.length, visionConfig])
-  const limit = useMemo(() => visionConfig ? +visionConfig.image_file_size_limit! : 0, [visionConfig])
-  const { handleLocalFileUpload } = useLocalFileUploader({ disabled, onUpload, limit })
+    || fileFiles.length >= fileConfig.number_limits!,
+  [allowLocalUpload, fileFiles.length, fileConfig])
+  const limit = useMemo(() => fileConfig ? +fileConfig.image_file_size_limit! : 0, [fileConfig])
+  const { handleLocalFileUpload } = useLocalFileUploader({ disabled, onFileUpload, limit, visionConfig })
   const [isDragActive, setIsDragActive] = useState(false)
 
   const handleDragEnter = useCallback((e: React.DragEvent<T>) => {
@@ -261,10 +273,10 @@ export const useDraggableUploader = <T extends HTMLElement>({ visionConfig, onUp
   }, [handleLocalFileUpload])
 
   return {
-    onDragEnter: handleDragEnter,
-    onDragOver: handleDragOver,
-    onDragLeave: handleDragLeave,
-    onDrop: handleDrop,
-    isDragActive,
+    onFileDragEnter: handleDragEnter,
+    onFileDragOver: handleDragOver,
+    onFileDragLeave: handleDragLeave,
+    onFileDrop: handleDrop,
+    isFileDragActive: isDragActive,
   }
 }

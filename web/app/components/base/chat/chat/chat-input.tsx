@@ -21,11 +21,19 @@ import ChatImageUploader from '@/app/components/base/image-uploader/chat-image-u
 import ChatFileUploader from '@/app/components/base/file-uploader/chat-file-uploader'
 
 import ImageList from '@/app/components/base/image-uploader/image-list'
+import FileList from '@/app/components/base/file-uploader/file-list'
+
 import {
   useClipboardUploader,
   useDraggableUploader,
   useImageFiles,
 } from '@/app/components/base/image-uploader/hooks'
+
+import {
+  useFileClipboardUploader,
+  useFileDraggableUploader,
+  useFiles,
+} from '@/app/components/base/file-uploader/hooks'
 
 type ChatInputProps = {
   visionConfig?: VisionConfig
@@ -46,7 +54,7 @@ const ChatInput: FC<ChatInputProps> = ({
   const { notify } = useContext(ToastContext)
   const [voiceInputShow, setVoiceInputShow] = useState(false)
   const {
-    files,
+    imageFiles,
     onUpload,
     onRemove,
     onReUpload,
@@ -54,13 +62,35 @@ const ChatInput: FC<ChatInputProps> = ({
     onImageLinkLoadSuccess,
     onClear,
   } = useImageFiles()
-  const { onPaste } = useClipboardUploader({ onUpload, visionConfig, files })
+  const { onPaste } = useClipboardUploader({ onUpload, visionConfig, imageFiles })
   const { onDragEnter, onDragLeave, onDragOver, onDrop, isDragActive }
     = useDraggableUploader<HTMLTextAreaElement>({
       onUpload,
-      files,
+      imageFiles,
       visionConfig,
     })
+
+  // 文件钩子函数
+  const {
+    fileFiles,
+    onFileUpload,
+    onFileRemove,
+    onFileReUpload,
+    onFileLinkLoadError,
+    onFileLinkLoadSuccess,
+    onFileClear,
+  } = useFiles()
+
+  const { onFilePaste } = useFileClipboardUploader({ onFileUpload, fileConfig, fileFiles, visionConfig })
+
+  const { onFileDragEnter, onFileDragLeave, onFileDragOver, onFileDrop, isFileDragActive }
+  = useFileDraggableUploader<HTMLTextAreaElement>({
+    onFileUpload,
+    fileFiles,
+    fileConfig,
+    visionConfig,
+  })
+
   const isUseInputMethod = useRef(false)
   const [query, setQuery] = useState('')
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -80,6 +110,7 @@ const ChatInput: FC<ChatInputProps> = ({
   }
 
   const handleSend = () => {
+    const files = imageFiles.concat(fileFiles)
     if (onSend) {
       if (
         files.find(
@@ -111,7 +142,10 @@ const ChatInput: FC<ChatInputProps> = ({
           })),
       )
       setQuery('')
+      // image clear
       onClear()
+      // file clear
+      onFileClear()
     }
   }
 
@@ -188,7 +222,7 @@ const ChatInput: FC<ChatInputProps> = ({
         <div
           className={`
             p-[5.5px] max-h-[150px] bg-white border-[1.5px] border-gray-200 rounded-xl overflow-y-auto
-            ${isDragActive && 'border-primary-600'} mb-2
+            ${(isDragActive || isFileDragActive) && 'border-primary-600'} mb-2
           `}
         >
           {visionConfig?.enabled && !fileConfig?.enabled && (
@@ -197,13 +231,13 @@ const ChatInput: FC<ChatInputProps> = ({
                 <ChatImageUploader
                   settings={visionConfig}
                   onUpload={onUpload}
-                  disabled={files.length >= visionConfig.number_limits}
+                  disabled={imageFiles.length >= visionConfig.number_limits}
                 />
                 <div className="mx-1 w-[1px] h-4 bg-black/5" />
               </div>
               <div className="pl-[52px]">
                 <ImageList
-                  list={files}
+                  list={imageFiles}
                   onRemove={onRemove}
                   onReUpload={onReUpload}
                   onImageLinkLoadSuccess={onImageLinkLoadSuccess}
@@ -218,40 +252,84 @@ const ChatInput: FC<ChatInputProps> = ({
               <div className="absolute bottom-2 left-2 flex items-center">
                 <ChatFileUploader
                   settings={fileConfig}
-                  onUpload={onUpload}
-                  disabled={files.length >= fileConfig.number_limits}
+                  onFileUpload={onFileUpload}
+                  disabled={fileFiles.length >= fileConfig.number_limits}
                   isImageEnabled={visionConfig?.enabled}
+                  visionConfig={visionConfig}
                 />
                 <div className="mx-1 w-[1px] h-4 bg-black/5" />
               </div>
               <div className="pl-[52px]">
-                <ImageList
-                  list={files}
-                  onRemove={onRemove}
-                  onReUpload={onReUpload}
-                  onImageLinkLoadSuccess={onImageLinkLoadSuccess}
-                  onImageLinkLoadError={onImageLinkLoadError}
+                <FileList
+                  list={fileFiles}
+                  onRemove={onFileRemove}
+                  onReUpload={onFileReUpload}
+                  onFileLinkLoadSuccess={onFileLinkLoadSuccess}
+                  onFileLinkLoadError={onFileLinkLoadError}
                 />
               </div>
             </>
           )}
 
-          <Textarea
-            className={`
+          {/* file and image upload process */}
+          { visionConfig?.enabled && !fileConfig?.enabled && (
+            <>
+              <Textarea
+                className={`
               block w-full px-2 pr-[118px] py-[7px] leading-5 max-h-none text-sm text-gray-700 outline-none appearance-none resize-none
-              ${visionConfig?.enabled && 'pl-12'}
+              ${(visionConfig?.enabled || fileConfig?.enabled) && 'pl-12'}
             `}
-            value={query}
-            onChange={handleContentChange}
-            onKeyUp={handleKeyUp}
-            onKeyDown={handleKeyDown}
-            onPaste={onPaste}
-            onDragEnter={onDragEnter}
-            onDragLeave={onDragLeave}
-            onDragOver={onDragOver}
-            onDrop={onDrop}
-            autoSize
-          />
+                value={query}
+                onChange={handleContentChange}
+                onKeyUp={handleKeyUp}
+                onKeyDown={handleKeyDown}
+                onPaste={onPaste}
+                onDragEnter={onDragEnter}
+                onDragLeave={onDragLeave}
+                onDragOver={onDragOver}
+                onDrop={onDrop}
+                autoSize
+              />
+            </>
+          ) }
+
+          { fileConfig?.enabled && (
+            <>
+              <Textarea
+                className={`
+              block w-full px-2 pr-[118px] py-[7px] leading-5 max-h-none text-sm text-gray-700 outline-none appearance-none resize-none
+              ${(visionConfig?.enabled || fileConfig?.enabled) && 'pl-12'}
+            `}
+                value={query}
+                onChange={handleContentChange}
+                onKeyUp={handleKeyUp}
+                onKeyDown={handleKeyDown}
+                onPaste={onFilePaste}
+                onDragEnter={onFileDragEnter}
+                onDragLeave={onFileDragLeave}
+                onDragOver={onFileDragOver}
+                onDrop={onFileDrop}
+                autoSize
+              />
+            </>
+          ) }
+
+          { !fileConfig?.enabled && !visionConfig?.enabled && (
+            <>
+              <Textarea
+                className={`
+              block w-full px-2 pr-[118px] py-[7px] leading-5 max-h-none text-sm text-gray-700 outline-none appearance-none resize-none
+              ${(visionConfig?.enabled || fileConfig?.enabled) && 'pl-12'}
+            `}
+                value={query}
+                onChange={handleContentChange}
+                onKeyUp={handleKeyUp}
+                onKeyDown={handleKeyDown}
+                autoSize
+              />
+            </>
+          ) }
+
           <div className="absolute bottom-[7px] right-2 flex items-center h-8">
             <div className="flex items-center px-1 h-5 rounded-md bg-gray-100 text-xs font-medium text-gray-500">
               {query.trim().length}
