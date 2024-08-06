@@ -52,8 +52,8 @@ const Question: FC<QuestionProps> = ({
               <ImageGallery srcs={imgSrcs} />
             )
           }
+          <Markdown content={content} />
         </div>
-        <Markdown content={content} />
         <div className='mt-1 h-[18px]' />
       </div>
       <div className='shrink-0 w-10 h-10'>
