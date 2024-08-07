@@ -53,7 +53,6 @@ const FileList: FC<FileListProps> = ({
       return ''
 
     const arr = currentFile.name.split('.')
-    console.log(arr[arr.length - 1], '文件类型')
     return arr[arr.length - 1]
   }
   const isImageType = (currentFile: File) => {
@@ -65,6 +64,7 @@ const FileList: FC<FileListProps> = ({
   }
 
   const getFileName = (currentFile: File, maxLength: number) => {
+    console.log(currentFile, 'currentFile')
     const name = currentFile.name
     const basename = name.substring(0, name.lastIndexOf('.'))
     if (basename.length <= maxLength)
@@ -82,7 +82,6 @@ const FileList: FC<FileListProps> = ({
   function getIcon(file: ImageFile) {
     return file.type === TransferMethod.remote_url ? file.url : file.base64Url
   }
-
   return (
     <div className="flex w-full flex-wrap">
       {list.map(item => (
