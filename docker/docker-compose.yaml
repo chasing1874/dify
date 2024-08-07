@@ -182,7 +182,7 @@ x-shared-env: &shared-api-worker-env
 services:
   # API service
   api:
-    image: ziyou/dify-api:0.3.5
+    image: ziyou/dify-api:0.3.6
     restart: always
     environment:
       # Use the shared environment variables.
@@ -389,7 +389,7 @@ services:
   # worker service
   # The Celery worker for processing the queue.
   worker:
-    image: ziyou/dify-api:0.3.5
+    image: ziyou/dify-api:0.3.6
     restart: always
     environment:
       # Use the shared environment variables.
@@ -537,7 +537,7 @@ services:
 
   # Frontend web application.
   web:
-    image: ziyou/dify-web:0.3.5
+    image: ziyou/dify-web:0.3.6
     restart: always
     environment:
       CONSOLE_API_URL: ${CONSOLE_API_URL:-}
