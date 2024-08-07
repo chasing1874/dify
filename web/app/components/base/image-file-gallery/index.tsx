@@ -29,7 +29,7 @@ const ImageFileGallery: FC<Props> = ({
               className={`${s.fileInfo} h-[40px] p-[6px] rounded-lg  cursor-pointer border-[0.5px] border-black/5 bg-[var(--floating_stroke_grey_1,#f5f5f5)`}
             >
 
-              {IMAGE_ALLOW_FILE_EXTENSIONS.includes(item.type)
+              {IMAGE_ALLOW_FILE_EXTENSIONS.includes(item.fileType)
                 ? (
                   <img
                     className={s.fileImage}
@@ -45,14 +45,14 @@ const ImageFileGallery: FC<Props> = ({
                   />
                 )
                 : (
-                  <div className={cn(s.fileIcon, s[item.type])} />
+                  <div className={cn(s.fileIcon, s[item.fileType])} />
                 )}
 
               {/* <div className={cn(s.fileIcon, s[getFileType(item.file)])} /> */}
               <div className='flex flex-col'>
                 <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5' >{item.name}</div>
                 <div className='flex center'>
-                  <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.type.toUpperCase()}</div>
+                  <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.fileType.toUpperCase()}</div>
                   <div className={cn(s.size, 'w-auto text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.size}</div>
                 </div>
               </div>
