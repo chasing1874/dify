@@ -23,14 +23,14 @@ parameters:
       en_US: The programming language of the code
       zh_Hans: 代码的编程语言
       pt_BR: A linguagem de programação do código
-    llm_description: language of the code, only "python3" and "javascript" are supported
+    llm_description: language of the code, only "python" and "javascript" are supported
     form: llm
     options:
-      - value: python3
+      - value: python
         label:
-          en_US: Python3
-          zh_Hans: Python3
-          pt_BR: Python3
+          en_US: Python
+          zh_Hans: Python
+          pt_BR: Python
       - value: javascript
         label:
           en_US: JavaScript
