@@ -11,46 +11,24 @@ type Props = {
   message_files: VisionFile[]
 }
 
-// const getWidthStyle = (imgNum: number) => {
-//   if (imgNum === 1) {
-//     return {
-//       maxWidth: '100%',
-//     }
-//   }
-
-//   if (imgNum === 2 || imgNum === 4) {
-//     return {
-//       width: 'calc(50% - 4px)',
-//     }
-//   }
-
-//   return {
-//     width: 'calc(33.3333% - 5.3333px)',
-//   }
-// }
-
 const ImageFileGallery: FC<Props> = ({
   message_files,
 }) => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState('')
-  console.log(message_files)
 
   return (
     <>
-      <div className="flex w-full flex-wrap">
-        {/* [width:calc(33.33333%-5.33333px)] */}
+      <div className="flex w-full flex-wrap justify-end">
         {message_files.map(item => (
           <div
-            key={item.id}
-            className="group relative mr-1 border-[0.5px] border-black/5 rounded-lg"
+            key={item.upload_file_id}
+            className="w-38 group relative mr-1 mb-1 border-[0.5px] border-black/5 rounded-lg "
             style={{ backgroundColor: '#f5f5f5', borderRadius: '4px' }}
           >
             <div
               className={`${s.fileInfo} h-[40px] p-[6px] rounded-lg  cursor-pointer border-[0.5px] border-black/5 bg-[var(--floating_stroke_grey_1,#f5f5f5)`}
             >
 
-              {/* 对图片的单独处理 */}
-              {/* isImageType 返回true,直接将图片放到这里，如果为false 使用下面的fileIcon */}
               {IMAGE_ALLOW_FILE_EXTENSIONS.includes(item.type)
                 ? (
                   <img

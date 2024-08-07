@@ -9,6 +9,7 @@ import { TransferMethod } from '../types'
 import { useChatWithHistoryContext } from '../chat-with-history/context'
 import type { Theme } from '../embedded-chatbot/theme/theme-context'
 import { CssTransform } from '../embedded-chatbot/theme/utils'
+import { getFileName, getFileSize, getFileType } from './utils'
 import TooltipPlus from '@/app/components/base/tooltip-plus'
 import { ToastContext } from '@/app/components/base/toast'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
@@ -19,7 +20,6 @@ import { XCircle } from '@/app/components/base/icons/src/vender/solid/general'
 import { Send03 } from '@/app/components/base/icons/src/vender/solid/communication'
 import ChatImageUploader from '@/app/components/base/image-uploader/chat-image-uploader'
 import ChatFileUploader from '@/app/components/base/file-uploader/chat-file-uploader'
-
 import ImageList from '@/app/components/base/image-uploader/image-list'
 import FileList from '@/app/components/base/file-uploader/file-list'
 
@@ -98,21 +98,6 @@ const ChatInput: FC<ChatInputProps> = ({
     setQuery(value)
   }
 
-  // const SHEET_FILE_TYPES = ['xlsx']
-  const getFileType = (name: string | undefined) => {
-    if (!name)
-      return ''
-    const type = name.substring(name.lastIndexOf('.') + 1)
-    return type
-  }
-  const getFileSize = (size: number | undefined) => {
-    if (!size)
-      return ''
-    if (size / 1024 < 1024)
-      return `${(size / 1024).toFixed(2)}KB`
-
-    return `${(size / 1024 / 1024).toFixed(2)}MB`
-  }
   const handleSend = () => {
     const files = imageFiles.concat(fileFiles)
     if (onSend) {
@@ -139,12 +124,12 @@ const ChatInput: FC<ChatInputProps> = ({
         files
           .filter(file => file.progress !== -1)
           .map(fileItem => ({
-            type: getFileType(fileItem.file?.name),
             transfer_method: fileItem.type,
             url: fileItem.url,
             size: getFileSize(fileItem.file?.size),
             upload_file_id: fileItem.fileId,
-            name: fileItem.file?.name,
+            name: getFileName(fileItem.file, 15),
+            type: getFileType(fileItem.file),
           })),
       )
       setQuery('')

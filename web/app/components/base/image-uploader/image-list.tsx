@@ -76,7 +76,7 @@ const ImageList: FC<ImageListProps> = ({
       {list.map(item => (
         <div
           key={item._id}
-          className="[width:calc(33.33333%-5.33333px)]  group relative mr-1 border-[0.5px] border-black/5 rounded-lg;"
+          className="w-38  group relative mr-1 border-[0.5px] border-black/5 rounded-lg;"
           style={{ backgroundColor: '#f5f5f5', borderRadius: '4px' }}
         >
           {item.type === TransferMethod.local_file && item.progress !== 100 && (

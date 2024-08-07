@@ -30,7 +30,7 @@ const Question: FC<QuestionProps> = ({
     <div className='flex justify-end mb-2 last:mb-0 pl-10'>
       <div className='group relative mr-4'>
         <QuestionTriangle
-          className='absolute -right-2 top-0 w-2 h-3 text-[#D1E9FF]/50'
+          className='w-full absolute -right-2 top-0 w-2 h-3 text-[#D1E9FF]/50'
           style={theme ? { color: theme.chatBubbleColor } : {}}
         />
         <Markdown content={content} />
