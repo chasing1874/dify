@@ -51,7 +51,7 @@ const Chatbot = () => {
       else
         document.title = `${site.title} - Powered by SLAI`
     }
-  }, [site, customConfig])
+  }, [site, customConfig, themeBuilder])
 
   if (appInfoLoading) {
     return (

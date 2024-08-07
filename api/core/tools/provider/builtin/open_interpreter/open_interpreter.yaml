@@ -1,0 +1,26 @@
+identity:
+  author: Shuling
+  name: open_interpreter
+  label:
+    en_US: SLAI
+    zh_Hans: 数灵AI
+  description:
+    en_US: SLAI
+    zh_Hans: 数灵AI
+  icon: icon.svg
+  tags:
+    - productivity
+credentials_for_provider:
+  SLAI_api_server:
+    type: text-input
+    required: true
+    label:
+      en_US: SLAI API Server
+      zh_Hans: 数灵API服务地址
+    placeholder:
+      en_US: Please input your SLAI API Server
+      zh_Hans: 请输入你的数灵API服务地址
+    help:
+      en_US: Get your SLAI API Server from SLAI
+      zh_Hans: 获取您的数灵API服务地址
+    url: https://zcn1olv66sbr.feishu.cn/docx/D1htdepeCosWvcx8jEOcRmFGnff?from=from_copylink
