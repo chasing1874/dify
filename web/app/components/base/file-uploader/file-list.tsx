@@ -6,6 +6,7 @@ import {
   RiCloseLine,
   RiLoader2Line,
 } from '@remixicon/react'
+import { getFileName, getFileSize, getFileType } from '../chat/chat/utils'
 import s from './index.module.css'
 import cn from '@/utils/classnames'
 import { RefreshCcw01 } from '@/app/components/base/icons/src/vender/line/arrows'
@@ -47,15 +48,7 @@ const FileList: FC<FileListProps> = ({
     if (item.type === TransferMethod.remote_url && onFileLinkLoadError)
       onFileLinkLoadError(item._id)
   }
-  // utils
-  const getFileType = (currentFile: File) => {
-    if (!currentFile)
-      return ''
 
-    const arr = currentFile.name.split('.')
-    console.log(arr[arr.length - 1], '文件类型')
-    return arr[arr.length - 1]
-  }
   const isImageType = (currentFile: File) => {
     if (!currentFile)
       return ''
@@ -64,31 +57,16 @@ const FileList: FC<FileListProps> = ({
     return IMAGE_ALLOW_FILE_EXTENSIONS.includes(arr[arr.length - 1])
   }
 
-  const getFileName = (currentFile: File, maxLength: number) => {
-    const name = currentFile.name
-    const basename = name.substring(0, name.lastIndexOf('.'))
-    if (basename.length <= maxLength)
-      return basename
-    return `${basename.slice(0, maxLength)}...`
-  }
-  const getFileSize = (size: number) => {
-    if (size / 1024 < 1024)
-      return `${(size / 1024).toFixed(2)}KB`
-
-    return `${(size / 1024 / 1024).toFixed(2)}MB`
-  }
-
   // 保持一致
   function getIcon(file: ImageFile) {
     return file.type === TransferMethod.remote_url ? file.url : file.base64Url
   }
-
   return (
     <div className="flex w-full flex-wrap">
       {list.map(item => (
         <div
           key={item._id}
-          className="[width:calc(33.33333%-5.33333px)] group relative mr-1 border-[0.5px] border-black/5 rounded-lg"
+          className="w-38 group relative mr-1 border-[0.5px] border-black/5 rounded-lg"
           style={{ backgroundColor: '#f5f5f5', borderRadius: '4px' }}
         >
           {item.type === TransferMethod.local_file && item.progress !== 100 && (
@@ -134,7 +112,7 @@ const FileList: FC<FileListProps> = ({
             </div>
           )}
           <div
-            className={`${s.fileInfo} h-[40px] p-[6px] rounded-lg  cursor-pointer border-[0.5px] border-black/5 bg-[var(--floating_stroke_grey_1,#f5f5f5)`}
+            className={`${s.fileInfo}  h-[40px] p-[6px] rounded-lg  cursor-pointer border-[0.5px] border-black/5 bg-[var(--floating_stroke_grey_1,#f5f5f5)`}
             onLoad={() => handleFileLinkLoadSuccess(item)}
             onError={() => handleFileLinkLoadError(item)}
           >

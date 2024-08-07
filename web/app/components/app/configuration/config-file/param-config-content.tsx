@@ -19,7 +19,6 @@ const ParamConfigContent: FC = () => {
 
   // 配置本地上传 还是链接
   const transferMethod = (() => {
-    console.log(fileConfig, 'fileConfig')
     if (
       !fileConfig.transfer_methods
       || fileConfig.transfer_methods.length === 2

@@ -1,3 +1,13 @@
+.item {
+  height: 200px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 .fileList {
   @apply space-y-2;
 }
@@ -40,8 +50,7 @@
   border: 1px solid #D1E0FF;
   box-shadow: 0px 4px 8px -2px rgba(16, 24, 40, 0.1), 0px 2px 4px -2px rgba(16, 24, 40, 0.06);
 }
-.fileImage{
-  @apply shrink-0 w-8 h-8 mr-1;
+.fileImage{@apply shrink-0 w-8 h-8 mr-1;
   border-radius: 4px;
   background-size: cover;
 }
@@ -50,6 +59,7 @@
   @apply shrink-0 w-8 h-8 mr-1 bg-center bg-no-repeat;
   border-radius: 4px;
   background-size: cover;
+  
 }
 
 .fileIcon.tsv,
