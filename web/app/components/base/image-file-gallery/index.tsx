@@ -2,7 +2,7 @@
 import type { FC } from 'react'
 import React, { useState } from 'react'
 import s from './style.module.css'
-import { IMAGE_ALLOW_FILE_EXTENSIONS } from '@/types/app'
+import { IMAGE_ALLOW_FILE_EXTENSIONS, TransferMethod } from '@/types/app'
 import cn from '@/utils/classnames'
 import type { VisionFile } from '@/types/app'
 import ImagePreview from '@/app/components/base/image-uploader/image-preview'
@@ -16,49 +16,69 @@ const ImageFileGallery: FC<Props> = ({
 }) => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState('')
 
+  const isOneImage = (message_files: VisionFile[]) => {
+    const isLocalOneImage = message_files.length === 1 && IMAGE_ALLOW_FILE_EXTENSIONS.includes(message_files[0].fileType)
+    const isRemoteOneImage = message_files.length === 1 && message_files[0].transfer_method === TransferMethod.remote_url
+    return isLocalOneImage || isRemoteOneImage
+  }
+
   return (
     <>
       <div className="flex w-full flex-wrap justify-end">
-        {message_files.map(item => (
-          <div
-            key={item.upload_file_id}
-            className="w-38 group relative mr-1 mb-1 border-[0.5px] border-black/5 rounded-lg "
-            style={{ backgroundColor: '#f5f5f5', borderRadius: '4px' }}
-          >
-            <div
-              className={`${s.fileInfo} h-[40px] p-[6px] rounded-lg  cursor-pointer border-[0.5px] border-black/5 bg-[var(--floating_stroke_grey_1,#f5f5f5)`}
-            >
+        {isOneImage
+          ? (
+            <div>
+              <img
+                className={s.item}
+                src={message_files[0].url}
+                alt=''
+                onClick={() => setImagePreviewUrl(message_files[0].url)}
+                onError={e => e.currentTarget.remove()}
+              />
+            </div>
+          )
+          : (
+            message_files.map(item => (
+              <div
+                key={item.upload_file_id}
+                className="w-38 group relative mr-1 mb-1 border-[0.5px] border-black/5 rounded-lg"
+                style={{ backgroundColor: 'rgb(245, 245, 245)', borderRadius: '4px' }}
+              >
+                <div
+                  className={`${s.fileInfo} h-[40px] p-[6px] rounded-lg cursor-pointer border-[0.5px] border-black/5`}
+                  style={{ backgroundColor: 'rgb(245, 245, 245)' }}
+                >
+                  {IMAGE_ALLOW_FILE_EXTENSIONS.includes(item.fileType)
+                    ? (
+                      <img
+                        className={s.fileImage}
+                        alt={item.file?.name}
+                        src={item.url}
+                        onClick={() => setImagePreviewUrl(item.url)}
+                      />
+                    )
+                    : (
+                      <div className={cn(s.fileIcon, s[item.fileType])} />
+                    )}
 
-              {IMAGE_ALLOW_FILE_EXTENSIONS.includes(item.fileType)
-                ? (
-                  <img
-                    className={s.fileImage}
-                    alt={item.file?.name}
-                    src={
-                      item.url
-                    }
-                    onClick={() =>
-                      setImagePreviewUrl(
-                        item.url as string,
-                      )
-                    }
-                  />
-                )
-                : (
-                  <div className={cn(s.fileIcon, s[item.fileType])} />
-                )}
-
-              {/* <div className={cn(s.fileIcon, s[getFileType(item.file)])} /> */}
-              <div className='flex flex-col'>
-                <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5' >{item.name}</div>
-                <div className='flex center'>
-                  <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.fileType.toUpperCase()}</div>
-                  <div className={cn(s.size, 'w-auto text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.size}</div>
+                  <div className='flex flex-col'>
+                    <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5'>
+                      {item.name}
+                    </div>
+                    <div className='flex center'>
+                      <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>
+                        {item.fileType.toUpperCase()}
+                      </div>
+                      <div className={cn(s.size, 'w-auto text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>
+                        {item.size}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ))}
+            ))
+          )}
+
         {imagePreviewUrl && (
           <ImagePreview
             url={imagePreviewUrl}

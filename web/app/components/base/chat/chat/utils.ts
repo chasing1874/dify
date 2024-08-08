@@ -1,3 +1,4 @@
+import { IMAGE_ALLOW_FILE_EXTENSIONS } from '@/types/app'
 export const getFileType = (file: File | undefined) => {
   if (!file?.name)
     return ''
@@ -5,7 +6,6 @@ export const getFileType = (file: File | undefined) => {
   const type = name.substring(name.lastIndexOf('.') + 1)
   return type
 }
-
 export const getFileSize = (size: number | undefined) => {
   if (!size)
     return ''
@@ -23,4 +23,10 @@ export const getFileName = (currentFile: File | undefined, maxLength: number) =>
   if (basename.length <= maxLength)
     return basename
   return `${basename.slice(0, maxLength)}...`
+}
+export const getRemoteLinkImageType = (url: string) => {
+  const ext = url.substring(url.lastIndexOf('.') + 1)
+  if (IMAGE_ALLOW_FILE_EXTENSIONS.includes(ext))
+    return ext.toUpperCase()
+  else return 'IMAGE'
 }
