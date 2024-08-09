@@ -476,6 +476,7 @@ const Debug: FC<IDebug> = ({
 
   useEffect(() => {
     handleVisionConfigInMultipleModel()
+    handleFileConfigInMultipleModel()
   }, [multipleModelConfigs, mode])
 
   const {

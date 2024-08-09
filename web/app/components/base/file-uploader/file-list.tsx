@@ -6,7 +6,6 @@ import {
   RiCloseLine,
   RiLoader2Line,
 } from '@remixicon/react'
-import { getFileName, getFileSize, getFileType } from '../chat/chat/utils'
 import s from './index.module.css'
 import cn from '@/utils/classnames'
 import { RefreshCcw01 } from '@/app/components/base/icons/src/vender/line/arrows'
@@ -17,7 +16,7 @@ import { IMAGE_ALLOW_FILE_EXTENSIONS, TransferMethod } from '@/types/app'
 import FilePreview from '@/app/components/base/file-uploader/file-preview'
 
 type FileListProps = {
-  list: ImageFile[]
+  list: any
   readonly?: boolean
   onRemove?: (imageFileId: string) => void
   onReUpload?: (imageFileId: string) => void
@@ -49,24 +48,18 @@ const FileList: FC<FileListProps> = ({
       onFileLinkLoadError(item._id)
   }
 
-  const isImageType = (currentFile: File) => {
-    if (!currentFile)
+  const isImageType = (type: string) => {
+    if (!type)
       return ''
-    const arr = currentFile.name.split('.')
-
-    return IMAGE_ALLOW_FILE_EXTENSIONS.includes(arr[arr.length - 1])
+    return IMAGE_ALLOW_FILE_EXTENSIONS.includes(type.toLowerCase())
   }
 
-  // 保持一致
-  function getIcon(file: ImageFile) {
-    return file.type === TransferMethod.remote_url ? file.url : file.base64Url
-  }
   return (
     <div className="flex w-full flex-wrap">
       {list.map(item => (
         <div
           key={item._id}
-          className="w-38 group relative mr-1 border-[0.5px] border-black/5 rounded-lg"
+          className="w-40 group relative mr-1 border-[0.5px] border-black/5 rounded-lg"
           style={{ backgroundColor: '#f5f5f5', borderRadius: '4px' }}
         >
           {item.type === TransferMethod.local_file && item.progress !== 100 && (
@@ -118,8 +111,7 @@ const FileList: FC<FileListProps> = ({
           >
 
             {/* 对图片的单独处理 */}
-            {/* isImageType 返回true,直接将图片放到这里，如果为false 使用下面的fileIcon */}
-            {isImageType(item.file)
+            {isImageType(item.fileType)
               ? (
                 <img
                   className={s.fileImage}
@@ -127,28 +119,28 @@ const FileList: FC<FileListProps> = ({
                   onLoad={() => handleFileLinkLoadSuccess(item)}
                   onError={() => handleFileLinkLoadError(item)}
                   src={
-                    getIcon(item)
+                    item.url
                   }
                   onClick={() =>
                     item.progress === 100
                   && setFilePreviewUrl(
-                    getIcon(item) as string,
+                    item.url as string,
                   )
                   }
                 />
               )
               : (
-                <div className={cn(s.fileIcon, s[getFileType(item.file)])} />
+                <div className={cn(s.fileIcon, s[item.fileType.toLowerCase()])} />
               )}
-
-            {/* <div className={cn(s.fileIcon, s[getFileType(item.file)])} /> */}
-            <div className='flex flex-col'>
-              <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5' >{getFileName(item.file, 15)}</div>
-              <div className='flex center'>
-                <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{getFileType(item.file).toUpperCase()}</div>
-                <div className={cn(s.size, 'w-auto text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{getFileSize(item.file.size)}</div>
+            {
+              <div className='flex flex-col'>
+                <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5' >{item.name}</div>
+                <div className='flex center'>
+                  <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.fileType}</div>
+                  <div className={cn(s.size, 'w-auto text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.size}</div>
+                </div>
               </div>
-            </div>
+            }
           </div>
 
           {!readonly && (

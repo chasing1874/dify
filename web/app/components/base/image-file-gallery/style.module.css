@@ -1,9 +1,9 @@
 .item {
-  height: 200px;
+  height: 100px;
   margin-right: 8px;
   margin-bottom: 8px;
-  object-fit: cover;
-  object-position: center;
+  object-fit: contain;
+  object-position: center; 
   border-radius: 8px;
   cursor: pointer;
 }

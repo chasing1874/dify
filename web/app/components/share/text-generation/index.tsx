@@ -34,8 +34,8 @@ import SavedItems from '@/app/components/app/text-generate/saved-items'
 import type { InstalledApp } from '@/models/explore'
 import { DEFAULT_VALUE_MAX_LEN, appDefaultIconBackground } from '@/config'
 import Toast from '@/app/components/base/toast'
-import type { VisionFile, VisionSettings } from '@/types/app'
-import { Resolution, TransferMethod } from '@/types/app'
+import type { FileSettings, VisionFile, VisionSettings } from '@/types/app'
+import { Resolution, ResolutionFile, TransferMethod } from '@/types/app'
 import { useAppFavicon } from '@/hooks/use-app-favicon'
 
 const GROUP_SIZE = 5 // to avoid RPM(Request per minute) limit. The group task finished then the next group.
@@ -127,6 +127,13 @@ const TextGeneration: FC<IMainProps> = ({
     detail: Resolution.low,
     transfer_methods: [TransferMethod.local_file],
   })
+  const [fileConfig, setFileConfig] = useState<FileSettings>({
+    enabled: false,
+    number_limits: 2,
+    detail: ResolutionFile.M1,
+    transfer_methods: [TransferMethod.local_file],
+  })
+
   const [completionFiles, setCompletionFiles] = useState<VisionFile[]>([])
 
   const handleSend = () => {
@@ -391,6 +398,11 @@ const TextGeneration: FC<IMainProps> = ({
         ...file_upload.image,
         image_file_size_limit: appParams?.system_parameters?.image_file_size_limit,
       })
+
+      setFileConfig({
+        ...file_upload.file,
+        // image_file_size_limit: appParams?.system_parameters?.image_file_size_limit,
+      })
       const prompt_variables = userInputsFormToPromptVariables(user_input_form)
       setPromptConfig({
         prompt_template: '', // placeholder for feture
@@ -445,6 +457,7 @@ const TextGeneration: FC<IMainProps> = ({
     taskId={task?.id}
     onCompleted={handleCompleted}
     visionConfig={visionConfig}
+    fileConfig = {fileConfig}
     completionFiles={completionFiles}
     isShowTextToSpeech={!!textToSpeechConfig?.enabled}
     siteInfo={siteInfo}

@@ -443,7 +443,7 @@ const Configuration: FC = () => {
     doSetFileConfig({
       enabled: config.enabled || false,
       number_limits: config.number_limits || 2,
-      detail: config.detail || Resolution.low,
+      detail: config.detail || ResolutionFile.M1,
       transfer_methods: config.transfer_methods || [TransferMethod.local_file],
     })
     if (!notNoticeFormattingChanged)
@@ -518,10 +518,20 @@ const Configuration: FC = () => {
     const supportVision
       = features && features.includes(ModelFeatureEnum.vision)
 
+    const supportFile
+      = features && features.includes(ModelFeatureEnum.file)
+
     handleSetVisionConfig(
       {
         ...visionConfig,
         enabled: supportVision,
+      },
+      true,
+    )
+    handleSetFileConfig(
+      {
+        ...fileConfig,
+        enabled: supportFile,
       },
       true,
     )

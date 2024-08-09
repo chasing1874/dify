@@ -29,7 +29,6 @@ const RunBatch: FC<IRunBatchProps> = ({
   const [isParsed, setIsParsed] = React.useState(false)
   const handleParsed = (data: string[][]) => {
     setCsvData(data)
-    // console.log(data)
     setIsParsed(true)
   }
 
