@@ -9,7 +9,7 @@ import {
 } from '../../hooks'
 import useAvailableVarList from '../_base/hooks/use-available-var-list'
 import type { LLMNodeType } from './types'
-import { Resolution } from '@/types/app'
+import { Resolution, ResolutionFile } from '@/types/app'
 import { useModelListAndDefaultModelAndCurrentProviderAndModel, useTextGenerationCurrentProviderAndModelAndModelList } from '@/app/components/header/account-setting/model-provider-page/hooks'
 import {
   ModelFeatureEnum,
@@ -178,6 +178,36 @@ const useConfig = (id: string, payload: LLMNodeType) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isShowVisionConfig, modelChanged])
 
+  const isShowFileConfig = !!currModel?.features?.includes(ModelFeatureEnum.file)
+  useEffect(() => {
+    if (!modelChanged)
+      return
+    setModelChanged(false)
+    if (!isShowFileConfig) {
+      const newInputs = produce(inputs, (draft) => {
+        draft.file = {
+          enabled: false,
+        }
+      })
+      setInputs(newInputs)
+      return
+    }
+    if (!inputs.file?.enabled) {
+      const newInputs = produce(inputs, (draft) => {
+        if (!draft.file?.enabled) {
+          draft.file = {
+            enabled: true,
+            configs: {
+              detail: ResolutionFile.M1,
+            },
+          }
+        }
+      })
+      setInputs(newInputs)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isShowFileConfig, modelChanged])
+
   // variables
   const isShowVars = (() => {
     if (isChatModel)
@@ -315,6 +345,28 @@ const useConfig = (id: string, payload: LLMNodeType) => {
     setInputs(newInputs)
   }, [inputs, setInputs])
 
+  const handleFileResolutionEnabledChange = useCallback((enabled: boolean) => {
+    const newInputs = produce(inputs, (draft) => {
+      if (!draft.file) {
+        draft.file = {
+          enabled,
+          configs: {
+            detail: ResolutionFile.M1,
+          },
+        }
+      }
+      else {
+        draft.file.enabled = enabled
+        if (!draft.file.configs) {
+          draft.file.configs = {
+            detail: ResolutionFile.M1,
+          }
+        }
+      }
+    })
+    setInputs(newInputs)
+  }, [inputs, setInputs])
+
   const handleVisionResolutionChange = useCallback((newResolution: Resolution) => {
     const newInputs = produce(inputs, (draft) => {
       if (!draft.vision.configs) {
@@ -323,6 +375,17 @@ const useConfig = (id: string, payload: LLMNodeType) => {
         }
       }
       draft.vision.configs.detail = newResolution
+    })
+    setInputs(newInputs)
+  }, [inputs, setInputs])
+  const handleFileResolutionChange = useCallback((newResolution: ResolutionFile) => {
+    const newInputs = produce(inputs, (draft) => {
+      if (!draft.file.configs) {
+        draft.file.configs = {
+          detail: ResolutionFile.M1,
+        }
+      }
+      draft.file.configs.detail = newResolution
     })
     setInputs(newInputs)
   }, [inputs, setInputs])
@@ -390,9 +453,17 @@ const useConfig = (id: string, payload: LLMNodeType) => {
       '#context#': newContexts,
     })
   }, [runInputData, setRunInputData])
-
   const visionFiles = runInputData['#files#']
   const setVisionFiles = useCallback((newFiles: any[]) => {
+    setRunInputData({
+      ...runInputData,
+      '#files#': newFiles,
+    })
+  }, [runInputData, setRunInputData])
+
+  // uncertain
+  const fileFiles = runInputData['#files#']
+  const setFileFiles = useCallback((newFiles: any[]) => {
     setRunInputData({
       ...runInputData,
       '#files#': newFiles,
@@ -426,6 +497,7 @@ const useConfig = (id: string, payload: LLMNodeType) => {
     hasSetBlockStatus,
     shouldShowContextTip,
     isShowVisionConfig,
+    isShowFileConfig,
     handleModelChanged,
     handleCompletionParamsChange,
     isShowVars,
@@ -442,13 +514,17 @@ const useConfig = (id: string, payload: LLMNodeType) => {
     handleMemoryChange,
     handleSyeQueryChange,
     handleVisionResolutionEnabledChange,
+    handleFileResolutionEnabledChange,
     handleVisionResolutionChange,
+    handleFileResolutionChange,
     isShowSingleRun,
     hideSingleRun,
     inputVarValues,
     setInputVarValues,
     visionFiles,
+    fileFiles,
     setVisionFiles,
+    setFileFiles,
     contexts,
     setContexts,
     varInputs,

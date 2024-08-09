@@ -1,4 +1,4 @@
-import type { Resolution } from '@/types/app'
+import type { Resolution, ResolutionFile } from '@/types/app'
 import type { CommonNodeType, Memory, ModelConfig, PromptItem, ValueSelector, Variable } from '@/app/components/workflow/types'
 
 export type LLMNodeType = CommonNodeType & {
@@ -16,6 +16,12 @@ export type LLMNodeType = CommonNodeType & {
     enabled: boolean
     configs?: {
       detail: Resolution
+    }
+  }
+  file: {
+    enabled: boolean
+    configs?: {
+      detail: ResolutionFile
     }
   }
 }

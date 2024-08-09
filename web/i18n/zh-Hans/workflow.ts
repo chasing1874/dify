@@ -279,11 +279,18 @@ const translation = {
         assistant: '基于用户消息的模型回复',
       },
       vision: '视觉',
+      file: '文件',
       files: '文件',
       resolution: {
         name: '分辨率',
         high: '高',
         low: '低',
+      },
+      resolutionFile: {
+        name: '文件大小',
+        M1: '10M',
+        M2: '30M',
+        M3: '50M',
       },
       outputVars: {
         output: '生成内容',

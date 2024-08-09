@@ -6,6 +6,7 @@ import MemoryConfig from '../_base/components/memory-config'
 import VarReferencePicker from '../_base/components/variable/var-reference-picker'
 import useConfig from './use-config'
 import ResolutionPicker from './components/resolution-picker'
+import ResolutionFilePicker from './components/resolution-file-picker'
 import type { LLMNodeType } from './types'
 import ConfigPrompt from './components/config-prompt'
 import VarList from '@/app/components/workflow/nodes/_base/components/variable/var-list'
@@ -14,7 +15,7 @@ import Field from '@/app/components/workflow/nodes/_base/components/field'
 import Split from '@/app/components/workflow/nodes/_base/components/split'
 import ModelParameterModal from '@/app/components/header/account-setting/model-provider-page/model-parameter-modal'
 import OutputVars, { VarItem } from '@/app/components/workflow/nodes/_base/components/output-vars'
-import { Resolution } from '@/types/app'
+import { Resolution, ResolutionFile } from '@/types/app'
 import { InputVarType, type NodePanelProps } from '@/app/components/workflow/types'
 import BeforeRunForm from '@/app/components/workflow/nodes/_base/components/before-run-form'
 import type { Props as FormProps } from '@/app/components/workflow/nodes/_base/components/before-run-form/form'
@@ -38,6 +39,7 @@ const Panel: FC<NodePanelProps<LLMNodeType>> = ({
     isCompletionModel,
     shouldShowContextTip,
     isShowVisionConfig,
+    isShowFileConfig,
     handleModelChanged,
     hasSetBlockStatus,
     handleCompletionParamsChange,
@@ -55,13 +57,17 @@ const Panel: FC<NodePanelProps<LLMNodeType>> = ({
     handleSyeQueryChange,
     handleMemoryChange,
     handleVisionResolutionEnabledChange,
+    handleFileResolutionEnabledChange,
     handleVisionResolutionChange,
+    handleFileResolutionChange,
     isShowSingleRun,
     hideSingleRun,
     inputVarValues,
     setInputVarValues,
     visionFiles,
+    fileFiles,
     setVisionFiles,
+    setFileFiles,
     contexts,
     setContexts,
     runningStatus,
@@ -115,6 +121,23 @@ const Panel: FC<NodePanelProps<LLMNodeType>> = ({
           }],
           values: { '#files#': visionFiles },
           onChange: keyValue => setVisionFiles((keyValue as any)['#files#']),
+        },
+      )
+    }
+
+    // uncertain
+    if (isShowFileConfig) {
+      forms.push(
+        {
+          label: t(`${i18nPrefix}.file`)!,
+          inputs: [{
+            label: t(`${i18nPrefix}.files`)!,
+            variable: '#files#',
+            type: InputVarType.files,
+            required: false,
+          }],
+          values: { '#files#': fileFiles },
+          onChange: keyValue => setFileFiles((keyValue as any)['#files#']),
         },
       )
     }
@@ -281,6 +304,31 @@ const Panel: FC<NodePanelProps<LLMNodeType>> = ({
             </Field>
           </>
         )}
+
+        {/* file: GPT4-file and so on */}
+        {isShowFileConfig && (
+          <>
+            <Split />
+            <Field
+              title={t(`${i18nPrefix}.file`)}
+              tooltip={t('appDebug.file.description')!}
+              operations={
+                <Switch size='md' defaultValue={inputs.file.enabled} onChange={handleFileResolutionEnabledChange} />
+              }
+            >
+              {inputs.file.enabled
+                ? (
+                  <ResolutionFilePicker
+                    value={inputs.file.configs?.detail || ResolutionFile.M1}
+                    onChange={handleFileResolutionChange}
+                  />
+                )
+                : null}
+
+            </Field>
+          </>
+        )}
+
       </div>
       <Split />
       <div className='px-4 pt-4 pb-2'>

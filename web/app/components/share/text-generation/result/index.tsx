@@ -14,7 +14,9 @@ import Loading from '@/app/components/base/loading'
 import type { PromptConfig } from '@/models/debug'
 import type { InstalledApp } from '@/models/explore'
 import type { ModerationService } from '@/models/common'
-import { TransferMethod, type VisionFile, type VisionSettings } from '@/types/app'
+import { TransferMethod } from '@/types/app'
+import type { FileSettings, type VisionFile, type VisionSettings } from '@/types/app'
+
 import { NodeRunningStatus, WorkflowRunningStatus } from '@/app/components/workflow/types'
 import type { WorkflowProcess } from '@/app/components/base/chat/types'
 import { sleep } from '@/utils'
@@ -43,6 +45,7 @@ export type IResultProps = {
   enableModeration?: boolean
   moderationService?: (text: string) => ReturnType<ModerationService>
   visionConfig: VisionSettings
+  fileConfig: FileSettings
   completionFiles: VisionFile[]
   siteInfo: SiteInfo | null
 }
@@ -67,6 +70,7 @@ const Result: FC<IResultProps> = ({
   taskId,
   onCompleted,
   visionConfig,
+  fileConfig,
   completionFiles,
   siteInfo,
 }) => {
@@ -159,9 +163,8 @@ const Result: FC<IResultProps> = ({
     const data: Record<string, any> = {
       inputs,
     }
-    // || fileConfig.enabled
-    // (visionConfig.enabled) &&
-    if (completionFiles && completionFiles?.length > 0) {
+
+    if ((fileConfig.enabled || visionConfig.enabled) && completionFiles && completionFiles?.length > 0) {
       data.files = completionFiles.map((item) => {
         if (item.transfer_method === TransferMethod.local_file) {
           return {
