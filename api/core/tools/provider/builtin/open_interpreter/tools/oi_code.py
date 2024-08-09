@@ -52,12 +52,20 @@ class OICodeTool(BuiltinTool):
         res_list = []
         if final_output:
             if isinstance(final_output, list):
-                content = ''
                 for item in final_output:
-                    content += item['content']
+                    content = item['content']
+                    if item['type'] == 'console':
+                        res_list.append(self.create_text_message(text=content))
+                    if item['type'] == 'image':
+                        image_base64_url = f'data:image/png;base64,{content}'
+                        # res_list.append(self.create_image_message(image=image_base64_url))
             else:
                 content = final_output['content']
-            res_list.append(self.create_text_message(text=content))
+                if final_output['type'] == 'console':
+                    res_list.append(self.create_text_message(text=content))
+                if final_output['type'] == 'image':
+                    image_base64_url = f'data:image/png;base64,{content}'
+                    # res_list.append(self.create_image_message(image=image_base64_url))
         if pic_list:
             for item in pic_list:
                 res_list.append(self.create_image_message(image=item))
