@@ -107,9 +107,34 @@ const ChatInput: FC<ChatInputProps> = ({
       return 'sheet'
     return 'image'
   }
+  const files = imageFiles.concat(fileFiles)
+  const imageFilesMap = imageFiles.map(fileItem => ({
+    progress: fileItem.progress,
+    type: getFileTwoType(fileItem.file?.name),
+    transfer_method: fileItem.type,
+    url: fileItem.url,
+    size: getFileSize(fileItem.file, fileItem.type),
+    upload_file_id: fileItem.fileId,
+    _id: fileItem._id,
+    name: getFileName(fileItem.file, 15, fileItem.type),
+    fileType: getFileType(fileItem.file, fileItem.type, fileItem.url),
+  }))
+
+  const fileFilesMap = fileFiles.map(fileItem => ({
+    progress: fileItem.progress,
+    type: getFileTwoType(fileItem.file?.name),
+    transfer_method: fileItem.type,
+    url: fileItem.url,
+    size: getFileSize(fileItem.file, fileItem.type),
+    upload_file_id: fileItem.fileId,
+    name: getFileName(fileItem.file, 15, fileItem.type),
+    fileType: getFileType(fileItem.file, fileItem.type, fileItem.url),
+    _id: fileItem._id,
+  }))
+
+  const filesMap = imageFilesMap.concat(fileFilesMap)
 
   const handleSend = () => {
-    const files = imageFiles.concat(fileFiles)
     if (onSend) {
       if (
         files.find(
@@ -129,19 +154,10 @@ const ChatInput: FC<ChatInputProps> = ({
         })
         return
       }
+
       onSend(
         query,
-        files
-          .filter(file => file.progress !== -1)
-          .map(fileItem => ({
-            type: getFileTwoType(fileItem.file?.name),
-            transfer_method: fileItem.type,
-            url: fileItem.url,
-            size: getFileSize(fileItem.file?.size),
-            upload_file_id: fileItem.fileId,
-            name: getFileName(fileItem.file, 15),
-            fileType: getFileType(fileItem.file),
-          })),
+        filesMap.filter(file => file.progress !== -1),
       )
       setQuery('')
       // image clear
@@ -233,13 +249,13 @@ const ChatInput: FC<ChatInputProps> = ({
                 <ChatImageUploader
                   settings={visionConfig}
                   onUpload={onUpload}
-                  disabled={imageFiles.length >= visionConfig.number_limits}
+                  disabled={imageFilesMap.length >= visionConfig.number_limits}
                 />
                 <div className="mx-1 w-[1px] h-4 bg-black/5" />
               </div>
               <div className="pl-[52px]">
                 <ImageList
-                  list={imageFiles}
+                  list={imageFilesMap}
                   onRemove={onRemove}
                   onReUpload={onReUpload}
                   onImageLinkLoadSuccess={onImageLinkLoadSuccess}
@@ -255,7 +271,7 @@ const ChatInput: FC<ChatInputProps> = ({
                 <ChatFileUploader
                   settings={fileConfig}
                   onFileUpload={onFileUpload}
-                  disabled={fileFiles.length >= fileConfig.number_limits}
+                  disabled={fileFilesMap.length >= fileConfig.number_limits}
                   isImageEnabled={visionConfig?.enabled}
                   visionConfig={visionConfig}
                 />
@@ -263,7 +279,7 @@ const ChatInput: FC<ChatInputProps> = ({
               </div>
               <div className="pl-[52px]">
                 <FileList
-                  list={fileFiles}
+                  list={fileFilesMap}
                   onRemove={onFileRemove}
                   onReUpload={onFileReUpload}
                   onFileLinkLoadSuccess={onFileLinkLoadSuccess}

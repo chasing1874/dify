@@ -5,8 +5,6 @@ import {
   RiCloseLine,
   RiLoader2Line,
 } from '@remixicon/react'
-import { v4 as uuidV4 } from 'uuid'
-import { getFileName, getFileSize, getFileType, getRemoteLinkImageType } from '../chat/chat/utils'
 import s from './index.module.css'
 import cn from '@/utils/classnames'
 import { RefreshCcw01 } from '@/app/components/base/icons/src/vender/line/arrows'
@@ -17,7 +15,7 @@ import { TransferMethod } from '@/types/app'
 import ImagePreview from '@/app/components/base/image-uploader/image-preview'
 
 type ImageListProps = {
-  list: ImageFile[]
+  list: any
   readonly?: boolean
   onRemove?: (imageFileId: string) => void
   onReUpload?: (imageFileId: string) => void
@@ -49,15 +47,12 @@ const ImageList: FC<ImageListProps> = ({
       onImageLinkLoadError(item._id)
   }
 
-  function getIcon(file: ImageFile) {
-    return file.type === TransferMethod.remote_url ? file.url : file.base64Url
-  }
   return (
     <div className="flex flex-wrap">
       {list.map(item => (
         <div
-          key={item._id}
-          className="w-38  group relative mr-1 border-[0.5px] border-black/5 rounded-lg;"
+          key={item.upload_file_id}
+          className="w-40  group relative mr-1 border-[0.5px] border-black/5 rounded-lg;"
           style={{ backgroundColor: '#f5f5f5', borderRadius: '4px' }}
         >
           {item.type === TransferMethod.local_file && item.progress !== 100 && (
@@ -112,36 +107,22 @@ const ImageList: FC<ImageListProps> = ({
               onLoad={() => handleImageLinkLoadSuccess(item)}
               onError={() => handleImageLinkLoadError(item)}
               src={
-                getIcon(item)
+                item.url
               }
               onClick={() =>
                 item.progress === 100
                 && setImagePreviewUrl(
-                  getIcon(item) as string,
+                  item.url as string,
                 )
               }
             />
-
-            {item.type === TransferMethod.local_file && (
-              <div className='flex flex-col'>
-                <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5' >{getFileName(item.file, 15)}</div>
-                <div className='flex center'>
-                  <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{getFileType(item.file).toUpperCase()}</div>
-                  <div className={cn(s.size, 'w-auto text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{getFileSize(item.file?.size)}</div>
-                </div>
+            <div className='flex flex-col'>
+              <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5' >{item.name}</div>
+              <div className='flex center'>
+                <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.fileType}</div>
+                <div className={cn(s.size, 'w-auto text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.size}</div>
               </div>
-            )
-            }
-            {item.type === TransferMethod.remote_url && (
-              <div className='flex flex-col'>
-                <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5' > {`image-${uuidV4().substring(0, 9)}...`}</div>
-                <div className='flex center'>
-                  <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{getRemoteLinkImageType(item.url)}</div>
-                  <div className={cn(s.size, 'w-auto text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>unknown</div>
-                </div>
-              </div>
-            )
-            }
+            </div>
 
           </div>
 

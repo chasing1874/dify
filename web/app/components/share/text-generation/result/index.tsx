@@ -15,7 +15,7 @@ import type { PromptConfig } from '@/models/debug'
 import type { InstalledApp } from '@/models/explore'
 import type { ModerationService } from '@/models/common'
 import { TransferMethod } from '@/types/app'
-import type { FileSettings, type VisionFile, type VisionSettings } from '@/types/app'
+import type { FileSettings, VisionFile, VisionSettings } from '@/types/app'
 
 import { NodeRunningStatus, WorkflowRunningStatus } from '@/app/components/workflow/types'
 import type { WorkflowProcess } from '@/app/components/base/chat/types'
