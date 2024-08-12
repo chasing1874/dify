@@ -113,6 +113,36 @@ class AgentChatAppGenerator(MessageBasedAppGenerator):
         user_id = user.id if isinstance(user, Account) else user.session_id
         trace_manager = TraceQueueManager(app_model.id, user_id)
 
+        upload_files = []
+        logger.info(f"Agent Files {files}")
+        for file in file_objs:
+            upload_file = {
+                'filename': file.filename,
+                'url': file.preview_url,
+                'type': file.type.value,
+                'extension': file.extension
+            }
+            upload_files.append(upload_file)
+            logger.info(f'upload_file {upload_file}')
+
+        file_paths = ''
+        for file in upload_files:
+            src_path = file['url']
+            dest_path = 'workspace/' + file['filename']
+            print('src: ', src_path)
+            print('dest: ', dest_path)
+            file_paths += f'{dest_path} \t'
+        print(f"file_paths: {file_paths}")
+
+        if len(upload_files) == 0:
+            join_prompt = query
+        else:
+            join_prompt = f'我上传了{len(upload_files)}个文件，文件地址为: {file_paths}, 请按照下面的要求进行分析: \n{query}'
+        print(join_prompt)
+        query = join_prompt
+
+        # query = '我上传了1个文件，文件地址为: mnt/斐客经营分析数据合集.xlsx      , 请按照下面的要求进行分析:' + query
+
         # init application generate entity
         application_generate_entity = AgentChatAppGenerateEntity(
             task_id=str(uuid.uuid4()),

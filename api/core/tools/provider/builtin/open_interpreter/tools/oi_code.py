@@ -30,6 +30,7 @@ class OICodeTool(BuiltinTool):
             pool: list[ToolRuntimeVariable] = runtime_variables.pool
             for item in pool:
                 if item.tool_name == 'CodeRunner' and item.name == 'upload_files':
+                    print(f'upload_files: {item.value}')
                     upload_files = json.loads(item.value)
             logger.info(f'user_id: {user_id}, conversation_id: {conversation_id}, pool: {pool}')
 

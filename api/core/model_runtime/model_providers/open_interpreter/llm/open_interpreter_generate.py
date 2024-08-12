@@ -264,7 +264,7 @@ class OpenInterpreterGenerate:
                 full_response += "\n"
 
         # Code
-        if chunk.type == "code":
+        if chunk.type == "code" and chunk.format != 'html':
             format = chunk.format if chunk.format is not None else "text"
             if chunk.start:
                 full_response += "\n📌 ***Code***\n"
