@@ -128,7 +128,7 @@ class AgentChatAppGenerator(MessageBasedAppGenerator):
         file_paths = ''
         for file in upload_files:
             src_path = file['url']
-            dest_path = 'workspace/' + file['filename']
+            dest_path = './workspace/' + file['filename']
             print('src: ', src_path)
             print('dest: ', dest_path)
             file_paths += f'{dest_path} \t'
@@ -140,8 +140,6 @@ class AgentChatAppGenerator(MessageBasedAppGenerator):
             join_prompt = f'我上传了{len(upload_files)}个文件，文件地址为: {file_paths}, 请按照下面的要求进行分析: \n{query}'
         print(join_prompt)
         query = join_prompt
-
-        # query = '我上传了1个文件，文件地址为: mnt/斐客经营分析数据合集.xlsx      , 请按照下面的要求进行分析:' + query
 
         # init application generate entity
         application_generate_entity = AgentChatAppGenerateEntity(
