@@ -1,10 +1,14 @@
+from io import BytesIO
 import logging
 from typing import Any, Union
+import uuid
 
 import requests
 
-from core.tools.entities.tool_entities import ToolInvokeMessage
+from core.tools.entities.tool_entities import ToolInvokeMessage, ToolParameter, ToolRuntimeVariable
 from core.tools.tool.builtin_tool import BuiltinTool
+import base64
+from PIL import Image
 
 logger = logging.getLogger(__name__)
 
@@ -19,16 +23,24 @@ class OICodeTool(BuiltinTool):
 
         logger.info(f"OI code, user_id: {user_id}")
 
-        language, code, upload_file_name, upload_file_url = tool_parameters.get("language"), tool_parameters.get("code"), tool_parameters.get("upload_file_name"), tool_parameters.get("upload_file_url")
-        logger.info(f'language: {language}, code: {code}, upload_file_name: {upload_file_name}, upload_file_url: {upload_file_url}')
+        logger.info(f'tool_parameters: {tool_parameters}')
+        logger.info(f'xxx variables: {self.variables}')
+        runtime_variables = self.variables
+        user_id = runtime_variables.user_id
+        conversation_id = runtime_variables.conversation_id
+        pool: list[ToolRuntimeVariable] = runtime_variables.pool
+        logger.info(f'user_id: {user_id}, conversation_id: {conversation_id}, pool: {pool}')
+
+
+        language, code, upload_files = tool_parameters.get("language"), tool_parameters.get("code"), tool_parameters.get("upload_files")
+        logger.info(f'language: {language}, code: {code}, upload_files: {upload_files}')
 
         api_server = self.runtime.credentials['SLAI_api_server']
         data = {
             'user_id': user_id,
             'language': language,
             'code': code,
-            'upload_file_name': upload_file_name,
-            'upload_file_url': upload_file_url
+            'upload_files': upload_files
         }
         response = requests.post(
             url=api_server + '/run',
@@ -57,19 +69,35 @@ class OICodeTool(BuiltinTool):
                     if item['type'] == 'console':
                         res_list.append(self.create_text_message(text=content))
                     if item['type'] == 'image':
-                        image_base64_url = f'data:image/png;base64,{content}'
-                        # res_list.append(self.create_image_message(image=image_base64_url))
+                        buffer = base64.b64decode(content)
+                        meta = {'mime_type': 'image/png'}
+                        res_list.append(self.create_blob_message(blob=buffer, meta=meta))
             else:
                 content = final_output['content']
                 if final_output['type'] == 'console':
                     res_list.append(self.create_text_message(text=content))
                 if final_output['type'] == 'image':
-                    image_base64_url = f'data:image/png;base64,{content}'
-                    # res_list.append(self.create_image_message(image=image_base64_url))
+                    buffer = base64.b64decode(content)
+                    meta = {'mime_type': 'image/png'}
+                    res_list.append(self.create_blob_message(blob=buffer, meta=meta))
         if pic_list:
             for item in pic_list:
-                res_list.append(self.create_image_message(image=item))
+                res_list.append(self.create_link_message(link=item))
         if file_list:
             for item in file_list:
-                res_list.append(self.create_link_message(file_var=item))
+                res_list.append(self.create_link_message(link=item))
         return res_list
+    
+    def get_runtime_parameters(self) -> list[ToolParameter]:
+        """
+        override the runtime parameters
+        """
+        logger.info('get_runtime_parameters')
+        return [
+            ToolParameter.get_simple_instance(
+                name='upload_file_url',
+                llm_description=f'when recieve file link, then the plugin will save it to *"./workspace"*',
+                type=ToolParameter.ToolParameterType.STRING,
+                required=False,
+            )
+        ]

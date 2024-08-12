@@ -10,7 +10,7 @@ description:
     en_US: Run code and get the result back. When you're using a lower quality model, please make sure there are some tips help LLM to understand how to write the code.
     zh_Hans: 运行一段代码并返回结果。当您使用较低质量的模型时，请确保有一些提示帮助LLM理解如何编写代码。
     pt_BR: Execute um trecho de código e obtenha o resultado de volta. quando você estiver usando um modelo de qualidade inferior, certifique-se de que existam algumas dicas para ajudar o LLM a entender como escrever o código.
-  llm: This Plugin will be called to run code and fetch results within 600s, especially processing math, computer, picture and file etc. Firstly, LLM will analyse the problem and output the steps of solving this problem with python. Secondly, LLM generates code to solve problems with steps immediately. LLM will adjust code referring to the error message until success. When LLM receives file links, put the file url and the file name in the parameter upload_file_url and upload_file_name, the plugin will save it to *'./workspace'*, also put code in the parameter code to output file basic info. ANY FILE THAT YOU HAVE TO CREATE IT HAS TO BE CREATE IT IN './workspace' EVEN WHEN THE USER DOESN'T WANTED.
+  llm: This Plugin will be called to run code and fetch results, especially processing math, computer, picture and file etc. When a user refers to a filename, always they're likely referring to an existing file in the folder *'./workspace'*  Firstly, LLM will analyse the problem and output the steps of solving this problem with python. Secondly, LLM generates code to solve problems with steps immediately. LLM will adjust code referring to the error message until success. ANY FILE THAT YOU HAVE TO CREATE IT HAS TO BE CREATE IT IN './workspace' EVEN WHEN THE USER DOESN'T WANTED.
 parameters:
   - name: language
     type: string
@@ -48,30 +48,4 @@ parameters:
       zh_Hans: 要执行的代码
       pt_BR: O código a ser executado
     llm_description: code to be executed, only native packages are allowed, network/IO operations are disabled. Required!
-    form: llm
-  - name: upload_file_url
-    type: string
-    required: false
-    label:
-      en_US: upload_file_url
-      zh_Hans: 文件链接
-      pt_BR: upload_file_url
-    human_description:
-      en_US: when recieve file link, then the plugin will save it to './workspace'
-      zh_Hans: 当收到文件链接时，插件会将其保存到 './workspace'
-      pt_BR: ao receber o link do arquivo, o plugin irá salvá-lo em './workspace'
-    llm_description: when recieve file link, then the plugin will save it to *'./workspace'*
-    form: llm
-  - name: upload_file_name
-    type: string
-    required: false
-    label:
-      en_US: upload_file_name
-      zh_Hans: 文件名
-      pt_BR: nome do arquivo
-    human_description:
-      en_US: save the upload_file_url with the corresponding filename.
-      zh_Hans: 使用相应的文件名保存 upload_file_url。
-      pt_BR: salve o upload_file_url com o nome do arquivo correspondente.
-    llm_description: save the upload_file_url with the corresponding filename.
     form: llm

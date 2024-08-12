@@ -157,6 +157,7 @@ class FileVar(BaseModel):
                 # add sign url
                 return ToolFileParser.get_tool_file_manager().sign_file(tool_file_id=self.related_id, extension=extension)
         if self.type == FileType.SHEET:
+            print(f'File Transfer Method: {self.transfer_method}')
             if self.transfer_method == FileTransferMethod.REMOTE_URL:
                 return self.url
             elif self.transfer_method == FileTransferMethod.LOCAL_FILE:
@@ -165,8 +166,6 @@ class FileVar(BaseModel):
                     UploadFile.id == self.related_id,
                     UploadFile.tenant_id == self.tenant_id
                 ).first())
-
-                print(upload_file)
 
                 return UploadFileParser.get_sheet_data(
                     upload_file=upload_file,

@@ -1,5 +1,6 @@
 import logging
 from typing import cast
+import json
 
 from core.agent.cot_chat_agent_runner import CotChatAgentRunner
 from core.agent.cot_completion_agent_runner import CotCompletionAgentRunner
@@ -53,6 +54,37 @@ class AgentChatAppRunner(AppRunner):
         inputs = application_generate_entity.inputs
         query = application_generate_entity.query
         files = application_generate_entity.files
+
+        print(f'message: {message}')
+        print(f'application_generate_entity： {application_generate_entity}')
+        upload_files = []
+        logger.info(f"Agent Files {files}")
+        for file in files:
+            upload_file = {
+                'filename': file.filename,
+                'url': file.preview_url,
+                'type': file.type.value,
+                'extension': file.extension
+            }
+            upload_files.append(upload_file)
+            logger.info(f'upload_file {upload_file}')
+        
+        
+        file_paths = ''
+        for file in upload_files:
+            src_path = file['url']
+            dest_path = './workspace/' + file['filename']
+            print('src: ', src_path)
+            print('dest: ', dest_path)
+            file_paths += f'{dest_path} \t'
+        print(f"file_paths: {file_paths}")
+
+        if len(upload_files) == 0:
+            join_prompt = application_generate_entity.query
+        else:
+            join_prompt = f'我上传了{len(upload_files)}个文件，文件地址为: {file_paths}, 请按照下面的要求进行分析: \n{application_generate_entity.query}'
+        print(join_prompt)
+        application_generate_entity.query = join_prompt
 
         # Pre-calculate the number of tokens of the prompt messages,
         # and return the rest number of tokens by model context token size limit and max token size limit.
@@ -183,6 +215,10 @@ class AgentChatAppRunner(AppRunner):
 
         # convert db variables to tool variables
         tool_variables = self._convert_db_variables_to_tool_variables(tool_conversation_variables)
+
+        
+        tool_variables.set_text(tool_name='CodeRunner', value=json.dumps(upload_files), name='upload_file_url')
+        logger.info(f'tool_variables: {tool_variables}')
 
         # init model instance
         model_instance = ModelInstance(
