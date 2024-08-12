@@ -1,4 +1,5 @@
 import base64
+import json
 import logging
 from typing import Any, Union
 
@@ -22,14 +23,18 @@ class OICodeTool(BuiltinTool):
 
         logger.info(f'tool_parameters: {tool_parameters}')
         logger.info(f'xxx variables: {self.variables}')
+        upload_files = []
         runtime_variables = self.variables
-        user_id = runtime_variables.user_id
-        conversation_id = runtime_variables.conversation_id
-        pool: list[ToolRuntimeVariable] = runtime_variables.pool
-        logger.info(f'user_id: {user_id}, conversation_id: {conversation_id}, pool: {pool}')
+        if runtime_variables:
+            conversation_id = runtime_variables.conversation_id
+            pool: list[ToolRuntimeVariable] = runtime_variables.pool
+            for item in pool:
+                if item.tool_name == 'CodeRunner' and item.name == 'upload_files':
+                    upload_files = json.loads(item.value)
+            logger.info(f'user_id: {user_id}, conversation_id: {conversation_id}, pool: {pool}')
 
 
-        language, code, upload_files = tool_parameters.get("language"), tool_parameters.get("code"), tool_parameters.get("upload_files")
+        language, code = tool_parameters.get("language"), tool_parameters.get("code")
         logger.info(f'language: {language}, code: {code}, upload_files: {upload_files}')
 
         api_server = self.runtime.credentials['SLAI_api_server']

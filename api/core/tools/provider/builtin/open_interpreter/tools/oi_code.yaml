@@ -10,7 +10,7 @@ description:
     en_US: Run code and get the result back. When you're using a lower quality model, please make sure there are some tips help LLM to understand how to write the code.
     zh_Hans: 运行一段代码并返回结果。当您使用较低质量的模型时，请确保有一些提示帮助LLM理解如何编写代码。
     pt_BR: Execute um trecho de código e obtenha o resultado de volta. quando você estiver usando um modelo de qualidade inferior, certifique-se de que existam algumas dicas para ajudar o LLM a entender como escrever o código.
-  llm: This Plugin will be called to run code and fetch results, especially processing math, computer, picture and file etc. When a user refers to a filename, always they're likely referring to an existing file in the folder *'./workspace'*  Firstly, LLM will analyse the problem and output the steps of solving this problem with python. Secondly, LLM generates code to solve problems with steps immediately. LLM will adjust code referring to the error message until success. ANY FILE THAT YOU HAVE TO CREATE IT HAS TO BE CREATE IT IN './workspace' EVEN WHEN THE USER DOESN'T WANTED.
+  llm: This Plugin will be called to run code and fetch results, especially processing math, computer, picture and file etc. When a user refers to a filename, always they're likely referring to an existing file in the folder './workspace' . ANY FILE THAT YOU HAVE TO CREATE IT HAS TO BE CREATE IT IN './workspace' EVEN WHEN THE USER DOESN'T WANTED.
 parameters:
   - name: language
     type: string
@@ -23,7 +23,7 @@ parameters:
       en_US: The programming language of the code
       zh_Hans: 代码的编程语言
       pt_BR: A linguagem de programação do código
-    llm_description: language of the code, only "python" and "javascript" are supported. Required!
+    llm_description: language of the code, only "python" and "javascript" are supported.
     form: llm
     options:
       - value: python
@@ -47,5 +47,5 @@ parameters:
       en_US: The code to be executed
       zh_Hans: 要执行的代码
       pt_BR: O código a ser executado
-    llm_description: code to be executed, only native packages are allowed, network/IO operations are disabled. Required!
+    llm_description: code to be executed, only native packages are allowed, network/IO operations are disabled.
     form: llm
