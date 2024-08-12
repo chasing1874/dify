@@ -1,14 +1,11 @@
-from io import BytesIO
+import base64
 import logging
 from typing import Any, Union
-import uuid
 
 import requests
 
 from core.tools.entities.tool_entities import ToolInvokeMessage, ToolParameter, ToolRuntimeVariable
 from core.tools.tool.builtin_tool import BuiltinTool
-import base64
-from PIL import Image
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +93,7 @@ class OICodeTool(BuiltinTool):
         return [
             ToolParameter.get_simple_instance(
                 name='upload_file_url',
-                llm_description=f'when recieve file link, then the plugin will save it to *"./workspace"*',
+                llm_description='when recieve file link, then the plugin will save it to *"./workspace"*',
                 type=ToolParameter.ToolParameterType.STRING,
                 required=False,
             )

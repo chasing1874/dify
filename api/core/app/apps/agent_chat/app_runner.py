@@ -1,6 +1,6 @@
+import json
 import logging
 from typing import cast
-import json
 
 from core.agent.cot_chat_agent_runner import CotChatAgentRunner
 from core.agent.cot_completion_agent_runner import CotCompletionAgentRunner
