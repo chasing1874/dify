@@ -52,8 +52,8 @@ const ImageList: FC<ImageListProps> = ({
       {list.map(item => (
         <div
           key={item.upload_file_id}
-          className="w-40  group relative mr-1 border-[0.5px] border-black/5 rounded-lg;"
-          style={{ backgroundColor: '#f5f5f5', borderRadius: '4px' }}
+          className="w-40  group relative mr-1 border-[0.5px] border-black/5 rounded-lg"
+          style={{ backgroundColor: '#f5f5f5' }}
         >
           {item.type === TransferMethod.local_file && item.progress !== 100 && (
             <>
@@ -117,7 +117,7 @@ const ImageList: FC<ImageListProps> = ({
               }
             />
             <div className='flex flex-col'>
-              <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5' >{item.name}</div>
+              <div className='w-28 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5 overflow-hidden whitespace-nowrap text-ellipsis'>{item.name}</div>
               <div className='flex center'>
                 <div className={cn(s.type, 'w-auto mr-4 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.fileType}</div>
                 <div className={cn(s.size, 'w-auto text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5')}>{item.size}</div>

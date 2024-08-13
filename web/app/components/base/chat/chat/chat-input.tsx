@@ -116,7 +116,7 @@ const ChatInput: FC<ChatInputProps> = ({
     size: getFileSize(fileItem.file, fileItem.type),
     upload_file_id: fileItem.fileId,
     _id: fileItem._id,
-    name: getFileName(fileItem.file, 15, fileItem.type),
+    name: getFileName(fileItem.file, fileItem.type),
     fileType: getFileType(fileItem.file, fileItem.type, fileItem.url),
   }))
 
@@ -127,7 +127,7 @@ const ChatInput: FC<ChatInputProps> = ({
     url: fileItem.url,
     size: getFileSize(fileItem.file, fileItem.type),
     upload_file_id: fileItem.fileId,
-    name: getFileName(fileItem.file, 15, fileItem.type),
+    name: getFileName(fileItem.file, fileItem.type),
     fileType: getFileType(fileItem.file, fileItem.type, fileItem.url),
     _id: fileItem._id,
   }))

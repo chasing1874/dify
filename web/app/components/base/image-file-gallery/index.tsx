@@ -42,7 +42,7 @@ const ImageFileGallery: FC<Props> = ({
               <div
                 key={item.upload_file_id}
                 className="w-40 group relative mr-1 mb-1 border-[0.5px] border-black/5 rounded-lg"
-                style={{ backgroundColor: 'rgb(245, 245, 245)', borderRadius: '4px' }}
+                style={{ backgroundColor: 'rgb(245, 245, 245)' }}
               >
                 <div
                   className={`${s.fileInfo} w-full h-[40px] p-[6px] rounded-lg cursor-pointer border-[0.5px] border-black/5`}
@@ -62,7 +62,7 @@ const ImageFileGallery: FC<Props> = ({
                     )}
 
                   <div className='flex flex-col'>
-                    <div className='w-full text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5'>
+                    <div className='w-28 text-left text-[var(--txt_icon_black_1,#1a2029)] text-xs leading-5 overflow-hidden whitespace-nowrap text-ellipsis'>
                       {item.name}
                     </div>
                     <div className='flex center'>
