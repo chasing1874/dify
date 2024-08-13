@@ -1,9 +1,8 @@
 import enum
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel
 
-from core.app.app_config.entities import FileExtraConfig
 from core.file.tool_file_parser import ToolFileParser
 from core.file.upload_file_parser import UploadFileParser
 from core.model_runtime.entities.message_entities import (
@@ -12,7 +11,13 @@ from core.model_runtime.entities.message_entities import (
     SheetPromptMessageContent,
 )
 from extensions.ext_database import db
-from models.model import UploadFile
+
+
+class FileExtraConfig(BaseModel):
+    """
+    File Upload Entity.
+    """
+    image_config: Optional[dict[str, Any]] = None
 
 
 class FileType(enum.Enum):
@@ -138,6 +143,7 @@ class FileVar(BaseModel):
             )
 
     def _get_data(self, force_url: bool = False) -> Optional[str]:
+        from models.model import UploadFile
         if self.type == FileType.IMAGE:
             if self.transfer_method == FileTransferMethod.REMOTE_URL:
                 return self.url
