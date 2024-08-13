@@ -572,16 +572,25 @@ const translation = {
   },
   imageUploader: {
     uploadFromComputer: 'Carica dal Computer',
-    uploadFromComputerReadError:
-      'Lettura dell\'immagine fallita, per favore riprova.',
-    uploadFromComputerUploadError:
-      'Caricamento dell\'immagine fallito, per favore ricarica.',
-    uploadFromComputerLimit:
-      'Le immagini caricate non possono superare i {{size}} MB',
+    uploadFromComputerReadError: 'Lettura dell\'immagine fallita, per favore riprova.',
+    uploadFromComputerUploadError: 'Caricamento dell\'immagine fallito, per favore ricarica.',
+    uploadFromComputerLimit: 'Le immagini caricate non possono superare i {{size}} MB',
+    uploadFromComputerTypeLimit: 'Il tipo di immagine è {{type}}',
     pasteImageLink: 'Incolla link immagine',
     pasteImageLinkInputPlaceholder: 'Incolla qui il link immagine',
     pasteImageLinkInvalid: 'Link immagine non valido',
     imageUpload: 'Caricamento Immagine',
+  },
+  fileUploader: {
+    uploadFromComputer: 'Carica dal computer',
+    uploadFromComputerReadError: 'Lettura del file fallita, per favore seleziona di nuovo.',
+    uploadFromComputerUploadError: 'Caricamento del file fallito, per favore ricarica.',
+    uploadFromComputerLimit: 'I file caricati non possono superare i {{size}} MB',
+    uploadFromComputerTypeLimit: 'Il tipo di file è {{type}}',
+    pasteFileLink: 'Incolla link file',
+    pasteFileLinkInputPlaceholder: 'Incolla qui il link del file',
+    pasteFileLinkInvalid: 'Link file non valido',
+    fileUpload: 'Caricamento File',
   },
   tag: {
     placeholder: 'Tutti i Tag',

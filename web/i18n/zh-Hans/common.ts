@@ -558,7 +558,6 @@ const translation = {
     pasteImageLinkInvalid: '图片链接无效',
     imageUpload: '图片上传',
   },
-  // add
   fileUploader: {
     uploadFromComputer: '从本地上传',
     uploadFromComputerReadError: '文件读取失败，请重新选择。',
