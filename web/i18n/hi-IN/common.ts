@@ -560,14 +560,24 @@ const translation = {
   imageUploader: {
     uploadFromComputer: 'कंप्यूटर से अपलोड करें',
     uploadFromComputerReadError: 'छवि पढ़ना विफल रहा, कृपया पुनः प्रयास करें।',
-    uploadFromComputerUploadError:
-      'छवि अपलोड विफल रहा, कृपया फिर से अपलोड करें।',
-    uploadFromComputerLimit:
-      'अपलोड की गई छवियाँ {{size}} MB से अधिक नहीं हो सकतीं',
+    uploadFromComputerUploadError: 'छवि अपलोड विफल रहा, कृपया फिर से अपलोड करें।',
+    uploadFromComputerLimit: 'अपलोड की गई छवियाँ {{size}} MB से अधिक नहीं हो सकतीं',
+    uploadFromComputerTypeLimit: 'छवि का प्रकार {{type}} है',
     pasteImageLink: 'छवि लिंक पेस्ट करें',
     pasteImageLinkInputPlaceholder: 'छवि लिंक यहाँ पेस्ट करें',
     pasteImageLinkInvalid: 'अमान्य छवि लिंक',
     imageUpload: 'छवि अपलोड',
+  },
+  fileUploader: {
+    uploadFromComputer: 'कंप्यूटर से अपलोड करें',
+    uploadFromComputerReadError: 'फ़ाइल पढ़ने में विफल, कृपया पुनः चयन करें।',
+    uploadFromComputerUploadError: 'फ़ाइल अपलोड विफल, कृपया फिर से अपलोड करें।',
+    uploadFromComputerLimit: 'अपलोड की गई फ़ाइलें {{size}} MB से अधिक नहीं हो सकतीं',
+    uploadFromComputerTypeLimit: 'फ़ाइल का प्रकार {{type}} है',
+    pasteFileLink: 'फ़ाइल लिंक पेस्ट करें',
+    pasteFileLinkInputPlaceholder: 'फ़ाइल लिंक यहाँ पेस्ट करें',
+    pasteFileLinkInvalid: 'अमान्य फ़ाइल लिंक',
+    fileUpload: 'फ़ाइल अपलोड',
   },
   tag: {
     placeholder: 'सभी टैग्स',

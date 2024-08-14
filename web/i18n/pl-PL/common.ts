@@ -531,10 +531,22 @@ const translation = {
       'Błąd przesyłania obrazu, prześlij go ponownie.',
     uploadFromComputerLimit:
       'Obrazy do przesłania nie mogą przekroczyć {{size}} MB',
+    uploadFromComputerTypeLimit: 'Typ obrazu to {{type}}',
     pasteImageLink: 'Wklej link do obrazu',
     pasteImageLinkInputPlaceholder: 'Wklej tutaj link do obrazu',
     pasteImageLinkInvalid: 'Nieprawidłowy link obrazu',
     imageUpload: 'Przesyłanie obrazu',
+  },
+  fileUploader: {
+    uploadFromComputer: 'Prześlij z komputera',
+    uploadFromComputerReadError: 'Błąd odczytu pliku, wybierz ponownie.',
+    uploadFromComputerUploadError: 'Błąd przesyłania pliku, prześlij ponownie.',
+    uploadFromComputerLimit: 'Przesyłany plik nie może przekraczać {{size}} MB',
+    uploadFromComputerTypeLimit: 'Typ pliku to {{type}}',
+    pasteFileLink: 'Wklej link do pliku',
+    pasteFileLinkInputPlaceholder: 'Wklej tutaj link do pliku',
+    pasteFileLinkInvalid: 'Nieprawidłowy link do pliku',
+    fileUpload: 'Przesyłanie pliku',
   },
   tag: {
     placeholder: 'Wszystkie tagi',

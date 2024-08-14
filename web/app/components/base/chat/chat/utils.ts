@@ -26,15 +26,13 @@ export const getFileSize = (file: File | undefined, type: string) => {
   return `${(file.size / 1024 / 1024).toFixed(2)}MB`
 }
 
-export const getFileName = (currentFile: File | undefined, maxLength: number, type: string) => {
+export const getFileName = (currentFile: File | undefined, type: string) => {
   // remote_url name uuid
   if (type === TransferMethod.remote_url)
-    return `image-${uuidV4().substring(0, maxLength - 5)}...`
+    return `image-${uuidV4()}`
   if (!currentFile?.name)
     return ''
   const name = currentFile.name
   const basename = name.substring(0, name.lastIndexOf('.'))
-  if (basename.length <= maxLength)
-    return basename
-  return `${basename.slice(0, maxLength)}...`
+  return basename
 }

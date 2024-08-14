@@ -61,6 +61,7 @@
 .fileIcon.xlsm,
 .fileIcon.xlst,
 .fileIcon.xlt,
+.fileIcon.xls,
 .fileIcon.xltx {
   background-image: url(../assets/xlsx.svg);
 }
