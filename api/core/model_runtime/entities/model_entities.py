@@ -96,6 +96,7 @@ class DefaultParameterName(Enum):
     FREQUENCY_PENALTY = "frequency_penalty"
     MAX_TOKENS = "max_tokens"
     RESPONSE_FORMAT = "response_format"
+    JSON_SCHEMA = "json_schema"
 
     @classmethod
     def value_of(cls, value: Any) -> 'DefaultParameterName':
@@ -119,6 +120,7 @@ class ParameterType(Enum):
     INT = "int"
     STRING = "string"
     BOOLEAN = "boolean"
+    TEXT = "text"
 
 
 class ModelPropertyKey(Enum):
