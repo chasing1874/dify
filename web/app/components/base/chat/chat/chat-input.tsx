@@ -53,6 +53,7 @@ const ChatInput: FC<ChatInputProps> = ({
   const { t } = useTranslation()
   const { notify } = useContext(ToastContext)
   const [voiceInputShow, setVoiceInputShow] = useState(false)
+  const textAreaRef = useRef<HTMLTextAreaElement>(null)
   const {
     imageFiles,
     onUpload,
@@ -293,6 +294,7 @@ const ChatInput: FC<ChatInputProps> = ({
           { visionConfig?.enabled && !fileConfig?.enabled && (
             <>
               <Textarea
+                ref={textAreaRef}
                 className={`
               block w-full px-2 pr-[118px] py-[7px] leading-5 max-h-none text-sm text-gray-700 outline-none appearance-none resize-none
               ${(visionConfig?.enabled || fileConfig?.enabled) && 'pl-12'}
@@ -314,6 +316,7 @@ const ChatInput: FC<ChatInputProps> = ({
           { fileConfig?.enabled && (
             <>
               <Textarea
+                ref={textAreaRef}
                 className={`
               block w-full px-2 pr-[118px] py-[7px] leading-5 max-h-none text-sm text-gray-700 outline-none appearance-none resize-none
               ${(visionConfig?.enabled || fileConfig?.enabled) && 'pl-12'}
@@ -335,6 +338,7 @@ const ChatInput: FC<ChatInputProps> = ({
           { !fileConfig?.enabled && !visionConfig?.enabled && (
             <>
               <Textarea
+                ref={textAreaRef}
                 className={`
               block w-full px-2 pr-[118px] py-[7px] leading-5 max-h-none text-sm text-gray-700 outline-none appearance-none resize-none
               ${(visionConfig?.enabled || fileConfig?.enabled) && 'pl-12'}
@@ -390,12 +394,17 @@ const ChatInput: FC<ChatInputProps> = ({
                 </TooltipPlus>
               )}
           </div>
-          {voiceInputShow && (
-            <VoiceInput
-              onCancel={() => setVoiceInputShow(false)}
-              onConverted={text => setQuery(text)}
-            />
-          )}
+          {
+            voiceInputShow && (
+              <VoiceInput
+                onCancel={() => setVoiceInputShow(false)}
+                onConverted={(text) => {
+                  setQuery(text)
+                  textAreaRef.current?.focus()
+                }}
+              />
+            )
+          }
         </div>
       </div>
       {appData?.site?.custom_disclaimer && (
