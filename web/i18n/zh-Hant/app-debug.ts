@@ -291,6 +291,25 @@ const translation = {
       uploadLimit: '上傳數量限制',
     },
   },
+  file: {
+    name: '文件',
+    description:
+      '開啟文件功能將允許模型輸入文件，並根據文件內容的理解回答使用者問題',
+    settings: '设置',
+    fileSettings: {
+      title: '文件設定',
+      resolution: '文件大小',
+      resolutionTooltip: '檔案大小設定選項允許你選擇模型處理的最大檔案大小',
+      M1: '10M以內',
+      M2: '30M以內',
+      M3: '50M以內',
+      uploadMethod: '上傳方式',
+      both: '兩者',
+      localUpload: '本地上傳',
+      url: 'URL',
+      uploadLimit: '上傳數量限制',
+    },
+  },
   voice: {
     name: '音色',
     defaultDisplay: '預設音色',

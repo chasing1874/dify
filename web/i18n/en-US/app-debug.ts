@@ -349,6 +349,25 @@ const translation = {
       uploadLimit: 'Upload Limit',
     },
   },
+  file: {
+    name: 'FileUpload',
+    description:
+      'Turning on the file function will allow the model to input files and answer user questions based on its understanding of the file content.',
+    settings: 'Settings',
+    fileSettings: {
+      title: 'File Settings',
+      resolution: 'File size',
+      resolutionTooltip: 'The file size setting option allows you to select the maximum file size that the model will handle',
+      M1: 'Within 10M',
+      M2: 'Within 30M',
+      M3: 'Within 50M',
+      uploadMethod: 'Upload Method',
+      both: 'Both',
+      localUpload: 'Local Upload',
+      url: 'URL',
+      uploadLimit: 'Upload Limit',
+    },
+  },
   voice: {
     name: 'Voice',
     defaultDisplay: 'Default Voice',
