@@ -28,7 +28,7 @@ from core.model_runtime.errors.invoke import (
 )
 from core.model_runtime.errors.validate import CredentialsValidateFailedError
 from core.model_runtime.model_providers.__base.large_language_model import LargeLanguageModel
-from core.model_runtime.model_providers.open_interpreter.llm.open_interpreter_generate import (
+from core.model_runtime.model_providers.shuling_ai.llm.open_interpreter_generate import (
     OpenInterpreterGenerate,
     OpenInterpreterGenerateMessage,
 )

@@ -7,7 +7,7 @@ from core.model_runtime.model_providers.__base.model_provider import ModelProvid
 logger = logging.getLogger(__name__)
 
 
-class OpenInterpreterProvider(ModelProvider):
+class ShulingAIProvider(ModelProvider):
     def validate_provider_credentials(self, credentials: dict) -> None:
         """
         Validate provider credentials

@@ -1,7 +1,7 @@
-provider: open_interpreter
+provider: shuling_ai
 label:
-  zh_Hans: Open Interpreter
-  en_US: Open Interpreter
+  zh_Hans: 数灵AI
+  en_US: Shuling AI
 icon_small:
   en_US: icon_s_en.svg
 icon_large:
@@ -9,10 +9,10 @@ icon_large:
 background: "#EFF1FE"
 help:
   title:
-    en_US: LLM based on Open Interpreter
-    zh_Hans: 基于Open Interpreter 包装的LLM
+    en_US: Shuling AI customized large model
+    zh_Hans: 数灵AI定制大模型
   url:
-    en_US: https://github.com/OpenInterpreter/open-interpreter
+    en_US: https://zcn1olv66sbr.feishu.cn/wiki/V1q2wgcAriXKHWkfRFscb6brnub?from=from_copylink
 supported_model_types:
   - llm
 configurate_methods:
@@ -29,10 +29,10 @@ provider_credential_schema:
         en_US: Enter your API Key
     - variable: server_url
       label:
-        zh_Hans: Open Interpreter Server
-        en_US: Open Interpreter Server
+        zh_Hans: 数灵AI Server
+        en_US: Shuling AI Server
       type: text-input
       required: false
       placeholder:
-        zh_Hans: 在此输入您的 Open Interpreter 部署地址, 如：http://host.docker.internal:8000
-        en_US: Enter your Open Interpreter deploy url, e.g. http://host.docker.internal:8000
+        zh_Hans: 在此输入您的数灵AI服务部署地址
+        en_US: Enter your Shuling AI deploy url
