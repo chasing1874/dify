@@ -48,7 +48,7 @@ const ImageFileGallery: FC<Props> = ({
                   className={`${s.fileInfo} w-full h-[40px] p-[6px] rounded-lg cursor-pointer border-[0.5px] border-black/5`}
                   style={{ backgroundColor: 'rgb(245, 245, 245)' }}
                 >
-                  {(IMAGE_ALLOW_FILE_EXTENSIONS.includes(item.fileType.toLowerCase()) || item.transfer_method === TransferMethod.remote_url)
+                  {(IMAGE_ALLOW_FILE_EXTENSIONS.includes(item.fileType?.toLowerCase()) || item.transfer_method === TransferMethod.remote_url)
                     ? (
                       <img
                         className={s.fileImage}
@@ -58,7 +58,7 @@ const ImageFileGallery: FC<Props> = ({
                       />
                     )
                     : (
-                      <div className={cn(s.fileIcon, s[item.fileType.toLowerCase()])} />
+                      <div className={cn(s.fileIcon, s[item.fileType?.toLowerCase()])} />
                     )}
 
                   <div className='flex flex-col'>

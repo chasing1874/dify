@@ -72,6 +72,8 @@ class MessageService:
 
         history_messages = list(reversed(history_messages))
 
+        print(f'history_messages: {history_messages}')
+
         return InfiniteScrollPagination(
             data=history_messages,
             limit=limit,

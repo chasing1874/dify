@@ -130,7 +130,7 @@ const FileList: FC<FileListProps> = ({
                 />
               )
               : (
-                <div className={cn(s.fileIcon, s[item.fileType.toLowerCase()])} />
+                <div className={cn(s.fileIcon, s[item.fileType?.toLowerCase()])} />
               )}
             {
               <div className='flex flex-col'>

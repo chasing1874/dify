@@ -103,6 +103,8 @@ class ChatApi(WebApiResource):
 
         args = parser.parse_args()
 
+        print(f'files: {args["files"]}')
+
         streaming = args['response_mode'] == 'streaming'
         args['auto_generate_name'] = False
 

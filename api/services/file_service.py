@@ -17,10 +17,13 @@ from models.account import Account
 from models.model import EndUser, UploadFile
 from services.errors.file import FileTooLargeError, UnsupportedFileTypeError
 
-IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'xlsx']
+IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg']
 IMAGE_EXTENSIONS.extend([ext.upper() for ext in IMAGE_EXTENSIONS])
 
-ALLOWED_EXTENSIONS = ['txt', 'markdown', 'md', 'pdf', 'html', 'htm', 'xlsx', 'xls', 'docx', 'csv']
+SHEET_EXTENSIONS = ['xlsx','xls','xlsm','xlt','xltx','csv','tsv']
+SHEET_EXTENSIONS.extend([ext.upper() for ext in SHEET_EXTENSIONS])
+
+ALLOWED_EXTENSIONS = ['txt', 'markdown', 'md', 'pdf', 'html', 'htm', 'xlsx', 'xls', 'csv']
 UNSTRUCTURED_ALLOWED_EXTENSIONS = ['txt', 'markdown', 'md', 'pdf', 'html', 'htm', 'xlsx', 'xls',
                                    'docx', 'csv', 'eml', 'msg', 'pptx', 'ppt', 'xml', 'epub']
 
