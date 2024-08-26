@@ -10,7 +10,7 @@ import { useChatWithHistoryContext } from '../chat-with-history/context'
 import type { Theme } from '../embedded-chatbot/theme/theme-context'
 import { CssTransform } from '../embedded-chatbot/theme/utils'
 import { getFileName, getFileSize, getFileType } from './utils'
-import TooltipPlus from '@/app/components/base/tooltip-plus'
+import Tooltip from '@/app/components/base/tooltip'
 import { ToastContext } from '@/app/components/base/toast'
 import useBreakpoints, { MediaType } from '@/hooks/use-breakpoints'
 import VoiceInput from '@/app/components/base/voice-input'
@@ -382,7 +382,7 @@ const ChatInput: FC<ChatInputProps> = ({
                 sendBtn
               )
               : (
-                <TooltipPlus
+                <Tooltip
                   popupContent={
                     <div>
                       <div>{t('common.operation.send')} Enter</div>
@@ -391,7 +391,7 @@ const ChatInput: FC<ChatInputProps> = ({
                   }
                 >
                   {sendBtn}
-                </TooltipPlus>
+                </Tooltip>
               )}
           </div>
           {
