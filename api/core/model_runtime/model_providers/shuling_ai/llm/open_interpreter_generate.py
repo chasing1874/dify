@@ -1,10 +1,9 @@
 import base64
 import logging
-import uuid
 from collections.abc import Generator
 from enum import Enum
 from io import BytesIO
-from json import dumps, loads
+from json import dumps
 from typing import Any, Literal, Optional, Union
 
 from PIL import Image
