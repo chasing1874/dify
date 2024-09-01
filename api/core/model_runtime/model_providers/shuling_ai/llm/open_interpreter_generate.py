@@ -4,7 +4,7 @@ import uuid
 from collections.abc import Generator
 from enum import Enum
 from io import BytesIO
-from json import dumps
+from json import dumps, loads
 from typing import Any, Literal, Optional, Union
 
 from PIL import Image
@@ -29,8 +29,8 @@ class Message(BaseModel):
     role: Literal["user", "assistant", "computer"]
     type: Literal["message", "code", "image", "console", "file", "confirmation"]
     format: Optional[Literal["output", "path", "base64.png", "base64.jpeg", "python", "javascript", "shell", "html", "active_line", "execution"]] = None
-    recipient: Optional[Literal["user", "assistant"]] = None
-    content: Optional[Union[str, int, dict[str, Union[str, dict]]]] = None # 如果dict需要有特定的结构，可以定义一个更详细的类型
+    recipient: Optional[Literal["user", "assistant"]] = None  
+    content: Optional[Union[str, int, dict[str, Union[str, list[dict], dict]]]] = None # 如果dict需要有特定的结构，可以定义一个更详细的类型
 
 class StreamingChunk(Message):
     start: Optional[bool] = None
@@ -73,6 +73,7 @@ class OpenInterpreterGenerateMessage:
 
 class OpenInterpreterGenerate:
     is_console_out: bool = False
+    result_show_flag: bool = False
 
     def generate(
             self, server_url: str, api_key: str, model_name: str, stream: bool, model_parameters: dict[str, Any],
@@ -267,12 +268,13 @@ class OpenInterpreterGenerate:
         if chunk.type == "code" and chunk.format != 'html':
             format = chunk.format if chunk.format is not None else "text"
             if chunk.start:
-                full_response += "\n📌 ***Code***\n"
+                full_response += "\n### 📌 Code\n"
                 full_response = full_response + "```" + format + "\n"
             if chunk.content is not None:
                 full_response += chunk.content
             if chunk.end:
                 full_response += "\n```\n"
+                self.result_show_flag = True
 
         # confirmation 暂不需要confirmation
         # if chunk['type'] == "confirmation":
@@ -293,21 +295,28 @@ class OpenInterpreterGenerate:
         # Console
         if chunk.type == "console":
             if chunk.start:
-                full_response += "\n✅ ***Result***\n"
-                full_response += "```\n"
-            # if chunk.format == "active_line":
-            #     if chunk.content is None and self.is_console_out == False:
-            #         full_response += "The code execution is complete!"
+                if self.result_show_flag:
+                    full_response += "\n### 🔥 Excute Code\n"
+                    self.result_show_flag = False
             if chunk.format == "output":
                 if chunk.content is not None and chunk.content != "HTML being displayed on the user's machine...":
+                    if not self.is_console_out and len(chunk.content) > 0:
+                        full_response += "\n```\n"
+                    full_response += chunk.content
                     full_response += chunk.content
                     if len(full_response) > 0:
+                        full_response += chunk.content
+                    if len(full_response) > 0:
                         self.is_console_out = True
+            # if chunk.format == "active_line":
+            #     if chunk.content is None:
+            #         full_response += "\n > *Execution is complete!* \n"
+            #     else:
+            #         full_response += f'\n > *⌛️ Executing code line {chunk.content}* \n'
             if chunk.end:
-                if self.is_console_out == False:
-                    full_response += "The code execution is complete!"
-                full_response += "\n```\n"
-                self.is_console_out = False
+                if self.is_console_out: 
+                    full_response += "\n```\n"
+                    self.is_console_out = False
 
         # Image
         if chunk.type == "image":
@@ -320,15 +329,30 @@ class OpenInterpreterGenerate:
                             BytesIO(base64.b64decode(chunk.content)))
                         new_image = Image.new("RGB", image.size, "white")
                         new_image.paste(image, mask=image.split()[3])
-                        # buffered = BytesIO()
-                        # new_image.save(buffered, format="PNG")
-                        # img_str = base64.b64encode(buffered.getvalue()).decode()
-                        # full_response += f"![Image](data:image/png;base64,{img_str})\n"
+                        buffered = BytesIO()
+                        new_image.save(buffered, format="PNG")
+                        img_str = base64.b64encode(buffered.getvalue()).decode()
+                        full_response += f"![Image](data:image/png;base64,{img_str} 'Click to view')\n"
 
                         # 保存图片到指定目录
-                        save_path = '/mnt/data/' + str(uuid.uuid4()) + '.' + 'png'
-                        new_image.save(save_path, format="PNG")
-                        full_response += f'[![Image]({save_path} "Click to view")]({save_path})'
+                        # save_path = '/mnt/data/' + str(uuid.uuid4()) + '.' + 'png'
+                        # save_path = 'D:\\mnt\\data\\' + str(uuid.uuid4()) + '.' + 'png'
+                        # new_image.save(save_path, format="PNG")
+                        # full_response += f'[![Image]({save_path} "Click to view")]({save_path})'
+        
+        if chunk.type == 'file':
+            file_info = chunk.content
+            file_list = file_info.get('file_list', [])
+            pic_list = file_info.get('pic_list', [])
+            # file_list = loads(file_list)
+            # pic_list = loads(pic_list)
+            if len(file_list) > 0 or len(pic_list) > 0:
+                full_response += "\n### 🔗 ***Download related files***\n"
+            for file in file_list:
+                full_response += f'[{file["file_name"]}]({file["file_url"]} "click to download") \n'
+            for pic in pic_list:
+                full_response += f'[{pic["file_name"]}]({pic["file_url"]} "click to download") \n'
+
 
         return full_response
         
