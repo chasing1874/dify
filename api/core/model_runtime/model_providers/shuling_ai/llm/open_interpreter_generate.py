@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 class Message(BaseModel):
     role: Literal["user", "assistant", "computer"]
     type: Literal["message", "code", "image", "console", "file", "confirmation"]
-    format: Optional[Literal["output", "path", "base64.png", "base64.jpeg", "python", "javascript", "shell", "html", "active_line", "execution"]] = None
+    format: Optional[Literal["output", "path", "base64.png", "base64.jpeg", "python", "javascript", "shell", "html", "active_line", "execution", "bash"]] = None
     recipient: Optional[Literal["user", "assistant"]] = None  
     content: Optional[Union[str, int, dict[str, Union[str, list[dict], dict]]]] = None # 如果dict需要有特定的结构，可以定义一个更详细的类型
 
