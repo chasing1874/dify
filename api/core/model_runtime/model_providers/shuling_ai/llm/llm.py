@@ -40,6 +40,10 @@ from core.model_runtime.model_providers.shuling_ai.llm.open_interpreter_generate
     OpenInterpreterGenerate,
     OpenInterpreterGenerateMessage,
 )
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
@@ -54,7 +58,7 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
         Validate credentials for Baichuan model
         """
         if not credentials.get('api_key'):
-            raise CredentialsValidateFailedError('api_key is required')
+            logger.error('api_key is empty')
         if not credentials.get('server_url'):
             raise CredentialsValidateFailedError('server_url is required')
 

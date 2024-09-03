@@ -200,6 +200,7 @@ services:
     depends_on:
       - db
       - redis
+      - code-interpreter
     volumes:
       # Mount the storage directory to the container, for storing user files.
       - ./volumes/app/storage:/app/api/storage
@@ -237,6 +238,13 @@ services:
       APP_API_URL: ${APP_API_URL:-}
       SENTRY_DSN: ${WEB_SENTRY_DSN:-}
       NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED:-0}
+
+  code-interpreter:
+    image: shuling/code-interpreter:0.0.2
+    restart: always
+    volumes:
+      - ./volumes/code-interpreter/workspace:/workspace
+      - ./volumes/code-interpreter/conversation:/root/.config/shuling-interpreter/conversation
 
   # The postgres database.
   db:
