@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Generator
 
 from core.model_runtime.entities.common_entities import I18nObject
@@ -40,7 +41,6 @@ from core.model_runtime.model_providers.shuling_ai.llm.open_interpreter_generate
     OpenInterpreterGenerate,
     OpenInterpreterGenerateMessage,
 )
-import logging
 
 logger = logging.getLogger(__name__)
 
