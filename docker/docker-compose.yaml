@@ -241,7 +241,7 @@ services:
       NEXT_TELEMETRY_DISABLED: ${NEXT_TELEMETRY_DISABLED:-0}
 
   code-interpreter:
-    image: shuling/code-interpreter:0.0.2
+    image: shuling/code-interpreter:0.0.3
     restart: always
     volumes:
       - ./volumes/code-interpreter/workspace:/workspace
