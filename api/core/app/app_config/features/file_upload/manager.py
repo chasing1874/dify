@@ -14,6 +14,7 @@ class FileUploadConfigManager:
         :param is_vision: if True, the feature is vision feature
         """
         file_upload_dict = config.get('file_upload')
+        file_extra_config = FileExtraConfig()
         if file_upload_dict:
             if file_upload_dict.get('image'):
                 if 'enabled' in file_upload_dict['image'] and file_upload_dict['image']['enabled']:
@@ -25,11 +26,17 @@ class FileUploadConfigManager:
                     if is_vision:
                         image_config['detail'] = file_upload_dict['image']['detail']
 
-                    return FileExtraConfig(
-                        image_config=image_config
-                    )
+                    file_extra_config.image_config = image_config
+            if file_upload_dict.get('file'):
+                if 'enabled' in file_upload_dict['file'] and file_upload_dict['file']['enabled']:
+                    file_config = {
+                        'number_limits': file_upload_dict['file']['number_limits'],
+                        'transfer_methods': file_upload_dict['file']['transfer_methods'],
+                        'detail': file_upload_dict['file']['detail']
+                    }
+                    file_extra_config.file_config = file_config
 
-        return None
+        return file_extra_config if file_extra_config.image_config or file_extra_config.file_config else None
 
     @classmethod
     def validate_and_set_defaults(cls, config: dict, is_vision: bool = True) -> tuple[dict, list[str]]:

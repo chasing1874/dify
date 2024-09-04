@@ -231,8 +231,6 @@ class OpenInterpreterGenerate:
                 content = self._format_response(data)
             except Exception as e:
                 raise BadRequestError(f"Failed to parse response: {e}, with text: {chunk}")
-            
-            print(f'content: {content}')
 
             if isinstance(content, str):
                 completion_tokens = len(content.split())
@@ -346,7 +344,7 @@ class OpenInterpreterGenerate:
             # file_list = loads(file_list)
             # pic_list = loads(pic_list)
             if len(file_list) > 0 or len(pic_list) > 0:
-                full_response += "\n### 🔗 ***Download related files***\n"
+                full_response += "\n### 🔗 Download related files\n"
             for file in file_list:
                 full_response += f'[{file["file_name"]}]({file["file_url"]} "click to download") \n'
             for pic in pic_list:

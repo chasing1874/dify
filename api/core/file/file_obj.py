@@ -18,6 +18,7 @@ class FileExtraConfig(BaseModel):
     File Upload Entity.
     """
     image_config: Optional[dict[str, Any]] = None
+    file_config: Optional[dict[str, Any]] = None
 
 
 class FileType(enum.Enum):
