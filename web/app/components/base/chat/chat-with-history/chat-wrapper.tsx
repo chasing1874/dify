@@ -70,9 +70,10 @@ const ChatWrapper = () => {
       conversation_id: currentConversationId,
     }
 
-    if (appConfig?.file_upload?.image.enabled && files?.length)
+    if ((appConfig?.file_upload?.image.enabled || appConfig?.file_upload?.file.enabled) && files?.length)
       data.files = files
 
+    console.log('doSend', data)
     handleSend(
       getUrl('chat-messages', isInstalledApp, appId || ''),
       data,
