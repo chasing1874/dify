@@ -37,3 +37,10 @@ parameter_rules:
       zh_Hans: 会话ID
       en_US: conversation_id
     type: string
+  - name: supports_functions
+    label:
+      zh_Hans: 通过function call执行代码
+      en_US: Execute code through function call
+    type: boolean
+    default: true
+    required: true

@@ -1,7 +1,7 @@
-model: openrouter/deepseek/deepseek-coder
+model: deepseek/deepseek-chat
 label:
-  zh_Hans: deepseek-coder
-  en_US: deepseek-coder
+  zh_Hans: deepseek-chat
+  en_US: deepseek-chat
 model_type: llm
 features:
   - agent-thought
