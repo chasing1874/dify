@@ -203,7 +203,7 @@ x-shared-env: &shared-api-worker-env
 services:
   # API service
   api:
-    image: shuling/slai-server:0.0.8
+    image: shuling/slai-server:0.0.9
     restart: always
     environment:
       # Use the shared environment variables.
@@ -224,7 +224,7 @@ services:
   # worker service
   # The Celery worker for processing the queue.
   worker:
-    image: shuling/slai-server:0.0.8
+    image: shuling/slai-server:0.0.9
     restart: always
     environment:
       # Use the shared environment variables.
@@ -243,7 +243,7 @@ services:
 
   # Frontend web application.
   web:
-    image: shuling/slai-web:0.0.8
+    image: shuling/slai-web:0.0.9
     restart: always
     environment:
       CONSOLE_API_URL: ${CONSOLE_API_URL:-}
