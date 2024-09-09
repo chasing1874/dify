@@ -7,9 +7,9 @@ import { useBoolean, useScroll } from 'ahooks'
 import { useFormattingChangedDispatcher } from '../debug/hooks'
 import DatasetConfig from '../dataset-config'
 import ChatGroup from '../features/chat-group'
-import ExperienceEnchanceGroup from '../features/experience-enchance-group'
+import ExperienceEnhanceGroup from '../features/experience-enhance-group'
 import Toolbox from '../toolbox'
-import HistoryPanel from '../config-prompt/conversation-histroy/history-panel'
+import HistoryPanel from '../config-prompt/conversation-history/history-panel'
 import ConfigVision from '../config-vision'
 import ConfigFile from '../config-file'
 
@@ -257,7 +257,7 @@ const Config: FC = () => {
           />
         )}
 
-        {/* ChatConifig */}
+        {/* ChatConfig */}
         {
           hasChatConfig && (
             <ChatGroup
@@ -280,7 +280,7 @@ const Config: FC = () => {
 
         {/* Text Generation config */}{
           hasCompletionConfig && (
-            <ExperienceEnchanceGroup
+            <ExperienceEnhanceGroup
               isShowMoreLike={moreLikeThisConfig.enabled}
               isShowTextToSpeech={featureConfig.textToSpeech && !!text2speechDefaultModel}
             />
