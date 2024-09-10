@@ -56,6 +56,7 @@ export type ChatProps = {
   hideProcessDetail?: boolean
   hideLogModal?: boolean
   themeBuilder?: ThemeBuilder
+  noSpacing?: boolean
 }
 
 const Chat: FC<ChatProps> = ({
@@ -85,6 +86,7 @@ const Chat: FC<ChatProps> = ({
   hideProcessDetail,
   hideLogModal,
   themeBuilder,
+  noSpacing,
 }) => {
   const { t } = useTranslation()
   const {
@@ -213,7 +215,7 @@ const Chat: FC<ChatProps> = ({
           {chatNode}
           <div
             ref={chatContainerInnerRef}
-            className={`w-full ${chatContainerInnerClassName}`}
+            className={classNames('w-full', !noSpacing && 'px-8', chatContainerInnerClassName)}
           >
             {chatList.map((item, index) => {
               if (item.isAnswer) {
@@ -261,31 +263,36 @@ const Chat: FC<ChatProps> = ({
             ref={chatFooterInnerRef}
             className={`${chatFooterInnerClassName}`}
           >
-            {!noStopResponding && isResponding && (
-              <div className="flex justify-center mb-2">
-                <Button onClick={onStopResponding}>
-                  <StopCircle className="mr-[5px] w-3.5 h-3.5 text-gray-500" />
-                  <span className="text-xs text-gray-500 font-normal">
-                    {t('appDebug.operation.stopResponding')}
-                  </span>
-                </Button>
-              </div>
-            )}
-            {hasTryToAsk && (
-              <TryToAsk
-                suggestedQuestions={suggestedQuestions}
-                onSend={onSend}
-              />
-            )}
-            {!noChatInput && (
-              <ChatInput
-                visionConfig={config?.file_upload?.image}
-                fileConfig={config?.file_upload?.file}
-                speechToTextConfig={config?.speech_to_text}
-                onSend={onSend}
-                theme={themeBuilder?.theme}
-              />
-            )}
+            {
+              !noStopResponding && isResponding && (
+                <div className='flex justify-center mb-2'>
+                  <Button onClick={onStopResponding}>
+                    <StopCircle className='mr-[5px] w-3.5 h-3.5 text-gray-500' />
+                    <span className='text-xs text-gray-500 font-normal'>{t('appDebug.operation.stopResponding')}</span>
+                  </Button>
+                </div>
+              )
+            }
+            {
+              hasTryToAsk && (
+                <TryToAsk
+                  suggestedQuestions={suggestedQuestions}
+                  onSend={onSend}
+                />
+              )
+            }
+            {
+              !noChatInput && (
+                <ChatInput
+                  visionConfig={config?.file_upload?.image}
+                  fileConfig={config?.file_upload?.file}
+                  speechToTextConfig={config?.speech_to_text}
+                  onSend={onSend}
+                  theme={themeBuilder?.theme}
+                  noSpacing={noSpacing}
+                />
+              )
+            }
           </div>
         </div>
         {showPromptLogModal && !hideLogModal && (
