@@ -86,12 +86,13 @@ class ModelFeature(Enum):
     FILE = "file"
 
 
-class DefaultParameterName(Enum):
+class DefaultParameterName(str, Enum):
     """
     Enum class for parameter template variable.
     """
     TEMPERATURE = "temperature"
     TOP_P = "top_p"
+    TOP_K = "top_k"
     PRESENCE_PENALTY = "presence_penalty"
     FREQUENCY_PENALTY = "frequency_penalty"
     MAX_TOKENS = "max_tokens"
