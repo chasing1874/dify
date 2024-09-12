@@ -118,7 +118,7 @@ class App(db.Model):
 
     @property
     def api_base_url(self):
-        return (dify_config.SERVICE_API_URL if dify_config.SERVICE_API_URL else request.host_url.rstrip("/")) + "/v1"
+        return (dify_config.SERVICE_API_URL or request.host_url.rstrip("/")) + "/v1"
 
     @property
     def tenant(self):
@@ -207,7 +207,7 @@ class App(db.Model):
             .all()
         )
 
-        return tags if tags else []
+        return tags or []
 
 
 class AppModelConfig(db.Model):
@@ -926,7 +926,7 @@ class Message(db.Model):
                     "name": name,
                     "fileType": fileType,
                     "url": url,
-                    "belongs_to": message_file.belongs_to if message_file.belongs_to else "user",
+                    "belongs_to": message_file.belongs_to or "user",
                 }
             )
 
@@ -1230,7 +1230,7 @@ class Site(db.Model):
 
     @property
     def app_base_url(self):
-        return dify_config.APP_WEB_URL if dify_config.APP_WEB_URL else request.url_root.rstrip("/")
+        return dify_config.APP_WEB_URL or request.url_root.rstrip("/")
 
 
 class ApiToken(db.Model):
@@ -1506,7 +1506,7 @@ class TraceAppConfig(db.Model):
 
     @property
     def tracing_config_dict(self):
-        return self.tracing_config if self.tracing_config else {}
+        return self.tracing_config or {}
 
     @property
     def tracing_config_str(self):
