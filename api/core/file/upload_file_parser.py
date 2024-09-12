@@ -12,7 +12,7 @@ from extensions.ext_storage import storage
 IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "gif", "svg"]
 IMAGE_EXTENSIONS.extend([ext.upper() for ext in IMAGE_EXTENSIONS])
 
-SHEET_EXTENSIONS = ['xlsx','xls','xlsm','xlt','xltx','csv','tsv']
+SHEET_EXTENSIONS = ['xlsx', 'xls', 'xlsm', 'xlt', 'xltx', 'csv', 'tsv']
 SHEET_EXTENSIONS.extend([ext.upper() for ext in SHEET_EXTENSIONS])
 
 

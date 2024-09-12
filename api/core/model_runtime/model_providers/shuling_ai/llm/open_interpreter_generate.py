@@ -24,12 +24,14 @@ from core.model_runtime.model_providers.openllm.llm.openllm_generate_errors impo
 
 logger = logging.getLogger(__name__)
 
+
 class Message(BaseModel):
     role: Literal["user", "assistant", "computer"]
     type: Literal["message", "code", "image", "console", "file", "confirmation"]
     format: Optional[Literal["output", "path", "base64.png", "base64.jpeg", "python", "javascript", "shell", "html", "active_line", "execution", "bash"]] = None
-    recipient: Optional[Literal["user", "assistant"]] = None  
-    content: Optional[Union[str, int, dict[str, Union[str, list[dict], dict]]]] = None # 如果dict需要有特定的结构，可以定义一个更详细的类型
+    recipient: Optional[Literal["user", "assistant"]] = None 
+    content: Optional[Union[str, int, dict[str, Union[str, list[dict], dict]]]] = None  # 如果dict需要有特定的结构，可以定义一个更详细的类型
+
 
 class StreamingChunk(Message):
     start: Optional[bool] = None
@@ -102,8 +104,8 @@ class OpenInterpreterGenerate:
         method = "/stream_chat" if stream else "/chat"
         try:
             response = post(
-                url= server_url + method,
-                headers={'Content-Type': 'application/json'} ,
+                url=server_url + method,
+                headers={'Content-Type': 'application/json'},
                 data=dumps(data),
                 timeout=180,
                 stream=stream
@@ -201,7 +203,6 @@ class OpenInterpreterGenerate:
                 system_prompt += content
         return system_prompt
 
-        
     def _handle_chat_generate_response(self, prompt_tokons: int, response: Response) -> OpenInterpreterGenerateMessage:
 
         resp = response.json()
@@ -221,7 +222,6 @@ class OpenInterpreterGenerate:
 
     def _handle_chat_stream_generate_response(self, prompt_tokons: int, response: Response) -> Generator[OpenInterpreterGenerateMessage, None, None]:
         
-
         for chunk in response.iter_content(chunk_size=None, decode_unicode=True): 
             if chunk.startswith('data:'):
                 chunk = chunk[5:].strip()
@@ -242,14 +242,12 @@ class OpenInterpreterGenerate:
                                                      role=OpenInterpreterGenerateMessage.Role.ASSISTANT.value,
                                                      type=data.type)
             
-            
             message.usage = {
                 'prompt_tokens': prompt_tokons,
                 'completion_tokens': completion_tokens,
                 'total_tokens': prompt_tokons + completion_tokens
             }
             
-
             yield message
     
     def _format_response(self, chunk: StreamingChunk):
@@ -349,7 +347,6 @@ class OpenInterpreterGenerate:
                 full_response += f'[{file["file_name"]}]({file["file_url"]} "click to download") \n'
             for pic in pic_list:
                 full_response += f'[{pic["file_name"]}]({pic["file_url"]} "click to download") \n'
-
 
         return full_response
         

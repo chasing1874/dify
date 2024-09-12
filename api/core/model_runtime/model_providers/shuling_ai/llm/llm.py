@@ -45,7 +45,6 @@ from core.model_runtime.model_providers.shuling_ai.llm.open_interpreter_generate
 logger = logging.getLogger(__name__)
 
 
-
 class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
     def _invoke(self, model: str, credentials: dict, prompt_messages: list[PromptMessage], 
                 model_parameters: dict, tools: list[PromptMessageTool] | None = None, 
@@ -192,7 +191,6 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
                     ),
                 )
 
-
     def get_customizable_model_schema(self, model: str, credentials: dict) -> AIModelEntity | None:
         """
             used to define customizable model schema
@@ -227,7 +225,7 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
             ),
             fetch_from=FetchFrom.CUSTOMIZABLE_MODEL,
             model_type=ModelType.LLM,
-            model_properties={ 
+            model_properties={
                 ModelPropertyKey.MODE: LLMMode.COMPLETION.value,
             },
             parameter_rules=rules

@@ -178,7 +178,7 @@ class FileService:
 
         # extract text from file
         extension = upload_file.extension
-        if extension.lower() not in IMAGE_EXTENSIONS:
+        if extension.lower() not in IMAGE_EXTENSIONS and extension.lower() not in SHEET_EXTENSIONS:
             raise UnsupportedFileTypeError()
 
         generator = storage.load(upload_file.key, stream=True)

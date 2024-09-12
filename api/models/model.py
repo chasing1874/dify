@@ -878,6 +878,9 @@ class Message(db.Model):
         files = []
         for message_file in message_files:
             url = message_file.url
+            name = None
+            fileType = None
+
             if message_file.type == "image":
                 if message_file.transfer_method == "local_file":
                     upload_file = (
@@ -913,13 +916,16 @@ class Message(db.Model):
                         upload_file=upload_file,
                         force_url=True
                     )
+                    name = upload_file.name
+                    fileType = upload_file.extension
+
 
             files.append(
                 {
                     "id": message_file.id,
                     "type": message_file.type,
-                    "name": upload_file.name,
-                    "fileType": upload_file.extension,
+                    "name": name,
+                    "fileType": fileType,
                     "url": url,
                     "belongs_to": message_file.belongs_to if message_file.belongs_to else "user",
                 }

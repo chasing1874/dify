@@ -70,7 +70,6 @@ class AgentChatAppRunner(AppRunner):
             upload_files.append(upload_file)
             logger.info(f'upload_file {upload_file}')
         
-        
         # file_paths = ''
         # for file in upload_files:
         #     src_path = file['url']
@@ -216,7 +215,6 @@ class AgentChatAppRunner(AppRunner):
         # convert db variables to tool variables
         tool_variables = self._convert_db_variables_to_tool_variables(tool_conversation_variables)
 
-        
         tool_variables.set_text(tool_name='CodeRunner', value=json.dumps(upload_files), name='upload_files')
         logger.info(f'tool_variables: {tool_variables}')
 

@@ -57,6 +57,7 @@ class PromptMessageContentType(Enum):
     IMAGE = "image"
     SHEET = "sheet"
 
+
 class PromptMessageContent(BaseModel):
     """
     Model class for prompt message content.
@@ -86,6 +87,7 @@ class ImagePromptMessageContent(PromptMessageContent):
     type: PromptMessageContentType = PromptMessageContentType.IMAGE
     detail: DETAIL = DETAIL.LOW
 
+
 class SheetPromptMessageContent(PromptMessageContent):
     """
     Model class for sheet prompt message content.
@@ -100,6 +102,7 @@ class SheetPromptMessageContent(PromptMessageContent):
     sheet_name: Optional[str] = None
     file_path: Optional[str] = None
     tenant_id: Optional[str] = None
+
 
 class PromptMessage(ABC, BaseModel):
     """

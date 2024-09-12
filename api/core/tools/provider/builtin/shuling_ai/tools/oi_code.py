@@ -10,6 +10,7 @@ from core.tools.tool.builtin_tool import BuiltinTool
 
 logger = logging.getLogger(__name__)
 
+
 class OICodeTool(BuiltinTool):
     def _invoke(self, 
                 user_id: str,
@@ -33,7 +34,6 @@ class OICodeTool(BuiltinTool):
                     print(f'upload_files: {item.value}')
                     upload_files = json.loads(item.value)
             logger.info(f'user_id: {user_id}, conversation_id: {conversation_id}, pool: {pool}')
-
 
         language, code = tool_parameters.get("language"), tool_parameters.get("code")
         logger.info(f'language: {language}, code: {code}, upload_files: {upload_files}')
@@ -102,5 +102,17 @@ class OICodeTool(BuiltinTool):
                 llm_description='when recieve file link, then the plugin will save it to *"./workspace"*',
                 type=ToolParameter.ToolParameterType.STRING,
                 required=False,
-            )
+            ),
+            ToolParameter.get_simple_instance(
+                name='language',
+                llm_description='language of the code, only "python" and "javascript" are supported.',
+                type=ToolParameter.ToolParameterType.STRING,
+                required=True,
+            ),
+            ToolParameter.get_simple_instance(
+                name='code',
+                llm_description='code to be executed, only native packages are allowed, network/IO operations are disabled.',
+                type=ToolParameter.ToolParameterType.STRING,
+                required=True,
+            ),
         ]

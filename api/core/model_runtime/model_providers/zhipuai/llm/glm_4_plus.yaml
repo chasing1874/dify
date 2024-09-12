@@ -6,6 +6,7 @@ features:
   - multi-tool-call
   - agent-thought
   - stream-tool-call
+  - file
 model_properties:
   mode: chat
 parameter_rules:
