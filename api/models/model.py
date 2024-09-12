@@ -919,7 +919,6 @@ class Message(db.Model):
                     name = upload_file.name
                     fileType = upload_file.extension
 
-
             files.append(
                 {
                     "id": message_file.id,
