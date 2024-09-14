@@ -115,7 +115,10 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
             model_name=model,
             server_url=credentials['server_url'],
             api_key=credentials['api_key'],
-            prompt_messages=[self._convert_prompt_message_to_open_interpreter_message(message) for message in prompt_messages],
+            prompt_messages=[
+                self._convert_prompt_message_to_open_interpreter_message(message)
+                for message in prompt_messages
+            ],
             model_parameters=model_parameters,
             stop=stop,
             stream=stream,
@@ -123,23 +126,33 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
         )
 
         if stream:
-            return self._handle_chat_generate_stream_response(model=model, prompt_messages=prompt_messages, credentials=credentials, response=response)
-        return self._handle_chat_generate_response(model=model, prompt_messages=prompt_messages, credentials=credentials, response=response)
+            handler = self._handle_chat_generate_stream_response
+        else:
+            handler = self._handle_chat_generate_response
 
-    def _convert_prompt_message_to_open_interpreter_message(self, prompt_message: PromptMessage) -> OpenInterpreterGenerateMessage:
+        return handler(model=model, prompt_messages=prompt_messages, credentials=credentials, response=response)
+
+    def _convert_prompt_message_to_open_interpreter_message(self, prompt_message: PromptMessage) \
+        -> OpenInterpreterGenerateMessage:
         """
             convert PromptMessage to OpenLLMGenerateMessage so that we can use OpenLLMGenerateMessage interface
         """
         if isinstance(prompt_message, UserPromptMessage):
-            return OpenInterpreterGenerateMessage(role=OpenInterpreterGenerateMessage.Role.USER.value, content=prompt_message.content)
+            return OpenInterpreterGenerateMessage(role=OpenInterpreterGenerateMessage.Role.USER.value,
+                                                  content=prompt_message.content)
         elif isinstance(prompt_message, AssistantPromptMessage):
-            return OpenInterpreterGenerateMessage(role=OpenInterpreterGenerateMessage.Role.ASSISTANT.value, content=prompt_message.content)
+            return OpenInterpreterGenerateMessage(role=OpenInterpreterGenerateMessage.Role.ASSISTANT.value,
+                                                  content=prompt_message.content)
         elif isinstance(prompt_message, SystemPromptMessage):
-            return OpenInterpreterGenerateMessage(role=OpenInterpreterGenerateMessage.Role.SYSTEM.value, content=prompt_message.content)
+            return OpenInterpreterGenerateMessage(role=OpenInterpreterGenerateMessage.Role.SYSTEM.value,
+                                                  content=prompt_message.content)
         else:
             raise NotImplementedError(f'Prompt message type {type(prompt_message)} is not supported')
 
-    def _handle_chat_generate_response(self, model: str, prompt_messages: list[PromptMessage], credentials: dict, response: OpenInterpreterGenerateMessage) -> LLMResult:
+    def _handle_chat_generate_response(self, model: str,
+                                       prompt_messages: list[PromptMessage],
+                                       credentials: dict,
+                                       response: OpenInterpreterGenerateMessage) -> LLMResult:
         usage = self._calc_response_usage(model=model, credentials=credentials, 
                                           prompt_tokens=response.usage['prompt_tokens'], 
                                           completion_tokens=response.usage['completion_tokens']
@@ -155,7 +168,8 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
         )
 
     def _handle_chat_generate_stream_response(self, model: str, prompt_messages: list[PromptMessage], 
-                                              credentials: dict, response: Generator[OpenInterpreterGenerateMessage, None, None]) \
+                                              credentials: dict,
+                                              response: Generator[OpenInterpreterGenerateMessage, None, None]) \
         -> Generator[LLMResultChunk, None, None]:
         for message in response:
             if message.usage:
@@ -174,7 +188,7 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
                             tool_calls=[]
                         ),
                         usage=usage,
-                        finish_reason=message.stop_reason if message.stop_reason else None,
+                        finish_reason=message.stop_reason or None,
                     ),
                 )
             else:
@@ -187,7 +201,7 @@ class OpenInterpreterLargeLanguageModel(LargeLanguageModel):
                             content=message.content,
                             tool_calls=[]
                         ),
-                        finish_reason=message.stop_reason if message.stop_reason else None,
+                        finish_reason=message.stop_reason or None,
                     ),
                 )
 

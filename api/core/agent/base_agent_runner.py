@@ -134,9 +134,10 @@ class BaseAgentRunner(AppRunner):
             self.stream_tool_call = False
 
         # check if model supports vision
-        if model_schema and ModelFeature.VISION in (model_schema.features or []):
-            self.files = application_generate_entity.files
-        elif model_schema and ModelFeature.FILE in (model_schema.features or []):
+        if (
+            model_schema
+            and (ModelFeature.VISION in model_schema.features or ModelFeature.FILE in model_schema.features)
+        ):
             self.files = application_generate_entity.files
         else:
             self.files = []

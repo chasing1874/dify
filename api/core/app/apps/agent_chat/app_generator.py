@@ -142,7 +142,8 @@ class AgentChatAppGenerator(MessageBasedAppGenerator):
         if len(upload_files) == 0:
             join_prompt = query
         else:
-            join_prompt = f'我已上传了{len(upload_files)}个文件在CodeRunner的执行环境，文件地址为: {file_paths}, 请按照下面的要求进行分析: \n{query}'
+            join_prompt = (f'我已上传了{len(upload_files)}个文件在CodeRunner的执行环境，文件地址为: '
+                f'{file_paths}, 请按照下面的要求进行分析: \n{query}')
         print(join_prompt)
         query = join_prompt
 

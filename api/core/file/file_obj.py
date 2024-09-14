@@ -171,7 +171,10 @@ class FileVar(BaseModel):
             elif self.transfer_method == FileTransferMethod.TOOL_FILE:
                 extension = self.extension
                 # add sign url
-                return ToolFileParser.get_tool_file_manager().sign_file(tool_file_id=self.related_id, extension=extension)
+                tool_file_manager = ToolFileParser.get_tool_file_manager()
+                signed_file = tool_file_manager.sign_file(tool_file_id=self.related_id, extension=extension)
+                return signed_file
+
         if self.type == FileType.SHEET:
             print(f'File Transfer Method: {self.transfer_method}')
             if self.transfer_method == FileTransferMethod.REMOTE_URL:

@@ -111,7 +111,7 @@ class OICodeTool(BuiltinTool):
             ),
             ToolParameter.get_simple_instance(
                 name='code',
-                llm_description='code to be executed, only native packages are allowed, network/IO operations are disabled.',
+                llm_description='code to be executed',
                 type=ToolParameter.ToolParameterType.STRING,
                 required=True,
             ),
