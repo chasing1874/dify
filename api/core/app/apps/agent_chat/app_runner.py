@@ -57,7 +57,7 @@ class AgentChatAppRunner(AppRunner):
         files = application_generate_entity.files
 
         print(f'message: {message}')
-        print(f'application_generate_entity： {application_generate_entity}')
+
         upload_files = []
         logger.info(f"Agent Files {files}")
         for file in files:

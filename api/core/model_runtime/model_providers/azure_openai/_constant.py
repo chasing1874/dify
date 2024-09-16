@@ -746,6 +746,7 @@ LLM_BASE_MODELS = [
                 ModelFeature.VISION,
                 ModelFeature.MULTI_TOOL_CALL,
                 ModelFeature.STREAM_TOOL_CALL,
+                ModelFeature.FILE
             ],
             fetch_from=FetchFrom.CUSTOMIZABLE_MODEL,
             model_properties={

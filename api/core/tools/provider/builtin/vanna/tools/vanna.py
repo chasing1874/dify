@@ -1,10 +1,21 @@
+import os
 from typing import Any, Union
 
-from vanna.remote import VannaDefault
+from vanna.openai import OpenAI_Chat
+from vanna.vannadb import VannaDB_VectorStore
 
 from core.tools.entities.tool_entities import ToolInvokeMessage
 from core.tools.errors import ToolProviderCredentialValidationError
 from core.tools.tool.builtin_tool import BuiltinTool
+
+
+class MyVanna(VannaDB_VectorStore, OpenAI_Chat):
+    def __init__(self, config=None, vanna_api_key=None):
+        MY_VANNA_MODEL = 'shuling'
+        VannaDB_VectorStore.__init__(self, vanna_model=MY_VANNA_MODEL,
+                                     vanna_api_key=vanna_api_key,
+                                     config=config)
+        OpenAI_Chat.__init__(self, config=config)
 
 
 class VannaTool(BuiltinTool):
@@ -35,7 +46,12 @@ class VannaTool(BuiltinTool):
         password = tool_parameters.get("password", "")
         port = tool_parameters.get("port", 0)
 
-        vn = VannaDefault(model=model, api_key=api_key)
+        # 使用环境变量中的OPENAI_API_KEY
+        openai_api_key = os.getenv("OPENAI_API_KEY")
+        print(openai_api_key)
+
+        vn = MyVanna(config={'api_key': openai_api_key, 'model': 'gpt-4o'},
+                     vanna_api_key=api_key)
 
         db_type = tool_parameters.get("db_type", "")
         if db_type in {"Postgres", "MySQL", "Hive", "ClickHouse"}:

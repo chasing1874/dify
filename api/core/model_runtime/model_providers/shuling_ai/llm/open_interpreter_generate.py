@@ -28,8 +28,7 @@ logger = logging.getLogger(__name__)
 class Message(BaseModel):
     role: Literal["user", "assistant", "computer"]
     type: Literal["message", "code", "image", "console", "file", "confirmation"]
-    format: Optional[Literal["output", "path", "base64.png", "base64.jpeg", "python",
-                             "javascript", "shell", "html", "active_line", "execution", "bash"]] = None
+    format: Optional[str] = None
     recipient: Optional[Literal["user", "assistant"]] = None 
     content: Optional[Union[str, int, dict[str, Union[str, list[dict], dict]]]] = None
 
@@ -302,9 +301,8 @@ class OpenInterpreterGenerate:
                     if not self.is_console_out and len(chunk.content) > 0:
                         full_response += "\n```\n"
                     full_response += chunk.content
-                    full_response += chunk.content
-                    if len(full_response) > 0:
-                        full_response += chunk.content
+                    # if len(full_response) > 0:
+                    #     full_response += chunk.content
                     if len(full_response) > 0:
                         self.is_console_out = True
             # if chunk.format == "active_line":
