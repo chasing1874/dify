@@ -1,7 +1,7 @@
 model: gpt-4o-2024-08-06
 label:
-  zh_Hans: gpt-4o-2024-08-06
-  en_US: gpt-4o-2024-08-06
+  zh_Hans: glm-4-0520
+  en_US: glm-4-0520
 model_type: llm
 features:
   - agent-thought
