@@ -23,3 +23,13 @@ credentials_for_provider:
       en_US: Get your API key from Vanna.AI
       zh_Hans: 从 Vanna.AI 获取你的 API key
     url: https://vanna.ai/account/profile
+  llm_api_key:
+    type: secret-input
+    required: true
+    label:
+      en_US: LLM API key
+      zh_Hans: LLM API key
+    placeholder:
+      en_US: Please input your LLM API key
+      zh_Hans: 请输入你的 LLM API key
+      

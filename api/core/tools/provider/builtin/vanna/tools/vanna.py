@@ -26,6 +26,7 @@ class VannaTool(BuiltinTool):
         invoke tools
         """
         api_key = self.runtime.credentials.get("api_key", None)
+        llm_api_key = self.runtime.credentials.get("llm_api_key", None)
         if not api_key:
             raise ToolProviderCredentialValidationError("Please input api key")
 
@@ -46,11 +47,9 @@ class VannaTool(BuiltinTool):
         password = tool_parameters.get("password", "")
         port = tool_parameters.get("port", 0)
 
-        # 使用环境变量中的OPENAI_API_KEY
-        openai_api_key = os.getenv("OPENAI_API_KEY")
-        print(openai_api_key)
+        print(f"llm_api_key: {llm_api_key}")
 
-        vn = MyVanna(config={'api_key': openai_api_key, 'model': 'gpt-4o'},
+        vn = MyVanna(config={'api_key': llm_api_key, 'model': 'gpt-4o'},
                      vanna_api_key=api_key)
 
         db_type = tool_parameters.get("db_type", "")
