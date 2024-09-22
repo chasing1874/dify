@@ -3990,13 +3990,13 @@ files = [
 
 [[package]]
 name = "idna"
-version = "3.10"
+version = "3.9"
 description = "Internationalized Domain Names in Applications (IDNA)"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "idna-3.10-py3-none-any.whl", hash = "sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3"},
-    {file = "idna-3.10.tar.gz", hash = "sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9"},
+    {file = "idna-3.9-py3-none-any.whl", hash = "sha256:69297d5da0cc9281c77efffb4e730254dd45943f45bbfb461de5991713989b1e"},
+    {file = "idna-3.9.tar.gz", hash = "sha256:e5c5dafde284f26e9e0f28f6ea2d6400abd5ca099864a67f576f3981c6476124"},
 ]
 
 [package.extras]
@@ -8784,13 +8784,13 @@ test = ["pytest", "tornado (>=4.5)", "typeguard"]
 
 [[package]]
 name = "tencentcloud-sdk-python-common"
-version = "3.0.1232"
+version = "3.0.1231"
 description = "Tencent Cloud Common SDK for Python"
 optional = false
 python-versions = "*"
 files = [
-    {file = "tencentcloud-sdk-python-common-3.0.1232.tar.gz", hash = "sha256:1c13e6e3b85695d82759e7d094f575ab9c3746a62bb3015998763b049fcd9521"},
-    {file = "tencentcloud_sdk_python_common-3.0.1232-py2.py3-none-any.whl", hash = "sha256:8052aef764522f7889ea37bb8b8e72066083beda04514c09fd51ff3ec341f93e"},
+    {file = "tencentcloud-sdk-python-common-3.0.1231.tar.gz", hash = "sha256:22aa281ca2eac511e1615b2953da7c4a0bec87cf93a05a7a15dbb61b23a215ee"},
+    {file = "tencentcloud_sdk_python_common-3.0.1231-py2.py3-none-any.whl", hash = "sha256:bd0f7c4df4b156ec35c8731afa1f498043c7e1cd5d2feb595ee441fdb45a061e"},
 ]
 
 [package.dependencies]
@@ -8798,17 +8798,17 @@ requests = ">=2.16.0"
 
 [[package]]
 name = "tencentcloud-sdk-python-hunyuan"
-version = "3.0.1232"
+version = "3.0.1231"
 description = "Tencent Cloud Hunyuan SDK for Python"
 optional = false
 python-versions = "*"
 files = [
-    {file = "tencentcloud-sdk-python-hunyuan-3.0.1232.tar.gz", hash = "sha256:bb02a5734a4ffb2a330fc903ed9bef37109757fbd5c636f4abf7605445a9cb43"},
-    {file = "tencentcloud_sdk_python_hunyuan-3.0.1232-py2.py3-none-any.whl", hash = "sha256:07946806d7c5c3cdaa0907d9e3e937925f01ce396b01aa7c0ba2a202e55967e4"},
+    {file = "tencentcloud-sdk-python-hunyuan-3.0.1231.tar.gz", hash = "sha256:6da12f418f14305b3a6b7bb29b6d95bf4038a6b66b81c0e03b8dafc4f6df99ca"},
+    {file = "tencentcloud_sdk_python_hunyuan-3.0.1231-py2.py3-none-any.whl", hash = "sha256:21ba28f69c34c15e20900be3f2c06376fcaf7e58265f939833c55631f2348792"},
 ]
 
 [package.dependencies]
-tencentcloud-sdk-python-common = "3.0.1232"
+tencentcloud-sdk-python-common = "3.0.1231"
 
 [[package]]
 name = "threadpoolctl"
@@ -10015,13 +10015,13 @@ h11 = ">=0.9.0,<1"
 
 [[package]]
 name = "xinference-client"
-version = "0.13.3"
+version = "0.15.2"
 description = "Client for Xinference"
 optional = false
 python-versions = "*"
 files = [
-    {file = "xinference-client-0.13.3.tar.gz", hash = "sha256:822b722100affdff049c27760be7d62ac92de58c87a40d3361066df446ba648f"},
-    {file = "xinference_client-0.13.3-py3-none-any.whl", hash = "sha256:f0eff3858b1ebcef2129726f82b09259c177e11db466a7ca23def3d4849c419f"},
+    {file = "xinference-client-0.15.2.tar.gz", hash = "sha256:5c2259bb133148d1cc9bd2b8ec6eb8b5bbeba7f11d6252959f4e6cd79baa53ed"},
+    {file = "xinference_client-0.15.2-py3-none-any.whl", hash = "sha256:b6275adab695e75e75a33e21e0ad212488fc2d5a4d0f693d544c0e78469abbe3"},
 ]
 
 [package.dependencies]
@@ -10423,4 +10423,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "79ccf3c2b821642860a1cdc049e05bbfdd71b703c43941bdee3162206279adf6"
+content-hash = "85aa4be7defee8fe6622cf95ba03e81895121502ebf6d666d6ce376ff019fac7"

@@ -3,7 +3,13 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { debounce } from 'lodash-es'
 import { useShallow } from 'zustand/react/shallow'
-import type { ChatConfig, ChatItem, Feedback, OnSend } from '../types'
+import type {
+  ChatConfig,
+  ChatItem,
+  Feedback,
+  OnRegenerate,
+  OnSend,
+} from '../types'
 import type { ThemeBuilder } from '../embedded-chatbot/theme/theme-context'
 import Question from './question'
 import Answer from './answer'
@@ -28,6 +34,7 @@ export type ChatProps = {
   onStopResponding?: () => void
   noChatInput?: boolean
   onSend?: OnSend
+  onRegenerate?: OnRegenerate
   chatContainerClassName?: string
   chatContainerInnerClassName?: string
   chatFooterClassName?: string
@@ -63,6 +70,7 @@ const Chat: FC<ChatProps> = ({
   appData,
   config,
   onSend,
+  onRegenerate,
   chatList,
   isResponding,
   noStopResponding,
@@ -202,6 +210,7 @@ const Chat: FC<ChatProps> = ({
       answerIcon={answerIcon}
       allToolIcons={allToolIcons}
       onSend={onSend}
+      onRegenerate={onRegenerate}
       onAnnotationAdded={onAnnotationAdded}
       onAnnotationEdited={onAnnotationEdited}
       onAnnotationRemoved={onAnnotationRemoved}
@@ -217,35 +226,38 @@ const Chat: FC<ChatProps> = ({
             ref={chatContainerInnerRef}
             className={classNames('w-full', !noSpacing && 'px-8', chatContainerInnerClassName)}
           >
-            {chatList.map((item, index) => {
-              if (item.isAnswer) {
-                const isLast = item.id === chatList[chatList.length - 1]?.id
+            {
+              chatList.map((item, index) => {
+                if (item.isAnswer) {
+                  const isLast = item.id === chatList[chatList.length - 1]?.id
+                  return (
+                    <Answer
+                      appData={appData}
+                      key={item.id}
+                      item={item}
+                      question={chatList[index - 1]?.content}
+                      index={index}
+                      config={config}
+                      answerIcon={answerIcon}
+                      responding={isLast && isResponding}
+                      allToolIcons={allToolIcons}
+                      showPromptLog={showPromptLog}
+                      chatAnswerContainerInner={chatAnswerContainerInner}
+                      hideProcessDetail={hideProcessDetail}
+                      noChatInput={noChatInput}
+                    />
+                  )
+                }
                 return (
-                  <Answer
-                    appData={appData}
+                  <Question
                     key={item.id}
                     item={item}
-                    question={chatList[index - 1]?.content}
-                    index={index}
-                    config={config}
-                    answerIcon={answerIcon}
-                    responding={isLast && isResponding}
-                    allToolIcons={allToolIcons}
-                    showPromptLog={showPromptLog}
-                    chatAnswerContainerInner={chatAnswerContainerInner}
-                    hideProcessDetail={hideProcessDetail}
+                    questionIcon={questionIcon}
+                    theme={themeBuilder?.theme}
                   />
                 )
-              }
-              return (
-                <Question
-                  key={item.id}
-                  item={item}
-                  questionIcon={questionIcon}
-                  theme={themeBuilder?.theme}
-                />
-              )
-            })}
+              })
+            }
           </div>
         </div>
         <div
