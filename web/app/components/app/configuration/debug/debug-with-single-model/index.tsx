@@ -84,11 +84,17 @@ const DebugWithSingleModel = forwardRef<DebugWithSingleModelRefType, DebugWithSi
       },
     }
 
+    const lastAnswer = chatListRef.current.at(-1)
+
     const data: any = {
       query: message,
       inputs,
       model_config: configData,
-      parent_message_id: last_answer?.id || chatListRef.current.at(-1)?.id || null,
+      parent_message_id: last_answer?.id || (lastAnswer
+        ? lastAnswer.isOpeningStatement
+          ? null
+          : lastAnswer.id
+        : null),
     }
     if ((visionConfig.enabled || fileConfig.enabled) && files?.length && (supportVision || supportFile))
       data.files = files
