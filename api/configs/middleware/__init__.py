@@ -80,7 +80,7 @@ class DatabaseConfig:
 
     DB_DATABASE: str = Field(
         description="db database",
-        default="dify",
+        default="slai",
     )
 
     DB_CHARSET: str = Field(

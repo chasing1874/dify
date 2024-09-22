@@ -46,24 +46,26 @@ services:
       # The configurations of postgres database connection.
       # It is consistent with the configuration in the 'db' service below.
       DB_USERNAME: postgres
-      DB_PASSWORD: difyai123456
+      DB_PASSWORD: slai123456
       DB_HOST: db
       DB_PORT: 5432
-      DB_DATABASE: dify
+      DB_DATABASE: slai
       # The configurations of redis connection.
       # It is consistent with the configuration in the 'redis' service below.
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_USERNAME: ''
-      REDIS_PASSWORD: difyai123456
+      REDIS_PASSWORD: slai123456
       REDIS_USE_SSL: 'false'
       # use redis db 0 for redis cache
+
       REDIS_DB: 0
       # The configurations of celery broker.
       # Use redis as the broker, and redis db 1 for celery broker.
-      CELERY_BROKER_URL: redis://:difyai123456@redis:6379/1
+      CELERY_BROKER_URL: redis://:slai123456@redis:6379/1
       # Specifies the allowed origins for cross-origin requests to the Web API, e.g. https://dify.app or * for all origins.
       WEB_API_CORS_ALLOW_ORIGINS: '*'
+
       # Specifies the allowed origins for cross-origin requests to the console API, e.g. https://cloud.dify.ai or * for all origins.
       CONSOLE_CORS_ALLOW_ORIGINS: '*'
       # CSRF Cookie settings
@@ -244,21 +246,23 @@ services:
       # The configurations of postgres database connection.
       # It is consistent with the configuration in the 'db' service below.
       DB_USERNAME: postgres
-      DB_PASSWORD: difyai123456
+      DB_PASSWORD: slai123456
       DB_HOST: db
       DB_PORT: 5432
-      DB_DATABASE: dify
+      DB_DATABASE: slai
       # The configurations of redis cache connection.
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_USERNAME: ''
-      REDIS_PASSWORD: difyai123456
+      REDIS_PASSWORD: slai123456
       REDIS_DB: 0
       REDIS_USE_SSL: 'false'
+
       # The configurations of celery broker.
-      CELERY_BROKER_URL: redis://:difyai123456@redis:6379/1
+      CELERY_BROKER_URL: redis://:slai123456@redis:6379/1
       # The type of storage to use for storing user files. Supported values are `local` and `s3` and `azure-blob` and `google-storage`, Default: `local`
       STORAGE_TYPE: local
+
       STORAGE_LOCAL_PATH: storage
       # The S3 storage configurations, only available when STORAGE_TYPE is `s3`.
       S3_USE_AWS_MANAGED_IAM: 'false'
