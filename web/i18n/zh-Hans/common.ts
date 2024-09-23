@@ -425,7 +425,7 @@ const translation = {
     title:
       'API 扩展提供了一个集中式的 API 管理，在此统一添加 API 配置后，方便在 SLAI 上的各类应用中直接使用。',
     link: '了解如何开发您自己的 API 扩展。',
-    linkUrl: 'https://docs.dify.ai/v/zh-hans/guides/extension/api-based-extension',
+    linkUrl: 'https://zcn1olv66sbr.feishu.cn/wiki/MQsGwt4tniB8QskPcFlcm4zfnRe?from=from_copylink',
     add: '新增 API 扩展',
     selector: {
       title: 'API 扩展',

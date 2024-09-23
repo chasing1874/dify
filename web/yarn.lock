@@ -2960,7 +2960,7 @@ code-inspector-core@0.13.0:
 
 code-inspector-plugin@^0.13.0:
   version "0.13.0"
-  resolved "https://registry.npmjs.org/code-inspector-plugin/-/code-inspector-plugin-0.13.0.tgz"
+  resolved "https://registry.npmmirror.com/code-inspector-plugin/-/code-inspector-plugin-0.13.0.tgz"
   integrity sha512-v4mq5hhHkyMmutembTzREVsFeZ/+KsCwfx20+0gTqm1Il/M1T4d2BCv9mZ4ivie3GvvDMt/pVz1iBBVP3SuzJA==
   dependencies:
     chalk "4.1.1"
