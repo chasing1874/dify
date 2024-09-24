@@ -412,7 +412,7 @@ const translation = {
   apiBasedExtension: {
     title: 'Les extensions API fournissent une gestion centralisée des API, simplifiant la configuration pour une utilisation facile à travers les applications de SLAI.',
     link: 'Apprenez comment développer votre propre Extension API.',
-    linkUrl: 'https://docs.dify.ai/fonctionnalites/extension/extension_basee_sur_api',
+    linkUrl: 'https://docs.shuling.ai/fonctionnalites/extension/extension_basee_sur_api',
     add: 'Ajouter l\'extension API',
     selector: {
       title: 'Extension de l\'API',
