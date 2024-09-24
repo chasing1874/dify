@@ -177,6 +177,26 @@ docker/volumes/pgvecto_rs/data/*
 docker/nginx/conf.d/default.conf
 docker/middleware.env
 
+docker-deploy/volumes/app/storage/*
+docker-deploy/volumes/certbot/*
+docker-deploy/volumes/db/data/*
+docker-deploy/volumes/redis/data/*
+docker-deploy/volumes/weaviate/*
+docker-deploy/volumes/qdrant/*
+docker-deploy/volumes/etcd/*
+docker-deploy/volumes/minio/*
+docker-deploy/volumes/milvus/*
+docker-deploy/volumes/chroma/*
+docker-deploy/volumes/opensearch/data/*
+docker-deploy/volumes/myscale/data/*
+docker-deploy/volumes/myscale/log/*
+docker-deploy/volumes/unstructured/*
+docker-deploy/volumes/pgvector/data/*
+docker-deploy/volumes/pgvecto_rs/data/*
+
+docker-deploy/nginx/conf.d/default.conf
+docker-deploy/middleware.env
+
 sdks/python-client/build
 sdks/python-client/dist
 sdks/python-client/dify_client.egg-info
