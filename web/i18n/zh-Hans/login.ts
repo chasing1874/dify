@@ -56,8 +56,8 @@ const translation = {
     passwordLengthInValid: '密码必须至少为 8 个字符',
   },
   license: {
-    tip: '启动 SLAI 社区版之前, 请阅读 GitHub 上的',
-    link: '开源协议',
+    tip: '欢迎使用数灵AI,',
+    link: 'SLAI',
   },
   join: '加入',
   joinTipStart: '邀请你加入',
